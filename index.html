@@ -248,6 +248,14 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--fg);font-
 .coach-av{width:46px;height:46px;border-radius:50%;object-fit:cover;border:2px solid var(--red)}
 .coach-info .c-name{font-size:15px;font-weight:600}
 .coach-info .c-role{font-family:var(--mono);font-size:11px;color:var(--fg3)}
+.gemini-key-row{display:flex;align-items:center;gap:8px;margin:8px 0 12px;padding:10px 14px;background:var(--s2);border:1px solid var(--s3);border-radius:var(--r2)}
+.gemini-key-row input{flex:1;background:transparent;border:1px solid var(--s3);color:var(--fg);font-family:var(--mono);font-size:11px;padding:6px 10px;border-radius:4px;outline:none}
+.gemini-key-row input:focus{border-color:var(--red)}
+.gemini-key-row button{background:var(--red);color:#fff;border:none;padding:6px 12px;border-radius:4px;font-family:var(--mono);font-size:11px;cursor:pointer}
+.gemini-key-row .key-status{font-family:var(--mono);font-size:10px;color:var(--grn)}
+.coach-typing{display:inline-block;color:var(--fg3)}
+.coach-typing::after{content:'...';animation:dots 1.2s steps(4,end) infinite}
+@keyframes dots{0%{content:''}25%{content:'.'}50%{content:'..'}75%{content:'...'}}
 
 /* Toast */
 .toast{position:fixed;top:16px;left:50%;transform:translateX(-50%) translateY(-80px);background:var(--s1);border:1px solid var(--s3);border-radius:8px;padding:10px 18px;font-family:var(--mono);font-size:12px;z-index:200;transition:transform .35s cubic-bezier(.4,0,.2,1);box-shadow:0 8px 24px rgba(0,0,0,.6);max-width:300px}
@@ -588,6 +596,11 @@ What's the <em>single biggest time leak</em> you noticed? Name it. That's where 
 <!-- ==================== COACH (TERMINAL) ==================== -->
 <div class="tab-content" id="tab-coach">
 <div class="coach-head" id="coachHead"></div>
+<div class="gemini-key-row" id="geminiKeyRow">
+<input type="password" id="geminiKeyInp" placeholder="paste gemini api key..." autocomplete="off">
+<button onclick="saveGeminiKey()">save</button>
+<span class="key-status" id="geminiKeyStatus"></span>
+</div>
 <div class="term-shell">
 <div class="term-shell-bar">
 <div class="term-shell-dot r"></div><div class="term-shell-dot y"></div><div class="term-shell-dot g"></div>
@@ -694,28 +707,83 @@ let xp=ls('xp',0),level=ls('level',1),streak=ls('streak',0),
 let rizeActive=false,rizeInt=null,rizeSec=0,rizeCat='deep_work';
 let rizeLog=ls('rizeLog',{});  // {cat: totalSeconds}
 let rizeNudgeInt=null;
+let rizeBreakInt=null; // break reminder interval
+let notifPermission=Notification?.permission||'default';
 
 const RIZE_NAMES={deep_work:'Deep Work',admin:'Admin',social_media:'Social Media',youtube:'YouTube',exercise:'Exercise',rest:'Rest',learning:'Learning'};
 const RIZE_NUDGES={
   social_media:[
     "You've been scrolling for {t}. Is this moving the needle?",
     "Social media for {t} straight. Your goals aren't on the timeline.",
-    "{t} on social. That's {t} you'll never get back."
+    "{t} on social. That's {t} you'll never get back.",
+    "Every minute here is a minute stolen from your goals.",
+    "Close the app. Open the work. You know what to do."
   ],
   youtube:[
     "{t} on YouTube. Learning or escaping? Be honest.",
     "You've been watching for {t}. Time to produce, not consume.",
-    "{t} of video. One more won't change anything. Get back to work."
+    "{t} of video. One more won't change anything. Get back to work.",
+    "Watching others build won't build yours. Get moving.",
+    "The algorithm profits from your attention. Your goals don't."
   ],
   rest:[
     "Resting for {t}. You've earned it — if you actually worked today.",
-    "{t} of rest logged. Recovery is strategic. Don't overdo it."
+    "{t} of rest logged. Recovery is strategic. Don't overdo it.",
+    "Rest is earned through effort. Make sure the math checks out."
   ],
   deep_work:[
     "{t} of deep work. Strong. Keep the momentum.",
-    "Deep work streak: {t}. This is where results come from."
+    "Deep work streak: {t}. This is where results come from.",
+    "You're in the zone. Protect this session at all costs.",
+    "{t} locked in. This is what separates you from the rest."
+  ],
+  learning:[
+    "{t} of learning. Knowledge compounds. Keep stacking.",
+    "Learning for {t}. Apply something from this session today."
+  ],
+  admin:[
+    "Admin for {t}. Necessary evil — but don't let it eat your day.",
+    "{t} on admin. Wrap it up and get to what matters."
+  ],
+  exercise:[
+    "{t} of exercise logged. Body fuels the mind.",
+    "Moving for {t}. Strong body, sharp mind."
   ]
 };
+const BREAK_MSGS=[
+  "You've been grinding for {t}. Take 5 — stretch, hydrate, breathe.",
+  "Break time. {t} straight — your brain needs a reset.",
+  "Stand up. Walk around. {t} of focus earned you 5 minutes off.",
+  "Eyes off screen. {t} deep. Quick break = sharper second half.",
+  "Pomodoro check: {t} in. Micro-break now, come back stronger."
+];
+
+// Request notification permission
+async function requestNotifPermission(){
+  if(!('Notification' in window))return;
+  if(Notification.permission==='default'){
+    const p=await Notification.requestPermission();
+    notifPermission=p;
+  }else{
+    notifPermission=Notification.permission;
+  }
+}
+
+// Send browser push notification
+function sendPushNotif(title,body,tag){
+  if(!('Notification' in window)||Notification.permission!=='granted')return;
+  try{
+    const n=new Notification(title,{
+      body:body,
+      icon:'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">🪓</text></svg>',
+      tag:tag||'forge-nudge',
+      requireInteraction:false,
+      silent:false
+    });
+    n.onclick=()=>{window.focus();n.close()};
+    setTimeout(()=>n.close(),10000);
+  }catch(e){console.log('Notification error:',e)}
+}
 
 function fmtRizeSec(s){
   const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sc=s%60;
@@ -723,37 +791,68 @@ function fmtRizeSec(s){
 }
 function toggleRize(){
   if(rizeActive){
-    clearInterval(rizeInt);clearInterval(rizeNudgeInt);
+    clearInterval(rizeInt);clearInterval(rizeNudgeInt);clearInterval(rizeBreakInt);
     rizeActive=false;
+    const sessionMins=Math.round(rizeSec/60);
     rizeLog[rizeCat]=(rizeLog[rizeCat]||0)+rizeSec;
-    ss('rizeLog',rizeLog);rizeSec=0;
+    ss('rizeLog',rizeLog);
+    // Session end notification
+    if(sessionMins>=1){
+      sendPushNotif('Session ended',RIZE_NAMES[rizeCat]+' — '+fmtRizeSec(rizeSec)+' logged.','forge-session-end');
+    }
+    rizeSec=0;
     document.getElementById('rizeDot').className='rize-dot idle';
     document.getElementById('rizeLabel').textContent='not tracking';
     document.getElementById('rizeTime').textContent='00:00:00';
     document.getElementById('rizeToggle').textContent='track';
     document.getElementById('rizeToggle').classList.remove('active');
   }else{
+    // Request permission on first track
+    requestNotifPermission();
     rizeActive=true;rizeSec=0;
     document.getElementById('rizeDot').className='rize-dot';
     document.getElementById('rizeLabel').innerHTML='tracking: <span class="rize-cat">'+RIZE_NAMES[rizeCat]+'</span>';
     document.getElementById('rizeToggle').textContent='stop';
     document.getElementById('rizeToggle').classList.add('active');
+    // Send start notification
+    sendPushNotif('Tracking started','Category: '+RIZE_NAMES[rizeCat]+'. Stay locked in.','forge-session-start');
     rizeInt=setInterval(()=>{
       rizeSec++;
       document.getElementById('rizeTime').textContent=fmtRizeSec(rizeSec);
     },1000);
-    // Nudge every 15 min for distractions, 30 min for productive
-    const nudgeDelay=(['social_media','youtube'].includes(rizeCat))?900000:1800000;
+    // Nudge every 10 min for distractions, 25 min for productive
+    const nudgeDelay=(['social_media','youtube'].includes(rizeCat))?600000:1500000;
     rizeNudgeInt=setInterval(()=>fireNudge(),nudgeDelay);
+    // Break reminder every 25 min for deep work / learning
+    if(['deep_work','learning','admin'].includes(rizeCat)){
+      rizeBreakInt=setInterval(()=>fireBreakReminder(),1500000);
+    }
   }
 }
 function fireNudge(){
   const pool=RIZE_NUDGES[rizeCat]||RIZE_NUDGES.deep_work;
   const msg=pool[Math.floor(Math.random()*pool.length)];
   const t=fmtRizeSec(rizeSec);
-  document.getElementById('nudgeMsg').textContent=msg.replace(/\{t\}/g,t);
+  const formatted=msg.replace(/\{t\}/g,t);
+  // In-app nudge
+  document.getElementById('nudgeMsg').textContent=formatted;
   document.getElementById('nudge').classList.add('show');
   setTimeout(()=>closeNudge(),8000);
+  // Browser push notification
+  sendPushNotif('Forge — '+RIZE_NAMES[rizeCat],formatted,'forge-nudge');
+}
+function fireBreakReminder(){
+  const msg=BREAK_MSGS[Math.floor(Math.random()*BREAK_MSGS.length)];
+  const t=fmtRizeSec(rizeSec);
+  const formatted=msg.replace(/\{t\}/g,t);
+  // In-app nudge with break style
+  document.getElementById('nudgeMsg').textContent=formatted;
+  document.getElementById('nudge').classList.add('show');
+  setTimeout(()=>closeNudge(),10000);
+  // Browser push notification
+  sendPushNotif('Break Time — Forge',formatted,'forge-break');
+  // Vibrate if available
+  try{navigator.vibrate([200,100,200,100,200])}catch(e){}
 }
 function closeNudge(){document.getElementById('nudge').classList.remove('show')}
 
@@ -1121,18 +1220,36 @@ function renderRefLog(){
 }
 document.getElementById('refInp').addEventListener('keydown',e=>{if(e.key==='Enter')sendRef()});
 
-// ==================== COACH (TERMINAL) ====================
+// ==================== COACH (TERMINAL + GEMINI AI) ====================
+let geminiKey=ls('geminiKey','');
+
+function saveGeminiKey(){
+  const inp=document.getElementById('geminiKeyInp');
+  const key=inp.value.trim();
+  if(!key)return;
+  geminiKey=key;ss('geminiKey',key);
+  inp.value='';
+  document.getElementById('geminiKeyStatus').textContent='key saved ✓';
+  document.getElementById('geminiKeyInp').placeholder='••••••••'+key.slice(-4);
+  setTimeout(()=>{document.getElementById('geminiKeyStatus').textContent=''},2000);
+}
 function initCoach(){
   const c=CHARS[curEnf%CHARS.length];
   document.getElementById('coachHead').innerHTML=
     '<img class="coach-av" src="'+c.img+'" alt="'+c.n+'">'+
-    '<div class="coach-info"><div class="c-name">'+c.n+'</div><div class="c-role">// coach process &middot; pid 7701</div></div>';
+    '<div class="coach-info"><div class="c-name">'+c.n+'</div><div class="c-role">// coach process &middot; gemini-powered &middot; pid 7701</div></div>';
+  // Show/hide key input
+  if(geminiKey){
+    document.getElementById('geminiKeyInp').placeholder='••••••••'+geminiKey.slice(-4);
+    document.getElementById('geminiKeyStatus').textContent='connected';
+  }
   renderCoachTerm();
 }
 function renderCoachTerm(){
   const el=document.getElementById('coachTermBody');
   if(!coachHist.length){
-    el.innerHTML='<div class="term-entry"><span class="term-prompt">forge@coach:~$</span> <span class="term-output">coach process started. ask about focus, discipline, productivity. <span class="hl">no small talk.</span></span></div>';
+    const mode=geminiKey?'gemini ai connected. talk to your coach.':'enter gemini api key above to enable ai coach.';
+    el.innerHTML='<div class="term-entry"><span class="term-prompt">forge@coach:~$</span> <span class="term-output">coach process started. '+mode+' <span class="hl">no small talk.</span></span></div>';
     return;
   }
   let html='';
@@ -1144,15 +1261,120 @@ function renderCoachTerm(){
   el.innerHTML=html;
   el.scrollTop=el.scrollHeight;
 }
-function sendMsg(){
+
+const COACH_SYSTEM=`You are FORGE COACH — a brutally honest, no-BS productivity and discipline coach embedded in a terminal-style productivity app called Forge. Your personality:
+- Direct, intense, motivational — like David Goggins meets a drill sergeant meets a wise mentor
+- Short, punchy responses (2-4 sentences max). No fluff. No filler.
+- Use the user's context: their tracking data, focus sessions, streak count
+- Push them to be better. Call out excuses. Celebrate real effort.
+- You speak in a raw, authentic way — no corporate speak
+- You care deeply but show it through high standards, not softness
+- Reference their Forge data when relevant (time tracked, categories, streaks)
+- If they share something personal, be real but redirect to action
+- Never say "I'm an AI" or break character. You ARE the coach.`;
+
+async function sendMsg(){
   const inp=document.getElementById('coachInp');
   const msg=inp.value.trim();if(!msg)return;
+  inp.value='';inp.disabled=true;
   coachHist.push({r:'u',t:msg});
-  coachHist.push({r:'c',t:aiRespond('coach',msg)});
-  ss('coachHist',coachHist);inp.value='';
-  addXP(5,'coach');renderCoachTerm();
+  renderCoachTerm();
+
+  // If no Gemini key, fall back to local AI
+  if(!geminiKey){
+    const resp=aiRespond('coach',msg);
+    coachHist.push({r:'c',t:resp});
+    ss('coachHist',coachHist);
+    addXP(5,'coach');
+    inp.disabled=false;inp.focus();
+    renderCoachTerm();
+    return;
+  }
+
+  // Show typing indicator
+  const el=document.getElementById('coachTermBody');
+  el.innerHTML+='<div class="term-entry" id="coachTyping"><span class="term-output"><span class="hl">[COACH]</span> <span class="coach-typing">thinking</span></span></div>';
+  el.scrollTop=el.scrollHeight;
+
+  try{
+    // Build context with user's Forge data
+    const ctx=buildCoachContext();
+    const messages=buildGeminiMessages(msg,ctx);
+
+    const res=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key='+geminiKey,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        system_instruction:{parts:[{text:COACH_SYSTEM+'\n\n'+ctx}]},
+        contents:messages,
+        generationConfig:{
+          temperature:0.9,
+          maxOutputTokens:200,
+          topP:0.95
+        }
+      })
+    });
+
+    // Remove typing indicator
+    const typingEl=document.getElementById('coachTyping');
+    if(typingEl)typingEl.remove();
+
+    if(!res.ok){
+      const err=await res.json().catch(()=>({}));
+      const errMsg=err?.error?.message||'api error ('+res.status+')';
+      coachHist.push({r:'c',t:'[ERR] '+errMsg+' — falling back to local.'});
+      // Fallback
+      const fallback=aiRespond('coach',msg);
+      coachHist.push({r:'c',t:fallback});
+    }else{
+      const data=await res.json();
+      const reply=data?.candidates?.[0]?.content?.parts?.[0]?.text||aiRespond('coach',msg);
+      coachHist.push({r:'c',t:reply});
+    }
+  }catch(e){
+    const typingEl=document.getElementById('coachTyping');
+    if(typingEl)typingEl.remove();
+    coachHist.push({r:'c',t:'[ERR] connection failed. offline coach: '+aiRespond('coach',msg)});
+  }
+
+  ss('coachHist',coachHist);
+  addXP(5,'coach');
+  inp.disabled=false;inp.focus();
+  renderCoachTerm();
 }
-document.getElementById('coachInp').addEventListener('keydown',e=>{if(e.key==='Enter')sendMsg()});
+
+function buildCoachContext(){
+  const parts=[];
+  // Current tracking status
+  if(rizeActive)parts.push('USER IS CURRENTLY TRACKING: '+RIZE_NAMES[rizeCat]+' for '+fmtRizeSec(rizeSec));
+  else parts.push('User is NOT currently tracking time.');
+  // Today's tracked data
+  const keys=Object.keys(rizeLog);
+  if(keys.length){
+    parts.push('Today\'s time log:');
+    keys.forEach(k=>parts.push('  '+k+': '+Math.round(rizeLog[k]/60)+' min'));
+  }
+  // Stats
+  parts.push('Streak: '+streak+' days');
+  parts.push('Focus time today: '+Math.round(tmTotal)+' min');
+  parts.push('Labors completed: '+labsDone.length+'/'+LABOR_DATA.length);
+  parts.push('Level: '+level+' ('+xp+' XP)');
+  parts.push('Ops done: '+Object.keys(opsDone).length+'/3');
+  return 'CURRENT USER CONTEXT:\n'+parts.join('\n');
+}
+
+function buildGeminiMessages(msg,ctx){
+  // Include recent coach history for conversation continuity (last 6 messages)
+  const recent=coachHist.slice(-7); // -7 because we already pushed the latest user msg
+  const contents=[];
+  for(const m of recent){
+    if(m.r==='u')contents.push({role:'user',parts:[{text:m.t}]});
+    else contents.push({role:'model',parts:[{text:m.t}]});
+  }
+  return contents;
+}
+
+document.getElementById('coachInp').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey)sendMsg()});
 
 // Progress
 function updProgress(){
