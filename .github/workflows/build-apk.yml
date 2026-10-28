@@ -42,7 +42,6 @@ jobs:
 
     - name: Generate Gradle Wrapper
       run: |
-        # Generate wrapper from a clean directory to avoid AGP/Gradle version conflict
         mkdir -p /tmp/wrapper-gen
         cd /tmp/wrapper-gen
         touch settings.gradle
@@ -51,36 +50,25 @@ jobs:
         cp -r gradle $GITHUB_WORKSPACE/android/
         chmod +x $GITHUB_WORKSPACE/android/gradlew
 
+    - name: Generate signing keystore
+      run: |
+        keytool -genkey -v \
+          -keystore android/forge-release.jks \
+          -alias key0 -keyalg RSA -keysize 2048 -validity 10000 \
+          -storepass android -keypass android \
+          -dname "CN=Forge, O=Forge, C=US"
+
     - name: Build Release APK
       run: |
         cd android
         ./gradlew assembleRelease --no-daemon
 
-    - name: Sign APK
+    - name: Prepare APK
       run: |
-        cd android
-        # Generate signing key
-        keytool -genkey -v -keystore forge-release.keystore \
-          -alias forge -keyalg RSA -keysize 2048 -validity 10000 \
-          -storepass forgeapp -keypass forgeapp \
-          -dname "CN=Forge App, OU=Forge, O=Forge, L=KL, ST=KL, C=MY"
-
-        # Find the APK
-        APK_PATH=$(find app/build/outputs/apk/release -name "*.apk" | head -1)
+        APK_PATH=$(find android/app/build/outputs/apk/release -name "*.apk" | head -1)
         echo "Found APK: $APK_PATH"
-
-        # Find apksigner
-        APKSIGNER=$(find ${ANDROID_HOME}/build-tools -name "apksigner" | sort -V | tail -1)
-        echo "Using apksigner: $APKSIGNER"
-
-        $APKSIGNER sign \
-          --ks forge-release.keystore \
-          --ks-pass pass:forgeapp \
-          --key-pass pass:forgeapp \
-          --out Forge-v1.0.3-signed.apk \
-          "$APK_PATH"
-
-        ls -la Forge-v1.0.3-signed.apk
+        cp "$APK_PATH" android/Forge-v1.0.3-signed.apk
+        ls -la android/Forge-v1.0.3-signed.apk
 
     - name: Upload APK Artifact
       uses: actions/upload-artifact@v4
