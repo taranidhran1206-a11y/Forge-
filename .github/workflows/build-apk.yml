@@ -43,7 +43,7 @@ jobs:
     - name: Generate Gradle Wrapper
       run: |
         cd android
-        gradle wrapper --gradle-version 8.7
+        gradle wrapper --gradle-version 9.7.1
         chmod +x gradlew
 
     - name: Build Release APK
@@ -72,31 +72,36 @@ jobs:
           --ks forge-release.keystore \
           --ks-pass pass:forgeapp \
           --key-pass pass:forgeapp \
-          --out Forge-v1.0.0-signed.apk \
+          --out Forge-v1.0.3-signed.apk \
           "$APK_PATH"
 
-        ls -la Forge-v1.0.0-signed.apk
+        ls -la Forge-v1.0.3-signed.apk
 
     - name: Upload APK Artifact
       uses: actions/upload-artifact@v4
       with:
         name: Forge-APK
-        path: android/Forge-v1.0.0-signed.apk
+        path: android/Forge-v1.0.3-signed.apk
 
     - name: Create Release
       uses: softprops/action-gh-release@v2
       with:
-        tag_name: v1.0.0
-        name: "Forge v1.0.0 — Discipline Companion"
+        tag_name: v1.0.3
+        name: "Forge v1.0.3 — Bug Fixes & AI Coach"
         body: |
-          ## Forge v1.0.0 🪓
+          ## Forge v1.0.3
 
-          Your discipline companion — now as an Android app.
+          Bug fixes and improvements for the Discipline Companion.
+
+          ### What's Fixed
+          - **AI Coach & Reflection now work** — fixed invalid Gemini model (was using non-existent model name)
+          - **Font loading fixed** — CSS `@import` order corrected for reliable font rendering on all devices
+          - **Native notifications** — ForgeBridge integration unified across builds
 
           ### Features
           - **Rize-style Focus Tracking** with 7 categories
           - **Push Notifications** — session start/end, break reminders, distraction detection
-          - **AI Coach** powered by Gemini 3.8 Flash
+          - **AI Coach** powered by Gemini 3.5 Flash
           - **Auto Distraction Detection** — knows when you leave and nudges you back
           - **XP & Leveling** gamification system
           - **Daily Labors** task management with streak tracking
@@ -104,12 +109,12 @@ jobs:
           - **Full offline support** — works without internet (except AI Coach)
 
           ### Install
-          1. Download `Forge-v1.0.0-signed.apk`
+          1. Download `Forge-v1.0.3-signed.apk`
           2. On your phone, go to Settings > Security > Enable "Install from unknown sources"
           3. Open the APK and install
 
           Built by Tarani. Forged in discipline.
-        files: android/Forge-v1.0.0-signed.apk
+        files: android/Forge-v1.0.3-signed.apk
         draft: false
         prerelease: false
       env:

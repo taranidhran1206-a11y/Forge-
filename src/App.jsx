@@ -433,7 +433,7 @@ function CoachTab({coachHistory,setCoachHistory,tasks,auditLog,journal,streak,to
       const apiKey=import.meta.env.VITE_GEMINI_API_KEY||localStorage.getItem("tk-gemini-key")||"";
       if(!apiKey){setCoachHistory(p=>[...p,{role:"assistant",content:"⚠️ No Gemini API key found. Tap the 🔑 icon above to add your key."}]);setLoading(false);return;}
       const geminiMessages=updated.slice(-20).map(m=>({role:m.role==="assistant"?"model":"user",parts:[{text:m.content}]}));
-      const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=${apiKey}`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({system_instruction:{parts:[{text:sys}]},contents:geminiMessages,generationConfig:{maxOutputTokens:1000,temperature:0.8}})});
+      const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=${apiKey}`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({system_instruction:{parts:[{text:sys}]},contents:geminiMessages,generationConfig:{maxOutputTokens:1000,temperature:0.8}})});
       const data=await res.json();const reply=data?.candidates?.[0]?.content?.parts?.[0]?.text||"I'm here. Ask me anything.";setCoachHistory(p=>[...p,{role:"assistant",content:reply}]);
     }catch{setCoachHistory(p=>[...p,{role:"assistant",content:"Connection issue — try again."}]);}
     setLoading(false);};
@@ -479,7 +479,7 @@ function ReflectTab({journal,setJournal,setTotalXP,toast,profile,tasks,auditLog,
     try{
       const profileCtx=profile?`User: ${profile.role}. Goal: ${profile.topGoal}. Time leak: ${profile.biggestLeak}. Pattern: ${profile.challenge}.`:"";
       const sys=`You are a reflection coach. The user just wrote a reflection. Give a 2-3 sentence insight: spot patterns, call out blind spots, and give ONE specific action for tomorrow. Be direct, no filler. ${profileCtx} Tasks today: ${tasks.filter(t=>t.done).length}/${tasks.length} done. Streak: ${streak} days. Focus time today: ${todayFocusMin} minutes across ${todaySessions.length} sessions.`;
-      const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=${apiKey}`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({system_instruction:{parts:[{text:sys}]},contents:[{role:"user",parts:[{text:reflectionText}]}],generationConfig:{maxOutputTokens:300,temperature:0.7}})});
+      const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=${apiKey}`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({system_instruction:{parts:[{text:sys}]},contents:[{role:"user",parts:[{text:reflectionText}]}],generationConfig:{maxOutputTokens:300,temperature:0.7}})});
       const data=await res.json();const reply=data?.candidates?.[0]?.content?.parts?.[0]?.text||null;
       setAiInsight(reply);
     }catch{}
@@ -493,7 +493,7 @@ function ReflectTab({journal,setJournal,setTotalXP,toast,profile,tasks,auditLog,
     try{
       const recentEntries=journal.slice(0,7).map(j=>`${j.date}: ${j.text}`).join("\n");
       const sys=`Analyze these reflections and give a 3-4 sentence weekly pattern summary. Highlight: recurring themes, progress signals, and the #1 thing to change next week. Be specific and direct.`;
-      const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=${apiKey}`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({system_instruction:{parts:[{text:sys}]},contents:[{role:"user",parts:[{text:recentEntries}]}],generationConfig:{maxOutputTokens:400,temperature:0.7}})});
+      const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=${apiKey}`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({system_instruction:{parts:[{text:sys}]},contents:[{role:"user",parts:[{text:recentEntries}]}],generationConfig:{maxOutputTokens:400,temperature:0.7}})});
       const data=await res.json();const reply=data?.candidates?.[0]?.content?.parts?.[0]?.text||null;
       setAiInsight(reply);
     }catch{}

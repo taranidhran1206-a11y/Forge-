@@ -7,9 +7,9 @@
 <meta name="theme-color" content="#0A0A0A">
 <title>Forge</title>
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{--bg:#0A0A0A;--s1:#111;--s2:#171717;--s3:#1E1E1E;--red:#E53935;--red2:#FF5252;--rg:rgba(229,57,53,.10);--grn:#00E676;--amber:#FFB300;--fg:#F5F5F5;--fg2:#9E9E9E;--fg3:#555;--mono:'JetBrains Mono',monospace;--sans:'Inter',sans-serif;--r:14px;--r2:10px;--app-w:100vw;--pad:16px}
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:15px;line-height:1.5}
 /* === ALWAYS FULL WIDTH — every device === */
 /* base --app-w:100vw set in :root */
@@ -1398,7 +1398,7 @@ async function sendMsg(){
     const ctx=buildCoachContext();
     const messages=buildGeminiMessages(msg,ctx);
 
-    const res=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key='+geminiKey,{
+    const res=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key='+geminiKey,{
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
