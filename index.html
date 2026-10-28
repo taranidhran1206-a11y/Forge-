@@ -11,57 +11,24 @@
 :root{--bg:#0A0A0A;--s1:#111;--s2:#171717;--s3:#1E1E1E;--red:#E53935;--red2:#FF5252;--rg:rgba(229,57,53,.10);--grn:#00E676;--amber:#FFB300;--fg:#F5F5F5;--fg2:#9E9E9E;--fg3:#555;--mono:'JetBrains Mono',monospace;--sans:'Inter',sans-serif;--r:14px;--r2:10px;--app-w:100vw;--pad:16px}
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:15px;line-height:1.5}
-/* === PHONE (default: full width) === */
-/* base --app-w:100vw already set above */
+/* === ALWAYS FULL WIDTH — every device === */
+/* base --app-w:100vw set in :root */
 
-/* === TABLET PORTRAIT === */
-@media(min-width:600px){:root{--app-w:min(90vw,520px);--pad:20px}}
+@media(min-width:600px){:root{--pad:24px}}
+@media(min-width:768px){:root{--pad:28px}.hero-greeting{font-size:28px}.term-shell-body{max-height:65vh}}
+@media(min-width:1024px){:root{--pad:36px}.hero-greeting{font-size:32px}.stat-grid{gap:14px}.term-shell-body{max-height:70vh}.block{margin:14px 0}}
+@media(min-width:1440px){:root{--pad:48px}.hero-greeting{font-size:36px}}
 
-/* === TABLET LANDSCAPE / SMALL DESKTOP === */
-@media(min-width:768px){
-  :root{--app-w:min(85vw,620px);--pad:24px}
-  .hero-greeting{font-size:28px}
-  .stat-grid{gap:12px}
-  .term-shell-body{max-height:65vh}
-  .rize-bar{padding:14px 18px}
-}
-
-/* === DESKTOP === */
-@media(min-width:1024px){
-  :root{--app-w:min(60vw,720px);--pad:28px}
-  .nav{max-width:var(--app-w)}
-  .hero-greeting{font-size:32px}
-  .stat-grid{gap:14px}
-  .term-shell-body{max-height:70vh}
-  .block{margin:14px 0}
-  .rize-cats{gap:8px}
-}
-
-/* === WIDE DESKTOP === */
-@media(min-width:1440px){
-  :root{--app-w:min(50vw,800px);--pad:32px}
-  .hero-greeting{font-size:36px}
-}
-
-/* === PHONE LANDSCAPE === */
+/* Phone landscape */
 @media(orientation:landscape) and (max-height:500px){
-  :root{--app-w:min(70vw,580px)}
-  .hero{padding:10px 0}
-  .hero-greeting{font-size:18px}
-  .hero-sub{font-size:12px}
-  .rize-bar{padding:8px 14px}
-  .nav{padding:4px 0 max(4px,env(safe-area-inset-bottom))}
-  .main{padding-bottom:60px}
-  .block{margin:8px 0}
-  .term-shell-body{max-height:40vh}
+  .hero{padding:10px 0}.hero-greeting{font-size:18px}.hero-sub{font-size:12px}
+  .rize-bar{padding:8px 14px}.nav{padding:4px 0 max(4px,env(safe-area-inset-bottom))}
+  .main{padding-bottom:60px}.block{margin:8px 0}.term-shell-body{max-height:40vh}
 }
-
-/* === TOUCH TARGETS (mobile/tablet) === */
+/* Touch targets */
 @media(pointer:coarse){
-  .rize-cat-btn{min-height:36px;padding:8px 14px}
-  .rize-toggle{min-height:40px;min-width:72px}
-  .nav-btn{padding:6px 12px}
-  .quick-btn{min-height:44px}
+  .rize-cat-btn{min-height:36px;padding:8px 14px}.rize-toggle{min-height:40px;min-width:72px}
+  .nav-btn{padding:6px 12px}.quick-btn{min-height:44px}
 }
 
 /* === BOOT SPLASH === */
@@ -78,21 +45,21 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--fg);font-
 .splash-term .ld{color:var(--red2)}
 
 /* === APP SHELL === */
-.app{height:100%;display:flex;flex-direction:column;width:var(--app-w);margin:0 auto;position:relative;overflow:hidden}
+.app{height:100%;display:flex;flex-direction:column;width:100%;margin:0 auto;position:relative;overflow:hidden}
 .main{flex:1;overflow-y:auto;overflow-x:hidden;padding:0 var(--pad) 100px;scroll-behavior:smooth;-webkit-overflow-scrolling:touch}
 .main::-webkit-scrollbar{display:none}
 
 /* === HEADER === */
 .term-header{padding:12px var(--pad) 10px;border-bottom:1px solid var(--s3);display:flex;align-items:center;justify-content:space-between;background:var(--bg)}
-.header-logo{width:44px;height:44px;filter:brightness(0) invert(1) drop-shadow(0 0 10px rgba(229,57,53,.4))}
-@media(min-width:768px){.header-logo{width:52px;height:52px}}
-@media(min-width:1024px){.header-logo{width:60px;height:60px;drop-shadow(0 0 14px rgba(229,57,53,.5))}}
+.header-logo{width:48px;height:48px;filter:brightness(0) invert(1) drop-shadow(0 0 12px rgba(229,57,53,.5))}
+@media(min-width:768px){.header-logo{width:56px;height:56px}}
+@media(min-width:1024px){.header-logo{width:64px;height:64px}}
 .term-status{display:flex;align-items:center;gap:10px}
 .xp-pill{font-family:var(--mono);font-size:11px;padding:3px 10px;border-radius:4px;background:var(--rg);color:var(--red2);border:1px solid rgba(229,57,53,.2)}
 .lvl-pill{font-family:var(--mono);font-size:11px;padding:3px 10px;border-radius:4px;background:var(--grn);color:#000;font-weight:700}
 
 /* === BOTTOM NAV === */
-.nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:var(--app-w);display:flex;justify-content:space-around;align-items:center;padding:8px 0 max(8px,env(safe-area-inset-bottom));background:rgba(10,10,10,.92);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-top:1px solid var(--s3);z-index:100}
+.nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;display:flex;justify-content:space-around;align-items:center;padding:8px 0 max(8px,env(safe-area-inset-bottom));background:rgba(10,10,10,.92);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-top:1px solid var(--s3);z-index:100}
 .nav-btn{display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:none;color:var(--fg3);font-size:9px;font-family:var(--mono);cursor:pointer;padding:4px 8px;transition:color .2s;letter-spacing:.3px}
 .nav-btn.active{color:var(--red2)}
 .nav-btn svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
