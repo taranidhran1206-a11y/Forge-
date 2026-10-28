@@ -67,49 +67,50 @@ jobs:
       run: |
         APK_PATH=$(find android/app/build/outputs/apk/release -name "*.apk" | head -1)
         echo "Found APK: $APK_PATH"
-        cp "$APK_PATH" android/Forge-v1.0.4-signed.apk
-        ls -la android/Forge-v1.0.4-signed.apk
+        cp "$APK_PATH" android/Forge-v1.0.5-signed.apk
+        ls -la android/Forge-v1.0.5-signed.apk
 
     - name: Upload APK Artifact
       uses: actions/upload-artifact@v4
       with:
         name: Forge-APK
-        path: android/Forge-v1.0.4-signed.apk
+        path: android/Forge-v1.0.5-signed.apk
 
     - name: Create Release
       uses: softprops/action-gh-release@v2
       with:
-        tag_name: v1.0.4
-        name: "Forge v1.0.4 — All Features Working"
+        tag_name: v1.0.5
+        name: "Forge v1.0.5 — Editable Labors + Coach Animations"
         body: |
-          ## Forge v1.0.4
+          ## Forge v1.0.5
 
-          Critical fix: all app features now work correctly on Android.
+          New features and improved app icon.
 
-          ### What's Fixed
-          - **Tab switching works** — Today, Plan, Progress, Reflect, Coach tabs all navigate correctly
-          - **AI Coach responds** — animated typing response from Gemini now works
-          - **Nudges & notifications work** — distraction detection, break reminders, session alerts
-          - **Root cause**: fixed a JavaScript crash (`Notification` API unavailable in Android WebView) that was silently killing all code after initialization
-          - **App icon updated** — subtle dark blue background
+          ### What's New
+          - **Editable Labors** — tap the edit icon to rename, change time, or change emoji for any labor
+          - **Add Custom Labors** — "+" button at the bottom to create your own tasks
+          - **Delete Labors** — remove any labor you don't need
+          - **Today's Date** — labors view shows the current date
+          - **AI Coach Star Animation** — sparkle/star animation while the coach processes your message
+          - **Cleaner App Icon** — bold red "F" on dark blue background
 
-          ### Features
+          ### All Features
           - **Rize-style Focus Tracking** with 7 categories
           - **Push Notifications** — session start/end, break reminders, distraction detection
-          - **AI Coach** powered by Gemini 3.5 Flash
+          - **AI Coach** powered by Gemini 3.5 Flash with animated processing
           - **Auto Distraction Detection** — knows when you leave and nudges you back
           - **XP & Leveling** gamification system
-          - **Daily Labors** task management with streak tracking
+          - **Daily Labors** — fully editable task management with streak tracking
           - **Time Audit** breakdown of where your hours go
           - **Full offline support** — works without internet (except AI Coach)
 
           ### Install
-          1. Download `Forge-v1.0.4-signed.apk`
+          1. Download `Forge-v1.0.5-signed.apk`
           2. On your phone, go to Settings > Security > Enable "Install from unknown sources"
           3. Open the APK and install
 
           Built by Tarani. Forged in discipline.
-        files: android/Forge-v1.0.4-signed.apk
+        files: android/Forge-v1.0.5-signed.apk
         draft: false
         prerelease: false
       env:
