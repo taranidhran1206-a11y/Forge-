@@ -25,11 +25,17 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
-    - name: Setup Android SDK
-      uses: android-actions/setup-android@v3
-
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v4
+
+    - name: Accept Android SDK licenses
+      run: yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
+
+    - name: Install Android SDK components
+      run: |
+        $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager \
+          "platforms;android-34" \
+          "build-tools;34.0.0" || true
 
     - name: Copy latest index.html to assets
       run: cp index.html android/app/src/main/assets/index.html
@@ -54,11 +60,13 @@ jobs:
           -storepass forgeapp -keypass forgeapp \
           -dname "CN=Forge App, OU=Forge, O=Forge, L=KL, ST=KL, C=MY"
 
-        # Find and sign APK
+        # Find the APK
         APK_PATH=$(find app/build/outputs/apk/release -name "*.apk" | head -1)
+        echo "Found APK: $APK_PATH"
 
         # Find apksigner
         APKSIGNER=$(find ${ANDROID_HOME}/build-tools -name "apksigner" | sort -V | tail -1)
+        echo "Using apksigner: $APKSIGNER"
 
         $APKSIGNER sign \
           --ks forge-release.keystore \
@@ -66,6 +74,8 @@ jobs:
           --key-pass pass:forgeapp \
           --out Forge-v1.0.0-signed.apk \
           "$APK_PATH"
+
+        ls -la Forge-v1.0.0-signed.apk
 
     - name: Upload APK Artifact
       uses: actions/upload-artifact@v4
@@ -84,9 +94,9 @@ jobs:
           Your discipline companion — now as an Android app.
 
           ### Features
-          - **Rize-style Focus Tracking** with 7 categories (Deep Work, Learning, Admin, Exercise, Rest, Social Media, YouTube)
+          - **Rize-style Focus Tracking** with 7 categories
           - **Push Notifications** — session start/end, break reminders, distraction detection
-          - **AI Coach** powered by Gemini 3.8 Flash — brutally honest, Goggins-style accountability
+          - **AI Coach** powered by Gemini 3.8 Flash
           - **Auto Distraction Detection** — knows when you leave and nudges you back
           - **XP & Leveling** gamification system
           - **Daily Labors** task management with streak tracking
