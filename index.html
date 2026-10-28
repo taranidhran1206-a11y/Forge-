@@ -14,6 +14,39 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--fg);font-
 @media(min-width:500px){:root{--app-w:430px;--pad:20px}}
 @media(min-width:768px){:root{--app-w:430px;--pad:20px}}
 
+/* === RESPONSIVE: TABLET + LANDSCAPE === */
+@media(min-width:768px) and (orientation:landscape){
+  :root{--app-w:520px;--pad:24px}
+  .rize-bar{padding:14px 18px}
+  .stat-grid{grid-template-columns:repeat(3,1fr);gap:12px}
+  .term-shell-body{max-height:65vh}
+  .hero-greeting{font-size:28px}
+}
+@media(min-width:1024px){
+  :root{--app-w:580px;--pad:28px}
+  .nav{max-width:580px}
+  .stat-grid{gap:14px}
+  .term-shell-body{max-height:70vh}
+}
+@media(orientation:landscape) and (max-height:500px){
+  /* Phone landscape — compact everything */
+  .hero{padding:10px 0}
+  .hero-greeting{font-size:18px}
+  .hero-sub{font-size:12px}
+  .rize-bar{padding:8px 14px}
+  .nav{padding:4px 0 max(4px,env(safe-area-inset-bottom))}
+  .main{padding-bottom:60px}
+  .block{margin:8px 0}
+  .term-shell-body{max-height:40vh}
+}
+/* Touch targets for mobile */
+@media(pointer:coarse){
+  .rize-cat-btn{min-height:36px;padding:8px 14px}
+  .rize-toggle{min-height:40px;min-width:72px}
+  .nav-btn{padding:6px 12px}
+  .quick-btn{min-height:44px}
+}
+
 /* === BOOT SPLASH === */
 .splash{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .6s ease,visibility .6s ease}
 .splash.gone{opacity:0;visibility:hidden;pointer-events:none}
@@ -856,6 +889,77 @@ function fireBreakReminder(){
 }
 function closeNudge(){document.getElementById('nudge').classList.remove('show')}
 
+// ==================== AUTO DISTRACTION DETECTION ====================
+// When user switches away from Forge during a focus session, detect it and nudge
+let awayStart=null;
+let awayCheckInt=null;
+
+document.addEventListener('visibilitychange',()=>{
+  if(!rizeActive)return;
+  if(document.hidden){
+    // User switched away from Forge
+    awayStart=Date.now();
+    // If tracking deep_work or learning, nudge after 2 min away
+    if(['deep_work','learning','admin'].includes(rizeCat)){
+      awayCheckInt=setTimeout(()=>{
+        if(document.hidden&&rizeActive){
+          const awayMins=Math.round((Date.now()-awayStart)/60000);
+          const msgs=[
+            "You left Forge "+awayMins+" min ago during "+RIZE_NAMES[rizeCat]+". Get back to work.",
+            "Distraction detected. You were doing "+RIZE_NAMES[rizeCat]+". Come back.",
+            "You've been away "+awayMins+" min. Your "+RIZE_NAMES[rizeCat]+" session is still running.",
+            "Focus broken. "+awayMins+" min off-task. Forge is still tracking."
+          ];
+          const msg=msgs[Math.floor(Math.random()*msgs.length)];
+          sendPushNotif('⚠ Focus Lost — Forge',msg,'forge-distraction');
+        }
+      },120000); // 2 min
+    }
+    // If tracking social_media or youtube, nudge faster — 5 min
+    if(['social_media','youtube'].includes(rizeCat)){
+      awayCheckInt=setTimeout(()=>{
+        if(document.hidden&&rizeActive){
+          const awayMins=Math.round((Date.now()-awayStart)/60000);
+          sendPushNotif('Forge is watching','You logged '+RIZE_NAMES[rizeCat]+' and left. '+awayMins+' min gone. Is this intentional?','forge-distraction');
+        }
+      },300000); // 5 min
+    }
+  }else{
+    // User came back
+    if(awayStart&&rizeActive){
+      const awayMs=Date.now()-awayStart;
+      const awayMins=Math.round(awayMs/60000);
+      if(awayMins>=2&&['deep_work','learning'].includes(rizeCat)){
+        // Show return nudge
+        document.getElementById('nudgeMsg').textContent='Welcome back. You were gone '+awayMins+' min. Refocus on '+RIZE_NAMES[rizeCat]+'.';
+        document.getElementById('nudge').classList.add('show');
+        setTimeout(()=>closeNudge(),6000);
+      }
+    }
+    awayStart=null;
+    if(awayCheckInt){clearTimeout(awayCheckInt);awayCheckInt=null}
+  }
+});
+
+// Screen orientation change handler
+if(screen.orientation){
+  screen.orientation.addEventListener('change',()=>{
+    // Force layout recalc on orientation change
+    document.body.style.height='100%';
+    setTimeout(()=>{
+      window.scrollTo(0,0);
+      document.getElementById('main').scrollTop=0;
+    },100);
+  });
+}
+// Fallback for older browsers
+window.addEventListener('orientationchange',()=>{
+  setTimeout(()=>{
+    window.scrollTo(0,0);
+    document.getElementById('main').scrollTop=0;
+  },200);
+});
+
 document.querySelectorAll('.rize-cat-btn').forEach(b=>{
   b.addEventListener('click',()=>{
     if(rizeActive)return; // can't switch while tracking
@@ -1301,7 +1405,7 @@ async function sendMsg(){
     const ctx=buildCoachContext();
     const messages=buildGeminiMessages(msg,ctx);
 
-    const res=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key='+geminiKey,{
+    const res=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key='+geminiKey,{
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
