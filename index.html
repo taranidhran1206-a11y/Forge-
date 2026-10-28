@@ -729,7 +729,7 @@ let rizeActive=false,rizeInt=null,rizeSec=0,rizeCat='deep_work';
 let rizeLog=ls('rizeLog',{});  // {cat: totalSeconds}
 let rizeNudgeInt=null;
 let rizeBreakInt=null; // break reminder interval
-let notifPermission=Notification?.permission||'default';
+let notifPermission=(typeof Notification!=='undefined'&&Notification.permission)||'default';
 
 const RIZE_NAMES={deep_work:'Deep Work',admin:'Admin',social_media:'Social Media',youtube:'YouTube',exercise:'Exercise',rest:'Rest',learning:'Learning'};
 const RIZE_NUDGES={
