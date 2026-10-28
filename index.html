@@ -11,25 +11,41 @@
 :root{--bg:#0A0A0A;--s1:#111;--s2:#171717;--s3:#1E1E1E;--red:#E53935;--red2:#FF5252;--rg:rgba(229,57,53,.10);--grn:#00E676;--amber:#FFB300;--fg:#F5F5F5;--fg2:#9E9E9E;--fg3:#555;--mono:'JetBrains Mono',monospace;--sans:'Inter',sans-serif;--r:14px;--r2:10px;--app-w:100vw;--pad:16px}
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:15px;line-height:1.5}
-@media(min-width:500px){:root{--app-w:430px;--pad:20px}}
-@media(min-width:768px){:root{--app-w:430px;--pad:20px}}
+/* === PHONE (default: full width) === */
+/* base --app-w:100vw already set above */
 
-/* === RESPONSIVE: TABLET + LANDSCAPE === */
-@media(min-width:768px) and (orientation:landscape){
-  :root{--app-w:520px;--pad:24px}
-  .rize-bar{padding:14px 18px}
-  .stat-grid{grid-template-columns:repeat(3,1fr);gap:12px}
-  .term-shell-body{max-height:65vh}
+/* === TABLET PORTRAIT === */
+@media(min-width:600px){:root{--app-w:min(90vw,520px);--pad:20px}}
+
+/* === TABLET LANDSCAPE / SMALL DESKTOP === */
+@media(min-width:768px){
+  :root{--app-w:min(85vw,620px);--pad:24px}
   .hero-greeting{font-size:28px}
+  .stat-grid{gap:12px}
+  .term-shell-body{max-height:65vh}
+  .rize-bar{padding:14px 18px}
 }
+
+/* === DESKTOP === */
 @media(min-width:1024px){
-  :root{--app-w:580px;--pad:28px}
-  .nav{max-width:580px}
+  :root{--app-w:min(60vw,720px);--pad:28px}
+  .nav{max-width:var(--app-w)}
+  .hero-greeting{font-size:32px}
   .stat-grid{gap:14px}
   .term-shell-body{max-height:70vh}
+  .block{margin:14px 0}
+  .rize-cats{gap:8px}
 }
+
+/* === WIDE DESKTOP === */
+@media(min-width:1440px){
+  :root{--app-w:min(50vw,800px);--pad:32px}
+  .hero-greeting{font-size:36px}
+}
+
+/* === PHONE LANDSCAPE === */
 @media(orientation:landscape) and (max-height:500px){
-  /* Phone landscape — compact everything */
+  :root{--app-w:min(70vw,580px)}
   .hero{padding:10px 0}
   .hero-greeting{font-size:18px}
   .hero-sub{font-size:12px}
@@ -39,7 +55,8 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--fg);font-
   .block{margin:8px 0}
   .term-shell-body{max-height:40vh}
 }
-/* Touch targets for mobile */
+
+/* === TOUCH TARGETS (mobile/tablet) === */
 @media(pointer:coarse){
   .rize-cat-btn{min-height:36px;padding:8px 14px}
   .rize-toggle{min-height:40px;min-width:72px}
