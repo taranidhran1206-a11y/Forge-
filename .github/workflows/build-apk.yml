@@ -45,6 +45,7 @@ jobs:
         # Generate wrapper from a clean directory to avoid AGP/Gradle version conflict
         mkdir -p /tmp/wrapper-gen
         cd /tmp/wrapper-gen
+        touch settings.gradle
         gradle wrapper --gradle-version 9.5
         cp gradlew gradlew.bat $GITHUB_WORKSPACE/android/
         cp -r gradle $GITHUB_WORKSPACE/android/
