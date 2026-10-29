@@ -6,8 +6,10 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#0A0A0A">
 <title>Forge</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" media="print" onload="this.media='all'">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{--bg:#0A0A0A;--s1:#111;--s2:#171717;--s3:#1E1E1E;--red:#E53935;--red2:#FF5252;--rg:rgba(229,57,53,.10);--grn:#00E676;--amber:#FFB300;--fg:#F5F5F5;--fg2:#9E9E9E;--fg3:#555;--mono:'JetBrains Mono',monospace;--sans:'Inter',sans-serif;--r:14px;--r2:10px;--app-w:100vw;--pad:16px}
 html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:15px;line-height:1.5}
@@ -729,7 +731,7 @@ let rizeActive=false,rizeInt=null,rizeSec=0,rizeCat='deep_work';
 let rizeLog=ls('rizeLog',{});  // {cat: totalSeconds}
 let rizeNudgeInt=null;
 let rizeBreakInt=null; // break reminder interval
-let notifPermission=Notification?.permission||'default';
+let notifPermission=(typeof Notification!=='undefined'&&Notification.permission)||'default';
 
 const RIZE_NAMES={deep_work:'Deep Work',admin:'Admin',social_media:'Social Media',youtube:'YouTube',exercise:'Exercise',rest:'Rest',learning:'Learning'};
 const RIZE_NUDGES={
