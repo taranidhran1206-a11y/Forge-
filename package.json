@@ -1,7 +1,7 @@
 {
   "name": "tk-productivity",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.0.9",
   "type": "module",
   "scripts": {
     "dev": "vite",
