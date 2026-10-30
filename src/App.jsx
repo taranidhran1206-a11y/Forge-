@@ -3,7 +3,7 @@ import {
   Flame, Check, ChevronRight,
   Clock,
   Sparkles, Zap, Trophy, Target, Brain,
-  Send, Loader2, ArrowRight, ArrowLeft,
+  Send, Loader2, ArrowLeft,
   BookOpen, Search, Play, Pause, Square, Bell, BellOff,
   Home, Shield, Users, Globe, Lock,
   Pencil,
@@ -116,7 +116,7 @@ const GLOBAL_CSS = `
 
 export default function App() {
   const [tab, setTab] = useState("home");
-  const [profile, setProfile, lp] = usePersist("tk-profile-v2", null);
+  const [profile, setProfile, lp] = usePersist("tk-profile-v2", { role: "", topGoal: "", secondLife: "", peakHours: "", biggestLeak: "", dailyHours: "", challenge: null, commitLevel: "supportive" });
   const [streak, setStreak, l1] = usePersist("tk-streak", 0);
   const [weekDone, setWeekDone, l2] = usePersist("tk-week", Array(7).fill(false));
   const [tasks, setTasks, l3] = usePersist("tk-tasks", DEFAULT_TASKS);
@@ -169,8 +169,6 @@ export default function App() {
       <img src={LOGO} className="h-28 animate-pulse" alt="" />
     </div>
   );
-
-  if (!profile) return (<OnboardingQuiz onComplete={(p) => setProfile(p)} />);
 
   return (
     <div className="min-h-screen w-full flex justify-center" style={{ background: "#060c1a", fontFamily: "'Inter',system-ui,sans-serif" }}>
@@ -885,79 +883,3 @@ function ReflectTab({ journal, setJournal, setTotalXP, toast, profile, tasks, au
   );
 }
 
-// ── ONBOARDING ──
-function OnboardingQuiz({ onComplete }) {
-  const [step, setStep] = useState(0);
-  const [a, setA] = useState({ role: "", topGoal: "", secondLife: "", peakHours: "", biggestLeak: "", dailyHours: "", challenge: null, commitLevel: null });
-  const upd = (k, v) => setA(p => ({ ...p, [k]: v }));
-
-  const steps = [
-    { key: "role", type: "text", title: "What do you do?", subtitle: "Your job title and what you work on day-to-day.", placeholder: "e.g. Supply Chain Manager at a medical device company" },
-    { key: "topGoal", type: "text", title: "What is the #1 goal you are working toward right now?", subtitle: "The specific thing that if you made real progress on it in 90 days, you'd feel it was worth it.", placeholder: "e.g. Complete my DBA coursework while excelling at my new role" },
-    { key: "secondLife", type: "text", title: "What's your 'second life' — the things outside of work you want to protect time for?", subtitle: "Fitness, side projects, family, studies, hobbies.", placeholder: "e.g. DBA studies, gym 4x/week, reading before bed" },
-    { key: "peakHours", type: "text", title: "When are your peak focus hours?", subtitle: "The window where your brain is sharpest.", placeholder: "e.g. 6-9am before work, or 9-11pm after everything settles" },
-    { key: "biggestLeak", type: "text", title: "Where does your time actually go that you wish it didn't?", subtitle: "Be brutally honest. This is what the coach will call you out on.", placeholder: "e.g. Doomscrolling TikTok after dinner, getting pulled into emails" },
-    { key: "dailyHours", type: "text", title: "Realistically, how many hours per day can you dedicate to your goals outside of work?", subtitle: "Not the ideal — the honest number.", placeholder: "e.g. 2-3 hours on weekdays, 4-5 on weekends" },
-    { key: "challenge", type: "select", title: "What pattern keeps holding you back?", subtitle: "Pick the one that hits hardest.", options: [
-      { value: "start_strong", label: "I start strong then fade", desc: "Motivation drops after the first week" },
-      { value: "overcommit", label: "I overcommit and then crash", desc: "Too many goals, not enough follow-through" },
-      { value: "distracted", label: "I lose hours to distractions without realizing", desc: "Phone, scrolling, context-switching" },
-      { value: "no_system", label: "I don't have a system — I just wing it", desc: "No structure, no accountability" },
-      { value: "perfectionist", label: "I overthink and delay starting", desc: "Analysis paralysis, waiting for the perfect plan" },
-    ] },
-    { key: "commitLevel", type: "select", title: "What level of accountability do you want from your coach?", subtitle: "This sets the tone. You can change it later.", options: [
-      { value: "supportive", label: "Firm but supportive", desc: "Push me, but keep it encouraging" },
-      { value: "brutal", label: "Brutally honest", desc: "Don't sugarcoat anything — call me out" },
-      { value: "drill", label: "Drill sergeant mode", desc: "Zero excuses. Maximum pressure. I need it." },
-    ] },
-  ];
-
-  const cur = steps[step];
-  const val = a[cur.key];
-  const ok = cur.type === "text" ? (val || "").trim().length > 5 : val !== null;
-  const total = steps.length;
-
-  return (
-    <div className="min-h-screen w-full flex justify-center" style={{ background: "#060c1a", fontFamily: "'Inter',system-ui,sans-serif" }}>
-      <style>{GLOBAL_CSS}</style>
-      <div className="w-full max-w-[480px] min-h-screen flex flex-col px-6 pt-10 pb-8" style={{ background: "linear-gradient(180deg,#0d1a2e 0%,#060c1a 30%)" }}>
-        <img src={LOGO} className="h-20 w-auto self-center mb-6" alt="Forge" />
-        <div className="flex gap-1 mb-6">
-          {steps.map((_, i) => (<div key={i} className={`flex-1 h-1 rounded-full transition-all ${i <= step ? "bg-blue-500" : "bg-white/10"}`} />))}
-        </div>
-        <p className="text-blue-400 text-xs font-semibold mb-1">{step + 1} of {total}</p>
-        <h2 className="text-white text-lg font-bold mb-2 leading-snug">{cur.title}</h2>
-        <p className="text-gray-400 text-sm mb-6 leading-relaxed">{cur.subtitle}</p>
-
-        <div className="flex-1">
-          {cur.type === "text" && (
-            <textarea value={val || ""} onChange={e => upd(cur.key, e.target.value)} placeholder={cur.placeholder} rows={3}
-              className="w-full bg-white/[.04] border border-white/[.08] rounded-xl px-4 py-3.5 text-white text-sm placeholder-gray-500 outline-none focus:border-blue-500 resize-none leading-relaxed" />
-          )}
-          {cur.type === "select" && (
-            <div className="space-y-2.5">
-              {cur.options.map(opt => (
-                <button key={opt.value} onClick={() => upd(cur.key, opt.value)}
-                  className={`w-full text-left rounded-xl px-5 py-4 border-2 transition ${val === opt.value ? "border-blue-500 bg-blue-600/10" : "border-white/[.06] bg-white/[.03]"}`}>
-                  <p className="text-white text-sm font-semibold">{opt.label}</p>
-                  <p className="text-gray-400 text-xs mt-0.5">{opt.desc}</p>
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
-
-        <div className="flex gap-3 mt-6">
-          {step > 0 && (
-            <button onClick={() => setStep(s => s - 1)} className="px-5 py-3.5 rounded-xl text-sm font-semibold text-gray-400 bg-white/5">Back</button>
-          )}
-          <button onClick={step < total - 1 ? () => setStep(s => s + 1) : () => onComplete(a)} disabled={!ok}
-            className={`flex-1 py-3.5 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 transition ${ok ? "bg-blue-600 text-white" : "bg-white/5 text-gray-600"}`}>
-            {step < total - 1 ? "Continue" : "Start My System"}
-            <ArrowRight size={16} />
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
