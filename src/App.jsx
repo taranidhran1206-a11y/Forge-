@@ -533,7 +533,7 @@ function CoachTab({ coachHistory, setCoachHistory, tasks, auditLog, journal, str
       const apiKey = import.meta.env.VITE_GEMINI_API_KEY || localStorage.getItem("tk-gemini-key") || "";
       if (!apiKey) { setCoachHistory(p => [...p, { role: "assistant", content: "No API key found. Tap the key icon to add your Gemini API key." }]); setLoading(false); return; }
       const geminiMessages = updated.slice(-20).map(m => ({ role: m.role === "assistant" ? "model" : "user", parts: [{ text: m.content }] }));
-      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ system_instruction: { parts: [{ text: sys }] }, contents: geminiMessages, generationConfig: { maxOutputTokens: 1000, temperature: 0.8 } }) });
+      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=${apiKey}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ system_instruction: { parts: [{ text: sys }] }, contents: geminiMessages, generationConfig: { maxOutputTokens: 1000, temperature: 0.8 } }) });
       const data = await res.json();
       const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text || "I'm here. Ask me anything.";
       setCoachHistory(p => [...p, { role: "assistant", content: reply }]);
@@ -794,7 +794,7 @@ function ReflectTab({ journal, setJournal, setTotalXP, toast, profile, tasks, au
     try {
       const profileCtx = profile ? `User: ${profile.role}. Goal: ${profile.topGoal}. Time leak: ${profile.biggestLeak}. Pattern: ${profile.challenge}.` : "";
       const sys = `You are a reflection coach. Give a 2-3 sentence insight: spot patterns, call out blind spots, give ONE action for tomorrow. Be direct. ${profileCtx} Tasks: ${tasks.filter(t => t.done).length}/${tasks.length}. Streak: ${streak}d. Focus: ${todayFocusMin}min.`;
-      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ system_instruction: { parts: [{ text: sys }] }, contents: [{ role: "user", parts: [{ text: reflectionText }] }], generationConfig: { maxOutputTokens: 300, temperature: 0.7 } }) });
+      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=${apiKey}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ system_instruction: { parts: [{ text: sys }] }, contents: [{ role: "user", parts: [{ text: reflectionText }] }], generationConfig: { maxOutputTokens: 300, temperature: 0.7 } }) });
       const data = await res.json();
       setAiInsight(data?.candidates?.[0]?.content?.parts?.[0]?.text || null);
     } catch {}
@@ -808,7 +808,7 @@ function ReflectTab({ journal, setJournal, setTotalXP, toast, profile, tasks, au
     try {
       const recentEntries = journal.slice(0, 7).map(j => `${j.date}: ${j.text}`).join("\n");
       const sys = `Analyze these reflections: 3-4 sentence weekly pattern summary. Highlight recurring themes, progress, #1 thing to change. Be specific.`;
-      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ system_instruction: { parts: [{ text: sys }] }, contents: [{ role: "user", parts: [{ text: recentEntries }] }], generationConfig: { maxOutputTokens: 400, temperature: 0.7 } }) });
+      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=${apiKey}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ system_instruction: { parts: [{ text: sys }] }, contents: [{ role: "user", parts: [{ text: recentEntries }] }], generationConfig: { maxOutputTokens: 400, temperature: 0.7 } }) });
       const data = await res.json();
       setAiInsight(data?.candidates?.[0]?.content?.parts?.[0]?.text || null);
     } catch {}
