@@ -723,6 +723,10 @@ const LABOR_DEFAULTS=[
 {t:"20:00",n:"Review & reflect",icon:"\u{1F319}"},
 {t:"22:30",n:"Lights out",icon:"\u{1F480}"}
 ];
+const K='forge_',CIRC=282.7;
+const ls=(k,d)=>{try{const v=localStorage.getItem(K+k);return v?JSON.parse(v):d}catch{return d}};
+const ss=(k,v)=>{try{localStorage.setItem(K+k,JSON.stringify(v))}catch{}};
+
 let LABOR_DATA=ls('customLabors',null)||JSON.parse(JSON.stringify(LABOR_DEFAULTS));
 function saveLabors(){ss('customLabors',LABOR_DATA)}
 
@@ -771,10 +775,6 @@ window.addEventListener('resize',()=>document.documentElement.style.setProperty(
     document.getElementById('appShell').style.opacity='1';
   },lines.length*280+600);
 })();
-
-const K='forge_',CIRC=282.7;
-const ls=(k,d)=>{try{const v=localStorage.getItem(K+k);return v?JSON.parse(v):d}catch{return d}};
-const ss=(k,v)=>{try{localStorage.setItem(K+k,JSON.stringify(v))}catch{}};
 
 let xp=ls('xp',0),level=ls('level',1),streak=ls('streak',0),
     tmTotal=ls('tmTotal',0),labsDone=ls('labsDone',[]),
@@ -1092,7 +1092,6 @@ document.querySelectorAll('.nav-btn').forEach(b=>{
     document.getElementById('main').scrollTop=0;
     if(b.dataset.tab==='progress')updProgress();
     if(b.dataset.tab==='coach')initCoach();
-document.getElementById('coachInp').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg()}});
     if(b.dataset.tab==='reflect')initRef();
   });
 });
