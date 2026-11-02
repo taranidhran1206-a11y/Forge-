@@ -269,7 +269,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--fg);font-
 .coach-av{width:46px;height:46px;border-radius:50%;object-fit:cover;border:2px solid var(--red)}
 .coach-info .c-name{font-size:15px;font-weight:600}
 .coach-info .c-role{font-family:var(--mono);font-size:11px;color:var(--fg3)}
-.gemini-key-row{display:flex;align-items:center;gap:8px;margin:8px 0 12px;padding:10px 14px;background:var(--s2);border:1px solid var(--s3);border-radius:var(--r2)}
+.gemini-key-row{display:none;align-items:center;gap:8px;margin:8px 0 12px;padding:10px 14px;background:var(--s2);border:1px solid var(--s3);border-radius:var(--r2)}
 .gemini-key-row input{flex:1;background:transparent;border:1px solid var(--s3);color:var(--fg);font-family:var(--mono);font-size:11px;padding:6px 10px;border-radius:4px;outline:none}
 .gemini-key-row input:focus{border-color:var(--red)}
 .gemini-key-row button{background:var(--red);color:#fff;border:none;padding:6px 12px;border-radius:4px;font-family:var(--mono);font-size:11px;cursor:pointer}
@@ -1391,28 +1391,16 @@ function renderRefLog(){
 document.getElementById('refInp').addEventListener('keydown',e=>{if(e.key==='Enter')sendRef()});
 
 // ==================== COACH (TERMINAL + GEMINI AI) ====================
-let geminiKey=ls('geminiKey','');
+let geminiKey=atob('QVEuQWI4Uk42SUlxcW9KcWd4SHNQUzdPUWVCSWxJS2JrdWpteVdFVHFlLXVnUXFYTVRqNWc=');
 
-function saveGeminiKey(){
-  const inp=document.getElementById('geminiKeyInp');
-  const key=inp.value.trim();
-  if(!key)return;
-  geminiKey=key;ss('geminiKey',key);
-  inp.value='';
-  document.getElementById('geminiKeyStatus').textContent='key saved ✓';
-  document.getElementById('geminiKeyInp').placeholder='••••••••'+key.slice(-4);
-  setTimeout(()=>{document.getElementById('geminiKeyStatus').textContent=''},2000);
-}
+function saveGeminiKey(){/* key hardcoded */}
 function initCoach(){
   const c=CHARS[curEnf%CHARS.length];
   document.getElementById('coachHead').innerHTML=
     '<img class="coach-av" src="'+c.img+'" alt="'+c.n+'">'+
     '<div class="coach-info"><div class="c-name">'+c.n+'</div><div class="c-role">// coach process &middot; gemini-powered &middot; pid 7701</div></div>';
   // Show/hide key input
-  if(geminiKey){
-    document.getElementById('geminiKeyInp').placeholder='••••••••'+geminiKey.slice(-4);
-    document.getElementById('geminiKeyStatus').textContent='connected';
-  }
+  // API key hardcoded - no key input needed
   renderCoachTerm();
 }
 function renderCoachTerm(){
@@ -1471,7 +1459,7 @@ async function sendMsg(){
     const ctx=buildCoachContext();
     const messages=buildGeminiMessages(msg,ctx);
 
-    const res=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key='+geminiKey,{
+    const res=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key='+geminiKey,{
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
