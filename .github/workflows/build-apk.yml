@@ -38,7 +38,9 @@ jobs:
           "build-tools;34.0.0" || true
 
     - name: Copy latest index.html to assets
-      run: cp index.html android/app/src/main/assets/index.html
+      run: |
+        mkdir -p android/app/src/main/assets
+        cp index.html android/app/src/main/assets/index.html
 
     - name: Generate Gradle Wrapper
       run: |
