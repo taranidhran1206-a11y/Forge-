@@ -152,19 +152,22 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--fg);font-
 .rize-info .rize-time{color:var(--fg);font-size:13px;font-weight:700}
 .rize-toggle{padding:6px 14px;border-radius:6px;background:var(--red);border:none;color:#fff;font-family:var(--mono);font-size:11px;cursor:pointer;font-weight:600}
 .rize-toggle.active{background:var(--s3);color:var(--fg3)}
-.rize-cats{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+.rize-cats{display:none}
 .rize-cat-btn{padding:6px 12px;border-radius:6px;background:var(--s2);border:1px solid var(--s3);color:var(--fg3);font-family:var(--mono);font-size:10px;cursor:pointer;transition:all .2s}
 .rize-cat-btn.active{background:var(--rg);color:var(--red2);border-color:rgba(229,57,53,.25)}
 .rize-summary{margin:12px 0}
 
-/* Nudge popup */
-.nudge{position:fixed;top:60px;left:50%;transform:translateX(-50%) translateY(-120px);width:calc(100vw - 32px);max-width:500px;background:var(--s1);border:1px solid var(--red);border-radius:var(--r);padding:14px 16px;font-family:var(--mono);font-size:12px;z-index:300;transition:transform .4s cubic-bezier(.4,0,.2,1);box-shadow:0 8px 32px rgba(229,57,53,.3)}
-.nudge.show{transform:translateX(-50%) translateY(0)}
-.nudge-head{display:flex;align-items:center;gap:8px;margin-bottom:6px}
-.nudge-icon{color:var(--red2);font-size:14px}
-.nudge-title{color:var(--red2);font-weight:700;font-size:11px;letter-spacing:1px;text-transform:uppercase}
-.nudge-close{margin-left:auto;background:none;border:none;color:var(--fg3);font-family:var(--mono);font-size:14px;cursor:pointer}
-.nudge-msg{color:var(--fg2);line-height:1.6}
+/* Nudge overlay (Rize-style modal) */
+.nudge-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);z-index:500;display:none;align-items:center;justify-content:center}
+.nudge-overlay.show{display:flex}
+@keyframes nudgeIn{from{opacity:0;transform:scale(.9) translateY(20px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.nudge-modal{background:var(--s1);border:1px solid rgba(229,57,53,.3);border-radius:16px;padding:32px 24px;max-width:320px;width:90%;text-align:center;animation:nudgeIn .3s ease}
+.nudge-modal-icon{font-size:40px;margin-bottom:12px}
+.nudge-modal-title{font-family:var(--mono);font-size:18px;font-weight:700;color:var(--red2);margin-bottom:8px;letter-spacing:.5px}
+.nudge-modal-msg{font-size:13px;color:var(--fg2);margin-bottom:20px;font-family:var(--mono);line-height:1.6}
+.nudge-modal-actions{display:flex;flex-direction:column;gap:8px}
+.nudge-btn-focus{padding:12px;border-radius:10px;border:none;background:var(--red);color:#fff;font-family:var(--mono);font-size:13px;font-weight:600;cursor:pointer}
+.nudge-btn-break{padding:12px;border-radius:10px;border:none;background:var(--s2);color:var(--fg2);border:1px solid var(--s3);font-family:var(--mono);font-size:13px;font-weight:600;cursor:pointer}
 
 .journal-area{width:100%;min-height:180px;background:var(--s1);border:1px solid var(--s3);border-radius:var(--r2);padding:14px;color:var(--fg);font-family:var(--mono);font-size:13px;resize:vertical;outline:none;line-height:1.7}
 .journal-area:focus{border-color:var(--red)}
@@ -265,17 +268,47 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--fg);font-
 .ref-empty{text-align:center;padding:40px 20px;color:var(--fg3);font-family:var(--mono);font-size:12px;line-height:1.8}
 
 /* === COACH === */
-.coach-head{display:flex;align-items:center;gap:14px;padding:20px 0 16px}
-.coach-av{width:46px;height:46px;border-radius:50%;object-fit:cover;border:2px solid var(--red)}
-.coach-info .c-name{font-size:15px;font-weight:600}
-.coach-info .c-role{font-family:var(--mono);font-size:11px;color:var(--fg3)}
-.gemini-key-row{display:none;align-items:center;gap:8px;margin:8px 0 12px;padding:10px 14px;background:var(--s2);border:1px solid var(--s3);border-radius:var(--r2)}
-.gemini-key-row input{flex:1;background:transparent;border:1px solid var(--s3);color:var(--fg);font-family:var(--mono);font-size:11px;padding:6px 10px;border-radius:4px;outline:none}
-.gemini-key-row input:focus{border-color:var(--red)}
-.gemini-key-row button{background:var(--red);color:#fff;border:none;padding:6px 12px;border-radius:4px;font-family:var(--mono);font-size:11px;cursor:pointer}
-.gemini-key-row .key-status{font-family:var(--mono);font-size:10px;color:var(--grn)}
-.coach-typing{display:inline-block;color:var(--fg3)}
-.coach-typing::after{content:'...';animation:dots 1.2s steps(4,end) infinite}
+.coach-container{display:flex;flex-direction:column;height:calc(var(--vh,1vh)*100 - 140px);position:relative}
+.coach-topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--s3)}
+.coach-topbar-title{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:14px;font-weight:600;color:var(--fg)}
+.coach-topbar-title .dot{width:8px;height:8px;border-radius:50%;background:#00E676}
+.coach-topbar-btn{background:none;border:none;color:var(--fg3);cursor:pointer;padding:6px}
+.coach-topbar-btn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.coach-welcome{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;text-align:center;animation:welcomeFade .6s ease}
+@keyframes welcomeFade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.coach-welcome-av{width:64px;height:64px;border-radius:50%;object-fit:cover;border:3px solid var(--red);box-shadow:0 0 20px rgba(229,57,53,.3);margin-bottom:16px}
+.coach-welcome-name{font-size:18px;font-weight:700;margin-bottom:4px}
+.coach-welcome-role{font-family:var(--mono);font-size:11px;color:var(--fg3)}
+.coach-chat{flex:1;overflow-y:auto;padding:12px 0;display:flex;flex-direction:column;gap:8px}
+.coach-chat::-webkit-scrollbar{width:4px}.coach-chat::-webkit-scrollbar-thumb{background:var(--s3);border-radius:2px}
+@keyframes msgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.chat-bubble{max-width:85%;padding:10px 14px;border-radius:16px;font-size:13px;line-height:1.6;animation:msgIn .3s ease;position:relative}
+.chat-bubble.user{align-self:flex-end;background:var(--red);color:#fff;border-bottom-right-radius:4px}
+.chat-bubble.coach{align-self:flex-start;background:var(--s2);color:var(--fg);border-bottom-left-radius:4px}
+.chat-bubble:hover .msg-del{opacity:1}
+.msg-del{position:absolute;top:-6px;right:-6px;width:20px;height:20px;border-radius:50%;background:var(--s3);border:none;color:var(--fg3);font-size:12px;cursor:pointer;opacity:0;transition:opacity .2s;display:flex;align-items:center;justify-content:center}
+.coach-typing-anim{align-self:flex-start;display:flex;align-items:center;gap:8px;padding:10px 14px;background:var(--s2);border-radius:16px;border-bottom-left-radius:4px;font-family:var(--mono);font-size:12px;color:var(--fg3)}
+.t-dots{display:flex;gap:4px}
+.t-dots span{width:6px;height:6px;border-radius:50%;background:var(--red);animation:dotBounce .6s ease infinite}
+.t-dots span:nth-child(2){animation-delay:.15s}
+.t-dots span:nth-child(3){animation-delay:.3s}
+@keyframes dotBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.coach-bottom{border-top:1px solid var(--s3);padding-top:10px}
+.coach-chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.coach-chip{padding:6px 12px;border-radius:16px;background:var(--s2);border:1px solid var(--s3);color:var(--fg2);font-family:var(--mono);font-size:11px;cursor:pointer;transition:all .2s}
+.coach-chip:active{background:var(--rg);border-color:var(--red)}
+.coach-input-row{display:flex;align-items:center;gap:8px}
+.coach-input{flex:1;background:var(--s1);border:1px solid var(--s3);border-radius:20px;padding:10px 14px;color:var(--fg);font-family:var(--mono);font-size:13px;outline:none}
+.coach-input:focus{border-color:var(--red)}
+.coach-mic{width:36px;height:36px;border-radius:50%;background:none;border:1px solid var(--s3);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s}
+.coach-mic svg{width:18px;height:18px;fill:none;stroke:var(--fg2);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.coach-mic.recording{border-color:var(--red);background:var(--rg);animation:micPulse 1.5s ease infinite}
+.coach-mic.recording svg{stroke:var(--red)}
+@keyframes micPulse{0%,100%{box-shadow:0 0 0 0 rgba(229,57,53,.3)}50%{box-shadow:0 0 0 8px rgba(229,57,53,0)}}
+.coach-send{width:36px;height:36px;border-radius:50%;background:var(--red);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.coach-send svg{width:18px;height:18px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.coach-send:active{transform:scale(.9)}
+.gemini-key-row{display:none}
 @keyframes dots{0%{content:''}25%{content:'.'}50%{content:'..'}75%{content:'...'}}
 .coach-stars{display:inline-flex;gap:4px;margin-left:8px;vertical-align:middle}
 .coach-star{display:inline-block;font-size:14px;animation:starPulse 1.4s ease-in-out infinite}
@@ -324,14 +357,17 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--fg);font-
 <div class="splash-term" id="splashTerm"></div>
 </div>
 
-<!-- NUDGE POPUP -->
-<div class="nudge" id="nudge">
-<div class="nudge-head">
-<span class="nudge-icon">&#x26A0;&#xFE0F;</span>
-<span class="nudge-title">forge nudge</span>
-<button class="nudge-close" onclick="closeNudge()">&times;</button>
+<!-- NUDGE OVERLAY (Rize-style) -->
+<div class="nudge-overlay" id="nudgeOverlay">
+<div class="nudge-modal">
+<div class="nudge-modal-icon">&#x26A0;&#xFE0F;</div>
+<div class="nudge-modal-title">Focus Lost</div>
+<div class="nudge-modal-msg" id="nudgeMsg">You were away. Get back to work.</div>
+<div class="nudge-modal-actions">
+<button class="nudge-btn-focus" onclick="closeNudge('focus')">Back to Focus</button>
+<button class="nudge-btn-break" onclick="closeNudge('break')">Take a Break</button>
 </div>
-<div class="nudge-msg" id="nudgeMsg"></div>
+</div>
 </div>
 
 <div class="app" id="appShell" style="opacity:0">
@@ -365,15 +401,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--fg);font-
 </div>
 <button class="rize-toggle" id="rizeToggle" onclick="toggleRize()">track</button>
 </div>
-<div class="rize-cats" id="rizeCats">
-<div class="rize-cat-btn active" data-rc="deep_work">deep work</div>
-<div class="rize-cat-btn" data-rc="admin">admin</div>
-<div class="rize-cat-btn" data-rc="social_media">social</div>
-<div class="rize-cat-btn" data-rc="youtube">youtube</div>
-<div class="rize-cat-btn" data-rc="exercise">exercise</div>
-<div class="rize-cat-btn" data-rc="rest">rest</div>
-<div class="rize-cat-btn" data-rc="learning">learning</div>
-</div>
+<!-- auto-detect mode: no manual category picker -->
 
 <div class="block fade">
 <div class="block-header">
@@ -644,23 +672,26 @@ What's the <em>single biggest time leak</em> you noticed? Name it. That's where 
 
 <!-- ==================== COACH (TERMINAL) ==================== -->
 <div class="tab-content" id="tab-coach">
-<div class="coach-head" id="coachHead"></div>
-<div class="gemini-key-row" id="geminiKeyRow">
-<input type="password" id="geminiKeyInp" placeholder="paste gemini api key..." autocomplete="off">
-<button onclick="saveGeminiKey()">save</button>
-<span class="key-status" id="geminiKeyStatus"></span>
+<div class="coach-container">
+<div class="coach-topbar" id="coachTopbar">
+<div class="coach-topbar-title"><span class="dot"></span> Coach</div>
+<div class="coach-topbar-actions">
+<button class="coach-topbar-btn" onclick="clearCoachHist()" title="Clear chat"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button>
 </div>
-<div class="term-shell">
-<div class="term-shell-bar">
-<div class="term-shell-dot r"></div><div class="term-shell-dot y"></div><div class="term-shell-dot g"></div>
-<span class="term-shell-title">forge@coach:~$</span>
 </div>
-<div class="term-shell-body" id="coachTermBody">
-<div class="term-entry"><span class="term-prompt">forge@coach:~$</span> <span class="term-output">coach process started. ask about focus, discipline, productivity. <span class="hl">no small talk.</span></span></div>
+<div class="coach-chat" id="coachChat"></div>
+<div class="coach-bottom">
+<div class="coach-chips" id="coachChips">
+<div class="coach-chip" onclick="sendChip(this)">How do I stay focused?</div>
+<div class="coach-chip" onclick="sendChip(this)">Motivate me</div>
+<div class="coach-chip" onclick="sendChip(this)">I'm procrastinating</div>
+<div class="coach-chip" onclick="sendChip(this)">Review my progress</div>
 </div>
-<div class="term-input-row" style="padding:4px 14px 10px;border-top:1px solid var(--s3)">
-<span class="prompt-prefix">forge@coach:~$&nbsp;</span>
-<input class="term-cmd-input" id="coachInp" placeholder="talk to your coach..." autocomplete="off">
+<div class="coach-input-row">
+<input class="coach-input" id="coachInp" placeholder="Talk to your coach..." autocomplete="off">
+<button class="coach-mic" id="coachMic" onclick="toggleDictation()"><svg viewBox="0 0 24 24"><rect x="9" y="1" width="6" height="11" rx="3"/><path d="M19 10v1a7 7 0 01-14 0v-1"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></button>
+<button class="coach-send" onclick="sendMsg()"><svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+</div>
 </div>
 </div>
 </div>
@@ -890,27 +921,26 @@ function fireNudge(){
   const msg=pool[Math.floor(Math.random()*pool.length)];
   const t=fmtRizeSec(rizeSec);
   const formatted=msg.replace(/\{t\}/g,t);
-  // In-app nudge
   document.getElementById('nudgeMsg').textContent=formatted;
-  document.getElementById('nudge').classList.add('show');
-  setTimeout(()=>closeNudge(),8000);
-  // Browser push notification
+  document.getElementById('nudgeOverlay').classList.add('show');
   sendPushNotif('Forge — '+RIZE_NAMES[rizeCat],formatted,'forge-nudge');
 }
 function fireBreakReminder(){
   const msg=BREAK_MSGS[Math.floor(Math.random()*BREAK_MSGS.length)];
   const t=fmtRizeSec(rizeSec);
   const formatted=msg.replace(/\{t\}/g,t);
-  // In-app nudge with break style
   document.getElementById('nudgeMsg').textContent=formatted;
-  document.getElementById('nudge').classList.add('show');
-  setTimeout(()=>closeNudge(),10000);
-  // Browser push notification
+  document.getElementById('nudgeOverlay').classList.add('show');
   sendPushNotif('Break Time — Forge',formatted,'forge-break');
-  // Vibrate if available — native bridge or browser
   try{if(window.ForgeBridge)window.ForgeBridge.vibratePattern([200,100,200,100,200]);else navigator.vibrate([200,100,200,100,200])}catch(e){}
 }
-function closeNudge(){document.getElementById('nudge').classList.remove('show')}
+function closeNudge(action){
+  document.getElementById('nudgeOverlay').classList.remove('show');
+  if(action==='break'){
+    // Stop tracking — user chose to take a break
+    if(rizeActive) toggleRize();
+  }
+}
 
 // ==================== AUTO DISTRACTION DETECTION ====================
 // When user switches away from Forge during a focus session, detect it and nudge
@@ -922,41 +952,21 @@ document.addEventListener('visibilitychange',()=>{
   if(document.hidden){
     // User switched away from Forge
     awayStart=Date.now();
-    // If tracking deep_work or learning, nudge after 2 min away
-    if(['deep_work','learning','admin'].includes(rizeCat)){
-      awayCheckInt=setTimeout(()=>{
-        if(document.hidden&&rizeActive){
-          const awayMins=Math.round((Date.now()-awayStart)/60000);
-          const msgs=[
-            "You left Forge "+awayMins+" min ago during "+RIZE_NAMES[rizeCat]+". Get back to work.",
-            "Distraction detected. You were doing "+RIZE_NAMES[rizeCat]+". Come back.",
-            "You've been away "+awayMins+" min. Your "+RIZE_NAMES[rizeCat]+" session is still running.",
-            "Focus broken. "+awayMins+" min off-task. Forge is still tracking."
-          ];
-          const msg=msgs[Math.floor(Math.random()*msgs.length)];
-          sendPushNotif('⚠ Focus Lost — Forge',msg,'forge-distraction');
-        }
-      },120000); // 2 min
-    }
-    // If tracking social_media or youtube, nudge faster — 5 min
-    if(['social_media','youtube'].includes(rizeCat)){
-      awayCheckInt=setTimeout(()=>{
-        if(document.hidden&&rizeActive){
-          const awayMins=Math.round((Date.now()-awayStart)/60000);
-          sendPushNotif('Forge is watching','You logged '+RIZE_NAMES[rizeCat]+' and left. '+awayMins+' min gone. Is this intentional?','forge-distraction');
-        }
-      },300000); // 5 min
-    }
+    // Auto-detect: nudge after 2 min away
+    awayCheckInt=setTimeout(()=>{
+      if(document.hidden&&rizeActive){
+        const awayMins=Math.round((Date.now()-awayStart)/60000);
+        sendPushNotif('⚠ Focus Lost — Forge','You\'ve been away '+awayMins+' min. Your focus session is still running.','forge-distraction');
+      }
+    },120000);
   }else{
-    // User came back
+    // User came back — Rize-style popup
     if(awayStart&&rizeActive){
       const awayMs=Date.now()-awayStart;
       const awayMins=Math.round(awayMs/60000);
-      if(awayMins>=2&&['deep_work','learning'].includes(rizeCat)){
-        // Show return nudge
-        document.getElementById('nudgeMsg').textContent='Welcome back. You were gone '+awayMins+' min. Refocus on '+RIZE_NAMES[rizeCat]+'.';
-        document.getElementById('nudge').classList.add('show');
-        setTimeout(()=>closeNudge(),6000);
+      if(awayMins>=1){
+        document.getElementById('nudgeMsg').textContent='You were away for '+awayMins+' min. Get back to work.';
+        document.getElementById('nudgeOverlay').classList.add('show');
       }
     }
     awayStart=null;
@@ -983,14 +993,8 @@ window.addEventListener('orientationchange',()=>{
   },200);
 });
 
-document.querySelectorAll('.rize-cat-btn').forEach(b=>{
-  b.addEventListener('click',()=>{
-    if(rizeActive)return; // can't switch while tracking
-    document.querySelectorAll('.rize-cat-btn').forEach(x=>x.classList.remove('active'));
-    b.classList.add('active');
-    rizeCat=b.dataset.rc;
-  });
-});
+// Category auto-detect: always defaults to deep_work (Focus)
+rizeCat='deep_work';
 
 // Audit total calculation
 document.addEventListener('input',e=>{
@@ -1088,6 +1092,7 @@ document.querySelectorAll('.nav-btn').forEach(b=>{
     document.getElementById('main').scrollTop=0;
     if(b.dataset.tab==='progress')updProgress();
     if(b.dataset.tab==='coach')initCoach();
+document.getElementById('coachInp').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg()}});
     if(b.dataset.tab==='reflect')initRef();
   });
 });
@@ -1394,27 +1399,68 @@ document.getElementById('refInp').addEventListener('keydown',e=>{if(e.key==='Ent
 let geminiKey=atob('QVEuQWI4Uk42SUlxcW9KcWd4SHNQUzdPUWVCSWxJS2JrdWpteVdFVHFlLXVnUXFYTVRqNWc=');
 
 function saveGeminiKey(){/* key hardcoded */}
-function initCoach(){
-  const c=CHARS[curEnf%CHARS.length];
-  document.getElementById('coachHead').innerHTML=
-    '<img class="coach-av" src="'+c.img+'" alt="'+c.n+'">'+
-    '<div class="coach-info"><div class="c-name">'+c.n+'</div><div class="c-role">// coach process &middot; gemini-powered &middot; pid 7701</div></div>';
-  // Show/hide key input
-  // API key hardcoded - no key input needed
-  renderCoachTerm();
-}
-function renderCoachTerm(){
-  const el=document.getElementById('coachTermBody');
-  if(!coachHist.length){
-    const mode=geminiKey?'gemini ai connected. talk to your coach.':'enter gemini api key above to enable ai coach.';
-    el.innerHTML='<div class="term-entry"><span class="term-prompt">forge@coach:~$</span> <span class="term-output">coach process started. '+mode+' <span class="hl">no small talk.</span></span></div>';
+// ===== DICTATION =====
+let dictRecog=null,dictActive=false;
+function toggleDictation(){
+  const btn=document.getElementById('coachMic');
+  if(dictActive){
+    if(dictRecog)dictRecog.stop();
+    dictActive=false;
+    btn.classList.remove('recording');
     return;
   }
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){alert('Speech recognition not supported');return}
+  dictRecog=new SR();
+  dictRecog.continuous=false;dictRecog.interimResults=false;dictRecog.lang='en-US';
+  dictRecog.onresult=e=>{
+    const t=e.results[0][0].transcript;
+    document.getElementById('coachInp').value+=t;
+  };
+  dictRecog.onend=()=>{dictActive=false;btn.classList.remove('recording')};
+  dictRecog.onerror=()=>{dictActive=false;btn.classList.remove('recording')};
+  dictRecog.start();
+  dictActive=true;
+  btn.classList.add('recording');
+}
+// ===== CHAT MANAGEMENT =====
+function clearCoachHist(){
+  if(!coachHist.length)return;
+  if(!confirm('Clear all chat history?'))return;
+  coachHist=[];ss('coachHist',coachHist);
+  renderCoachChat();
+}
+function delCoachMsg(idx){
+  coachHist.splice(idx,1);ss('coachHist',coachHist);
+  renderCoachChat();
+}
+function sendChip(el){
+  document.getElementById('coachInp').value=el.textContent;
+  sendMsg();
+}
+// ===== COACH INIT & RENDER =====
+function initCoach(){
+  renderCoachChat();
+}
+function renderCoachChat(){
+  const el=document.getElementById('coachChat');
+  if(!coachHist.length){
+    // Show welcome screen
+    const c=CHARS[curEnf%CHARS.length];
+    el.innerHTML='<div class="coach-welcome">'+
+      '<img class="coach-welcome-av" src="'+c.img+'" alt="'+c.n+'">'+
+      '<div class="coach-welcome-name">'+c.n+'</div>'+
+      '<div class="coach-welcome-role">Your discipline coach &middot; AI-powered</div>'+
+      '</div>';
+    document.getElementById('coachChips').style.display='flex';
+    return;
+  }
+  document.getElementById('coachChips').style.display='none';
   let html='';
   for(let i=0;i<coachHist.length;i++){
     const m=coachHist[i];
-    if(m.r==='u')html+='<div class="term-entry"><span class="term-prompt">forge@coach:~$</span> <span class="term-user-input">'+m.t+'</span></div>';
-    else html+='<div class="term-entry"><span class="term-output"><span class="hl">[COACH]</span> '+m.t+'</span></div>';
+    const cls=m.r==='u'?'user':'coach';
+    html+='<div class="chat-bubble '+cls+'">'+m.t+'<button class="msg-del" onclick="delCoachMsg('+i+')">&times;</button></div>';
   }
   el.innerHTML=html;
   el.scrollTop=el.scrollHeight;
@@ -1436,7 +1482,7 @@ async function sendMsg(){
   const msg=inp.value.trim();if(!msg)return;
   inp.value='';inp.disabled=true;
   coachHist.push({r:'u',t:msg});
-  renderCoachTerm();
+  renderCoachChat();
 
   // If no Gemini key, fall back to local AI
   if(!geminiKey){
@@ -1445,13 +1491,13 @@ async function sendMsg(){
     ss('coachHist',coachHist);
     addXP(5,'coach');
     inp.disabled=false;inp.focus();
-    renderCoachTerm();
+    renderCoachChat();
     return;
   }
 
-  // Show typing indicator
-  const el=document.getElementById('coachTermBody');
-  el.innerHTML+='<div class="coach-processing" id="coachTyping"><span class="coach-stars"><span class="coach-star">&#x2728;</span><span class="coach-star">&#x2B50;</span><span class="coach-star">&#x2728;</span><span class="coach-star">&#x2B50;</span></span><span class="coach-proc-text">forging response<span class="coach-typing"></span></span></div>';
+  // Show typing indicator (thinking + bouncing dots)
+  const el=document.getElementById('coachChat');
+  el.insertAdjacentHTML('beforeend','<div class="coach-typing-anim" id="coachTyping">thinking <div class="t-dots"><span></span><span></span><span></span></div></div>');
   el.scrollTop=el.scrollHeight;
 
   try{
@@ -1498,7 +1544,7 @@ async function sendMsg(){
   ss('coachHist',coachHist);
   addXP(5,'coach');
   inp.disabled=false;inp.focus();
-  renderCoachTerm();
+  renderCoachChat();
 }
 
 function buildCoachContext(){
