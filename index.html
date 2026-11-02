@@ -1085,6 +1085,7 @@ function updStatus(){
   document.getElementById('cmdLevel').textContent=String(level).padStart(2,'0');
   const r=getRank(level);
   document.getElementById('cmdRank').textContent=r.name;
+  syncWidget();
 }
 function updBadges(){
   document.getElementById('xpPill').textContent=xp+' XP';
@@ -1092,6 +1093,19 @@ function updBadges(){
   const rp=document.getElementById('rankPill');
   rp.textContent=r.name;
   rp.className='rank-pill '+r.cls;
+}
+function syncWidget(){
+  try{
+    if(typeof ForgeBridge!=='undefined'&&ForgeBridge.updateWidget){
+      const r=getRank(level);
+      const allLabs=LABOR_DATA||[];
+      const doneList=labsDone.map(n=>'✓ '+n).join('\n');
+      const pendList=allLabs.filter(l=>!labsDone.includes(l.n)).map(l=>'○ '+l.n).join('\n');
+      const laborText=(doneList||'')+((doneList&&pendList)?'\n':'')+pendList||'No labors today';
+      ForgeBridge.updateWidget(xp,level,streak,Math.round(tmTotal),
+        labsDone.length,allLabs.length,r.name,laborText);
+    }
+  }catch(e){}
 }
 function showToast(msg,type){
   const t=document.getElementById('toast');
@@ -1539,7 +1553,7 @@ async function sendMsg(){
     const ctx=buildCoachContext();
     const messages=buildGeminiMessages(msg,ctx);
 
-    const res=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key='+geminiKey,{
+    const res=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key='+geminiKey,{
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({

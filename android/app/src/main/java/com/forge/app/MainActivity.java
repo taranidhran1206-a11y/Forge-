@@ -3,6 +3,9 @@ package com.forge.app;
 import android.Manifest;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -148,6 +151,30 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     v.vibrate(milliseconds);
                 }
+            }
+        }
+
+        @JavascriptInterface
+        public void updateWidget(int xp, int level, int streak, int focusMin,
+                                  int laborsDone, int laborsTotal, String rank, String laborList) {
+            SharedPreferences prefs = getSharedPreferences("forge_widget_prefs", MODE_PRIVATE);
+            prefs.edit()
+                .putInt("xp", xp)
+                .putInt("level", level)
+                .putInt("streak", streak)
+                .putInt("focusMin", focusMin)
+                .putInt("laborsDone", laborsDone)
+                .putInt("laborsTotal", laborsTotal)
+                .putString("rank", rank)
+                .putString("laborList", laborList)
+                .apply();
+
+            // Trigger widget refresh
+            AppWidgetManager widgetManager = AppWidgetManager.getInstance(MainActivity.this);
+            int[] ids = widgetManager.getAppWidgetIds(
+                new ComponentName(MainActivity.this, ForgeWidgetProvider.class));
+            for (int id : ids) {
+                ForgeWidgetProvider.updateWidget(MainActivity.this, widgetManager, id);
             }
         }
 

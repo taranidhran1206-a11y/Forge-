@@ -69,32 +69,41 @@ jobs:
       run: |
         APK_PATH=$(find android/app/build/outputs/apk/release -name "*.apk" | head -1)
         echo "Found APK: $APK_PATH"
-        cp "$APK_PATH" android/Forge-v1.16.0-signed.apk
-        ls -la android/Forge-v1.16.0-signed.apk
+        cp "$APK_PATH" android/Forge-v1.17.0-signed.apk
+        ls -la android/Forge-v1.17.0-signed.apk
 
     - name: Upload APK Artifact
       uses: actions/upload-artifact@v4
       with:
         name: Forge-APK
-        path: android/Forge-v1.16.0-signed.apk
+        path: android/Forge-v1.17.0-signed.apk
 
     - name: Create Release
       uses: softprops/action-gh-release@v2
       with:
-        tag_name: v1.16.0
-        name: "Forge v1.16.0 — Coach Fixed + Rank System"
+        tag_name: v1.17.0
+        name: "Forge v1.17.0 — Widget + Coach Fix"
         body: |
-          ## Forge v1.16.0
+          ## Forge v1.17.0
 
-          AI Coach now works properly with correct Gemini model + full rank system.
+          Android home screen widget + fixed AI Coach.
 
-          ### What's New in v1.16.0
-          - **Coach Fix** — switched from non-existent gemini-3.8-flash to gemini-2.5-flash (stable)
-          - **Better Coach Responses** — maxOutputTokens bumped from 200 to 500
-          - **Netlify Deploy Fixed** — removed stale package.json and asset duplicates
+          ### What's New in v1.17.0
+          - **Android Home Screen Widget** — see XP, rank, streak, focus minutes, and daily labors at a glance
+          - **Widget Auto-Sync** — widget updates live as you use the app
+          - **Tap Widget to Open** — tapping anywhere on the widget opens Forge
+          - **Coach Fix** — correct Gemini 3.8 Flash model with 500 token responses
+
+          ### Widget Features
+          - Shows current rank (Iron → Titan) with colored pill
+          - XP count and level
+          - Focus minutes / labors done / streak stats
+          - Today's labor checklist (done ✓ and pending ○)
+          - Dark theme matching the app (black bg, red accents)
+          - Resizable (4x2 default, adjustable)
 
           ### All Features
-          - AI Coach powered by Gemini 2.5 Flash (hardcoded, works instantly)
+          - AI Coach powered by Gemini 3.8 Flash (hardcoded)
           - Chat-Based Coach UI with suggestion chips
           - Voice Dictation for Coach
           - Rank System — Iron → Bronze → Silver → Gold → Platinum → Diamond → Titan
@@ -102,18 +111,20 @@ jobs:
           - Rize-style Distraction Detection with overlay nudge
           - XP, Leveling & Rank gamification
           - Daily Labors — fully editable task management
+          - Android Home Screen Widget
           - Time Audit breakdown
           - Progress tracking with streaks
           - Journal & Reflection
           - Full offline support (except AI Coach)
 
           ### Install
-          1. Download `Forge-v1.16.0-signed.apk`
+          1. Download `Forge-v1.17.0-signed.apk`
           2. Settings > Security > Enable "Install from unknown sources"
           3. Open the APK and install
+          4. Long-press home screen > Widgets > Forge to add widget
 
           Built by Tarani. Forged in discipline.
-        files: android/Forge-v1.16.0-signed.apk
+        files: android/Forge-v1.17.0-signed.apk
         draft: false
         prerelease: false
       env:
