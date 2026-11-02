@@ -57,6 +57,10 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--fg);font-
 .term-status{display:flex;align-items:center;gap:10px}
 .xp-pill{font-family:var(--mono);font-size:11px;padding:3px 10px;border-radius:4px;background:var(--rg);color:var(--red2);border:1px solid rgba(229,57,53,.2)}
 .lvl-pill{font-family:var(--mono);font-size:11px;padding:3px 10px;border-radius:4px;background:var(--grn);color:#000;font-weight:700}
+.rank-pill{font-family:var(--mono);font-size:10px;padding:3px 8px;border-radius:4px;font-weight:700;letter-spacing:.5px;text-transform:uppercase}
+.rank-iron{background:#78909C;color:#fff}.rank-bronze{background:#A1887F;color:#fff}.rank-silver{background:#B0BEC5;color:#1a1a1a}
+.rank-gold{background:#FFD54F;color:#1a1a1a}.rank-platinum{background:#80DEEA;color:#1a1a1a}.rank-diamond{background:#CE93D8;color:#fff}
+.rank-titan{background:linear-gradient(135deg,#FF5252,#FFD740,#69F0AE);color:#1a1a1a}.rank-legend{background:linear-gradient(135deg,#E53935,#FF6F00);color:#fff}
 
 /* === BOTTOM NAV === */
 .nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;display:flex;justify-content:space-around;align-items:center;padding:8px 0 max(8px,env(safe-area-inset-bottom));background:rgba(10,10,10,.92);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-top:1px solid var(--s3);z-index:100}
@@ -377,7 +381,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--fg);font-
 <img class="header-logo" id="headerLogo" alt="Forge">
 <div class="term-status">
 <span class="xp-pill" id="xpPill">0 XP</span>
-<span class="lvl-pill" id="lvlPill">01</span>
+<span class="rank-pill rank-iron" id="rankPill">IRON</span>
 </div>
 </div>
 
@@ -440,6 +444,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--fg);font-
 <div class="cmd-line"><span class="flag">streak</span> <span class="val" id="cmdStreak">0</span> days</div>
 <div class="cmd-line"><span class="flag">focus</span> <span class="val" id="cmdFocus">0</span> min today</div>
 <div class="cmd-line"><span class="flag">labors</span> <span class="val" id="cmdLabors">0</span>/10 done</div>
+<div class="cmd-line"><span class="flag">rank</span> <span class="val" id="cmdRank">IRON</span></div>
 <div class="cmd-line"><span class="flag">level</span> <span class="val" id="cmdLevel">01</span></div>
 </div>
 </div>
@@ -636,6 +641,7 @@ What's the <em>single biggest time leak</em> you noticed? Name it. That's where 
 <div class="block-header"><span class="block-tag">// xp breakdown</span></div>
 <div class="block-body-flush">
 <div class="cmd-line"><span class="flag">total</span> <span class="val" id="xpTotal">0</span> XP</div>
+<div class="cmd-line"><span class="flag">rank</span> <span class="val" id="xpRank">IRON</span></div>
 <div class="cmd-line"><span class="flag">level</span> <span class="val" id="xpLvl">01</span></div>
 <div class="cmd-line"><span class="flag">from_labors</span> <span class="val" id="xpLab">0</span></div>
 <div class="cmd-line"><span class="flag">from_focus</span> <span class="val" id="xpFoc">0</span></div>
@@ -775,6 +781,21 @@ window.addEventListener('resize',()=>document.documentElement.style.setProperty(
     document.getElementById('appShell').style.opacity='1';
   },lines.length*280+600);
 })();
+
+// Rank system
+const RANKS=[
+  {name:'IRON',min:1,max:2,cls:'rank-iron'},
+  {name:'BRONZE',min:3,max:4,cls:'rank-bronze'},
+  {name:'SILVER',min:5,max:6,cls:'rank-silver'},
+  {name:'GOLD',min:7,max:8,cls:'rank-gold'},
+  {name:'PLATINUM',min:9,max:10,cls:'rank-platinum'},
+  {name:'DIAMOND',min:11,max:12,cls:'rank-diamond'},
+  {name:'TITAN',min:13,max:13,cls:'rank-titan'}
+];
+function getRank(lvl){
+  for(let i=RANKS.length-1;i>=0;i--)if(lvl>=RANKS[i].min)return RANKS[i];
+  return RANKS[0];
+}
 
 let xp=ls('xp',0),level=ls('level',1),streak=ls('streak',0),
     tmTotal=ls('tmTotal',0),labsDone=ls('labsDone',[]),
@@ -1062,10 +1083,15 @@ function updStatus(){
   document.getElementById('cmdFocus').textContent=Math.round(tmTotal);
   document.getElementById('cmdLabors').textContent=labsDone.length;
   document.getElementById('cmdLevel').textContent=String(level).padStart(2,'0');
+  const r=getRank(level);
+  document.getElementById('cmdRank').textContent=r.name;
 }
 function updBadges(){
   document.getElementById('xpPill').textContent=xp+' XP';
-  document.getElementById('lvlPill').textContent=String(level).padStart(2,'0');
+  const r=getRank(level);
+  const rp=document.getElementById('rankPill');
+  rp.textContent=r.name;
+  rp.className='rank-pill '+r.cls;
 }
 function showToast(msg,type){
   const t=document.getElementById('toast');
@@ -1076,7 +1102,16 @@ function addXP(amt,reason){
   xp+=amt;ss('xp',xp);
   const th=[0,100,250,500,800,1200,1700,2300,3000,4000,5500,7500,10000];
   let nl=1;for(let i=th.length-1;i>=0;i--)if(xp>=th[i]){nl=i+1;break}
-  if(nl>level){level=nl;ss('level',level);showToast('LEVEL UP → '+String(level).padStart(2,'0'),'lvl')}
+  if(nl>level){
+    const oldRank=getRank(level);
+    level=nl;ss('level',level);
+    const newRank=getRank(level);
+    if(newRank.name!==oldRank.name){
+      showToast('RANK UP → '+newRank.name,'lvl');
+    } else {
+      showToast('LEVEL UP → '+String(level).padStart(2,'0')+' ('+newRank.name+')','lvl');
+    }
+  }
   showToast('+'+amt+' XP — '+reason,'xp');
   updBadges();updStatus();
 }
@@ -1598,6 +1633,7 @@ function updProgress(){
   document.getElementById('xpLvl').textContent=String(level).padStart(2,'0');
   document.getElementById('xpLab').textContent=nLab*15;
   document.getElementById('xpFoc').textContent=Math.round(tmTotal);
+  document.getElementById('xpRank').textContent=getRank(level).name;
 }
 
 // Filter chips
