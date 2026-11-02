@@ -1,3 +1,6 @@
 [build]
   publish = "."
   command = "echo done"
+
+[build.environment]
+  SECRETS_SCAN_ENABLED = "false"

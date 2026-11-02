@@ -4,4 +4,6 @@ dist
 *.jks
 *.keystore
 android/app/release/
+android/app/src/main/assets/index.html
+android/app/src/main/assets/www/index.html
 .vscode/
