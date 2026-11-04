@@ -5,7 +5,9 @@
     android:layout_height="match_parent"
     android:background="@drawable/widget_bg_glass"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:gravity="center_vertical"
+    android:padding="14dp">
+    <!-- Header row: Forge + Rank pill -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -15,53 +17,56 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Forge"
+            android:text="⚒ Forge"
             android:textColor="#FFFFFF"
-            android:textSize="18sp"
+            android:textSize="15sp"
             android:textStyle="bold" />
         <TextView
             android:id="@+id/widget_rank"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Iron"
+            android:text="IRON"
             android:textColor="#ef4444"
-            android:textSize="11sp"
+            android:textSize="10sp"
             android:textStyle="bold"
             android:background="@drawable/rank_pill_bg"
             android:paddingStart="10dp"
             android:paddingEnd="10dp"
-            android:paddingTop="3dp"
-            android:paddingBottom="3dp" />
+            android:paddingTop="2dp"
+            android:paddingBottom="2dp" />
     </LinearLayout>
+    <!-- XP + Level row -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:layout_marginTop="10dp">
+        android:gravity="center_vertical|left"
+        android:layout_marginTop="6dp">
         <TextView
             android:id="@+id/widget_xp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="0 XP"
             android:textColor="#FFFFFF"
-            android:textSize="28sp"
+            android:textSize="24sp"
             android:textStyle="bold" />
         <TextView
             android:id="@+id/widget_level"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Lv 1"
-            android:textColor="#8892a4"
-            android:textSize="14sp"
+            android:textColor="#6b7280"
+            android:textSize="12sp"
             android:layout_marginStart="8dp" />
     </LinearLayout>
+    <!-- Stat chips row -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="10dp"
         android:gravity="center_horizontal">
+        <!-- Focus chip -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -69,7 +74,8 @@
             android:orientation="vertical"
             android:gravity="center"
             android:background="@drawable/stat_chip_bg"
-            android:padding="8dp"
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp"
             android:layout_marginEnd="4dp">
             <TextView
                 android:id="@+id/widget_focus"
@@ -77,15 +83,16 @@
                 android:layout_height="wrap_content"
                 android:text="0m"
                 android:textColor="#3b82f6"
-                android:textSize="16sp"
+                android:textSize="15sp"
                 android:textStyle="bold" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Focus"
-                android:textColor="#6b7280"
+                android:textColor="#4b5563"
                 android:textSize="9sp" />
         </LinearLayout>
+        <!-- Labors chip -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -93,7 +100,8 @@
             android:orientation="vertical"
             android:gravity="center"
             android:background="@drawable/stat_chip_bg"
-            android:padding="8dp"
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp"
             android:layout_marginStart="4dp"
             android:layout_marginEnd="4dp">
             <TextView
@@ -102,15 +110,16 @@
                 android:layout_height="wrap_content"
                 android:text="0/0"
                 android:textColor="#22c55e"
-                android:textSize="16sp"
+                android:textSize="15sp"
                 android:textStyle="bold" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Labors"
-                android:textColor="#6b7280"
+                android:textColor="#4b5563"
                 android:textSize="9sp" />
         </LinearLayout>
+        <!-- Streak chip -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -118,7 +127,8 @@
             android:orientation="vertical"
             android:gravity="center"
             android:background="@drawable/stat_chip_bg"
-            android:padding="8dp"
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp"
             android:layout_marginStart="4dp">
             <TextView
                 android:id="@+id/widget_streak"
@@ -126,13 +136,13 @@
                 android:layout_height="wrap_content"
                 android:text="0d"
                 android:textColor="#f59e0b"
-                android:textSize="16sp"
+                android:textSize="15sp"
                 android:textStyle="bold" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Streak"
-                android:textColor="#6b7280"
+                android:textColor="#4b5563"
                 android:textSize="9sp" />
         </LinearLayout>
     </LinearLayout>
