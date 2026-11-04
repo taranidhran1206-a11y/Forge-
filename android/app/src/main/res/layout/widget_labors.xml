@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_labors_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/widget_bg_glass"
+    android:orientation="vertical"
+    android:padding="14dp">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="8dp">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Labors"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+        <TextView
+            android:id="@+id/labors_open_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0 open"
+            android:textColor="#9ca3af"
+            android:textSize="11sp"
+            android:background="@drawable/count_badge_bg"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:paddingTop="2dp"
+            android:paddingBottom="2dp" />
+    </LinearLayout>
+    <LinearLayout android:id="@+id/labor_row_1" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:layout_marginBottom="4dp" android:visibility="gone">
+        <View android:id="@+id/labor_dot_1" android:layout_width="4dp" android:layout_height="20dp" android:background="@drawable/labor_pending_dot"/>
+        <TextView android:id="@+id/labor_text_1" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:textColor="#d1d5db" android:textSize="13sp" android:layout_marginStart="10dp" android:maxLines="1"/>
+        <TextView android:id="@+id/labor_check_1" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="#6b7280" android:textSize="14sp" android:text="○"/>
+    </LinearLayout>
+    <LinearLayout android:id="@+id/labor_row_2" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:layout_marginBottom="4dp" android:visibility="gone">
+        <View android:id="@+id/labor_dot_2" android:layout_width="4dp" android:layout_height="20dp" android:background="@drawable/labor_pending_dot"/>
+        <TextView android:id="@+id/labor_text_2" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:textColor="#d1d5db" android:textSize="13sp" android:layout_marginStart="10dp" android:maxLines="1"/>
+        <TextView android:id="@+id/labor_check_2" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="#6b7280" android:textSize="14sp" android:text="○"/>
+    </LinearLayout>
+    <LinearLayout android:id="@+id/labor_row_3" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:layout_marginBottom="4dp" android:visibility="gone">
+        <View android:id="@+id/labor_dot_3" android:layout_width="4dp" android:layout_height="20dp" android:background="@drawable/labor_pending_dot"/>
+        <TextView android:id="@+id/labor_text_3" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:textColor="#d1d5db" android:textSize="13sp" android:layout_marginStart="10dp" android:maxLines="1"/>
+        <TextView android:id="@+id/labor_check_3" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="#6b7280" android:textSize="14sp" android:text="○"/>
+    </LinearLayout>
+    <LinearLayout android:id="@+id/labor_row_4" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:layout_marginBottom="4dp" android:visibility="gone">
+        <View android:id="@+id/labor_dot_4" android:layout_width="4dp" android:layout_height="20dp" android:background="@drawable/labor_pending_dot"/>
+        <TextView android:id="@+id/labor_text_4" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:textColor="#d1d5db" android:textSize="13sp" android:layout_marginStart="10dp" android:maxLines="1"/>
+        <TextView android:id="@+id/labor_check_4" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="#6b7280" android:textSize="14sp" android:text="○"/>
+    </LinearLayout>
+    <LinearLayout android:id="@+id/labor_row_5" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:layout_marginBottom="4dp" android:visibility="gone">
+        <View android:id="@+id/labor_dot_5" android:layout_width="4dp" android:layout_height="20dp" android:background="@drawable/labor_pending_dot"/>
+        <TextView android:id="@+id/labor_text_5" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:textColor="#d1d5db" android:textSize="13sp" android:layout_marginStart="10dp" android:maxLines="1"/>
+        <TextView android:id="@+id/labor_check_5" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="#6b7280" android:textSize="14sp" android:text="○"/>
+    </LinearLayout>
+    <LinearLayout android:id="@+id/labor_row_6" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:visibility="gone">
+        <View android:id="@+id/labor_dot_6" android:layout_width="4dp" android:layout_height="20dp" android:background="@drawable/labor_pending_dot"/>
+        <TextView android:id="@+id/labor_text_6" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:textColor="#d1d5db" android:textSize="13sp" android:layout_marginStart="10dp" android:maxLines="1"/>
+        <TextView android:id="@+id/labor_check_6" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="#6b7280" android:textSize="14sp" android:text="○"/>
+    </LinearLayout>
+</LinearLayout>

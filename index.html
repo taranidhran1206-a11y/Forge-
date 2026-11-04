@@ -1099,11 +1099,12 @@ function syncWidget(){
     if(typeof ForgeBridge!=='undefined'&&ForgeBridge.updateWidget){
       const r=getRank(level);
       const allLabs=LABOR_DATA||[];
-      const doneList=labsDone.map(n=>'✓ '+n).join('\n');
-      const pendList=allLabs.filter(l=>!labsDone.includes(l.n)).map(l=>'○ '+l.n).join('\n');
-      const laborText=(doneList||'')+((doneList&&pendList)?'\n':'')+pendList||'No labors today';
-      ForgeBridge.updateWidget(xp,level,streak,Math.round(tmTotal),
-        labsDone.length,allLabs.length,r.name,laborText);
+      const focusStr=Math.round(tmTotal)+'m';
+      const laborsArr=allLabs.map(function(l,i){
+        return {name:l.n,emoji:l.icon||'',done:labsDone.includes(i)};
+      });
+      ForgeBridge.updateWidget(xp,level,streak,r.name,
+        labsDone.length,allLabs.length,focusStr,JSON.stringify(laborsArr));
     }
   }catch(e){}
 }

@@ -155,27 +155,21 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @JavascriptInterface
-        public void updateWidget(int xp, int level, int streak, int focusMin,
-                                  int laborsDone, int laborsTotal, String rank, String laborList) {
+        public void updateWidget(int xp, int level, int streak, String rank,
+                                  int laborsDone, int laborsTotal, String focus, String laborsJson) {
             SharedPreferences prefs = getSharedPreferences("forge_widget_prefs", MODE_PRIVATE);
             prefs.edit()
                 .putInt("xp", xp)
                 .putInt("level", level)
                 .putInt("streak", streak)
-                .putInt("focusMin", focusMin)
+                .putString("rank", rank)
                 .putInt("laborsDone", laborsDone)
                 .putInt("laborsTotal", laborsTotal)
-                .putString("rank", rank)
-                .putString("laborList", laborList)
+                .putString("focus", focus)
+                .putString("laborsJson", laborsJson)
                 .apply();
 
-            // Trigger widget refresh
-            AppWidgetManager widgetManager = AppWidgetManager.getInstance(MainActivity.this);
-            int[] ids = widgetManager.getAppWidgetIds(
-                new ComponentName(MainActivity.this, ForgeWidgetProvider.class));
-            for (int id : ids) {
-                ForgeWidgetProvider.updateWidget(MainActivity.this, widgetManager, id);
-            }
+            ForgeWidgetProvider.triggerUpdate(MainActivity.this);
         }
 
         @JavascriptInterface

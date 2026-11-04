@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Forge</string>
-    <string name="widget_description">Track your daily labors, XP, rank, and streak</string>
+    <string name="widget_description">Forge stats at a glance — XP, rank, streak, and labors</string>
+    <string name="labors_widget_description">Your active labors checklist</string>
 </resources>

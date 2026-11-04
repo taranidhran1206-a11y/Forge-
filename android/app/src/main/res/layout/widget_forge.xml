@@ -3,163 +3,137 @@
     android:id="@+id/widget_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/widget_bg_glass"
     android:orientation="vertical"
-    android:background="@drawable/widget_bg"
-    android:padding="12dp">
-
-    <!-- Header: Forge logo + Rank -->
+    android:padding="16dp">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:layout_marginBottom="8dp">
-
+        android:gravity="center_vertical">
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="⚒ FORGE"
-            android:textColor="#E53935"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:fontFamily="monospace" />
-
+            android:text="Forge"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            android:textStyle="bold" />
         <TextView
             android:id="@+id/widget_rank"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="IRON"
-            android:textColor="#FFFFFF"
+            android:text="Iron"
+            android:textColor="#ef4444"
             android:textSize="11sp"
             android:textStyle="bold"
-            android:fontFamily="monospace"
             android:background="@drawable/rank_pill_bg"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp"
-            android:paddingTop="2dp"
-            android:paddingBottom="2dp" />
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:paddingTop="3dp"
+            android:paddingBottom="3dp" />
     </LinearLayout>
-
-    <!-- XP + Level row -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:layout_marginBottom="6dp">
-
+        android:layout_marginTop="10dp">
         <TextView
             android:id="@+id/widget_xp"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:text="0 XP"
-            android:textColor="#E53935"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:fontFamily="monospace" />
-
+            android:textColor="#FFFFFF"
+            android:textSize="28sp"
+            android:textStyle="bold" />
         <TextView
             android:id="@+id/widget_level"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="LVL 01"
-            android:textColor="#888888"
-            android:textSize="12sp"
-            android:fontFamily="monospace" />
+            android:text="Lv 1"
+            android:textColor="#8892a4"
+            android:textSize="14sp"
+            android:layout_marginStart="8dp" />
     </LinearLayout>
-
-    <!-- Stats row: Focus | Labors | Streak -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginBottom="6dp">
-
+        android:layout_marginTop="12dp"
+        android:gravity="center_horizontal">
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="vertical"
-            android:gravity="center">
+            android:gravity="center"
+            android:background="@drawable/stat_chip_bg"
+            android:padding="8dp"
+            android:layout_marginEnd="4dp">
             <TextView
                 android:id="@+id/widget_focus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="0"
-                android:textColor="#E53935"
+                android:text="0m"
+                android:textColor="#3b82f6"
                 android:textSize="16sp"
-                android:textStyle="bold"
-                android:fontFamily="monospace" />
+                android:textStyle="bold" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="focus min"
-                android:textColor="#666666"
-                android:textSize="10sp"
-                android:fontFamily="monospace" />
+                android:text="Focus"
+                android:textColor="#6b7280"
+                android:textSize="9sp" />
         </LinearLayout>
-
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="vertical"
-            android:gravity="center">
+            android:gravity="center"
+            android:background="@drawable/stat_chip_bg"
+            android:padding="8dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp">
             <TextView
                 android:id="@+id/widget_labors"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="0/0"
-                android:textColor="#E53935"
+                android:textColor="#22c55e"
                 android:textSize="16sp"
-                android:textStyle="bold"
-                android:fontFamily="monospace" />
+                android:textStyle="bold" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="labors"
-                android:textColor="#666666"
-                android:textSize="10sp"
-                android:fontFamily="monospace" />
+                android:text="Labors"
+                android:textColor="#6b7280"
+                android:textSize="9sp" />
         </LinearLayout>
-
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="vertical"
-            android:gravity="center">
+            android:gravity="center"
+            android:background="@drawable/stat_chip_bg"
+            android:padding="8dp"
+            android:layout_marginStart="4dp">
             <TextView
                 android:id="@+id/widget_streak"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="0"
-                android:textColor="#E53935"
+                android:text="0d"
+                android:textColor="#f59e0b"
                 android:textSize="16sp"
-                android:textStyle="bold"
-                android:fontFamily="monospace" />
+                android:textStyle="bold" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="streak"
-                android:textColor="#666666"
-                android:textSize="10sp"
-                android:fontFamily="monospace" />
+                android:text="Streak"
+                android:textColor="#6b7280"
+                android:textSize="9sp" />
         </LinearLayout>
     </LinearLayout>
-
-    <!-- Today's labors list -->
-    <TextView
-        android:id="@+id/widget_labor_list"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="No labors today"
-        android:textColor="#999999"
-        android:textSize="11sp"
-        android:fontFamily="monospace"
-        android:maxLines="4"
-        android:ellipsize="end" />
-
 </LinearLayout>
