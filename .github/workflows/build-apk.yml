@@ -38,7 +38,9 @@ jobs:
           "build-tools;34.0.0" || true
 
     - name: Copy latest index.html to assets
-      run: cp index.html android/app/src/main/assets/index.html
+      run: |
+        mkdir -p android/app/src/main/assets/www
+        cp index.html android/app/src/main/assets/www/index.html
 
     - name: Generate Gradle Wrapper
       run: |
@@ -67,50 +69,38 @@ jobs:
       run: |
         APK_PATH=$(find android/app/build/outputs/apk/release -name "*.apk" | head -1)
         echo "Found APK: $APK_PATH"
-        cp "$APK_PATH" android/Forge-v1.0.6-signed.apk
-        ls -la android/Forge-v1.0.6-signed.apk
+        cp "$APK_PATH" android/Forge-v1.18.0-signed.apk
+        ls -la android/Forge-v1.18.0-signed.apk
 
     - name: Upload APK Artifact
       uses: actions/upload-artifact@v4
       with:
         name: Forge-APK
-        path: android/Forge-v1.0.6-signed.apk
+        path: android/Forge-v1.18.0-signed.apk
 
     - name: Create Release
       uses: softprops/action-gh-release@v2
       with:
         tag_name: v1.18.0
-        name: "Forge v1.0.6 — White Axe Icon + Editable Labors"
+        name: "Forge v1.18.0 — Glass Widget Redesign + Labors Widget"
         body: |
-          ## Forge v1.0.6
+          ## Forge v1.18.0
 
-          Correct app icon + all new features.
+          Glass-aesthetic widget redesign + new labors checklist widget.
 
           ### What's New
-          - **App Icon** — white axe logo on dark blue background
-          - **Editable Labors** — tap edit to rename, change time, or change emoji
-          - **Add/Delete Labors** — "+" button to add, "x" to remove
-          - **Today's Date** — shown in labors view
-          - **AI Coach Star Animation** — sparkle animation while processing
-          - **Tab switching, AI Coach, Notifications** — all working
-
-          ### All Features
-          - Rize-style Focus Tracking with 7 categories
-          - Push Notifications — session, breaks, distraction detection
-          - AI Coach powered by Gemini 3.5 Flash
-          - Auto Distraction Detection
-          - XP & Leveling gamification
-          - Daily Labors — fully editable task management
-          - Time Audit breakdown
-          - Full offline support (except AI Coach)
+          - **Glass Widget Redesign** — dark frosted glass background with 24dp rounded corners
+          - **Stats Widget** — large XP display, level badge, 3 colored stat chips (Focus/Labors/Streak)
+          - **Labors Widget** — NEW second widget showing up to 6 labors with status dots and check marks
+          - **Auto Widget Sync** — widgets update live as you complete labors and earn XP
 
           ### Install
-          1. Download `Forge-v1.0.6-signed.apk`
+          1. Download `Forge-v1.18.0-signed.apk`
           2. Settings > Security > Enable "Install from unknown sources"
           3. Open the APK and install
 
           Built by Tarani. Forged in discipline.
-        files: android/Forge-v1.0.6-signed.apk
+        files: android/Forge-v1.18.0-signed.apk
         draft: false
         prerelease: false
       env:
