@@ -39,8 +39,8 @@ jobs:
 
     - name: Copy latest index.html to assets
       run: |
-        mkdir -p android/app/src/main/assets/www
-        cp index.html android/app/src/main/assets/www/index.html
+        mkdir -p android/app/src/main/assets
+        cp index.html android/app/src/main/assets/index.html
 
     - name: Generate Gradle Wrapper
       run: |
@@ -69,38 +69,35 @@ jobs:
       run: |
         APK_PATH=$(find android/app/build/outputs/apk/release -name "*.apk" | head -1)
         echo "Found APK: $APK_PATH"
-        cp "$APK_PATH" android/Forge-v1.18.0-signed.apk
-        ls -la android/Forge-v1.18.0-signed.apk
+        cp "$APK_PATH" android/Forge-v1.18.1-signed.apk
+        ls -la android/Forge-v1.18.1-signed.apk
 
     - name: Upload APK Artifact
       uses: actions/upload-artifact@v4
       with:
         name: Forge-APK
-        path: android/Forge-v1.18.0-signed.apk
+        path: android/Forge-v1.18.1-signed.apk
 
     - name: Create Release
       uses: softprops/action-gh-release@v2
       with:
-        tag_name: v1.18.0
-        name: "Forge v1.18.0 — Glass Widget Redesign + Labors Widget"
+        tag_name: v1.18.1
+        name: "Forge v1.18.1 — Hotfix: Asset Path"
         body: |
-          ## Forge v1.18.0
+          ## Forge v1.18.1
 
-          Glass-aesthetic widget redesign + new labors checklist widget.
+          Hotfix — index.html was copied to wrong assets subdirectory, causing ERR_FILE_NOT_FOUND on launch.
 
-          ### What's New
-          - **Glass Widget Redesign** — dark frosted glass background with 24dp rounded corners
-          - **Stats Widget** — large XP display, level badge, 3 colored stat chips (Focus/Labors/Streak)
-          - **Labors Widget** — NEW second widget showing up to 6 labors with status dots and check marks
-          - **Auto Widget Sync** — widgets update live as you complete labors and earn XP
+          ### Fix
+          - Copy index.html to `assets/index.html` (not `assets/www/index.html`)
 
           ### Install
-          1. Download `Forge-v1.18.0-signed.apk`
+          1. Download `Forge-v1.18.1-signed.apk`
           2. Settings > Security > Enable "Install from unknown sources"
           3. Open the APK and install
 
           Built by Tarani. Forged in discipline.
-        files: android/Forge-v1.18.0-signed.apk
+        files: android/Forge-v1.18.1-signed.apk
         draft: false
         prerelease: false
       env:
