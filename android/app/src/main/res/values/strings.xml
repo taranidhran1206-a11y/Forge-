@@ -3,4 +3,6 @@
     <string name="app_name">Forge</string>
     <string name="widget_description">Forge stats at a glance — XP, rank, streak, and labors</string>
     <string name="labors_widget_description">Your active labors checklist</string>
+    <string name="streak_widget_description">Weekly habit tracker — focus, labors, journal streaks</string>
+    <string name="mood_widget_description">Track your daily mood at a glance</string>
 </resources>

@@ -57,14 +57,14 @@ public class ForgeLaborsWidgetProvider extends AppWidgetProvider {
 
                         if (done) {
                             views.setTextViewText(CHECK_IDS[i], "✓");
-                            views.setInt(CHECK_IDS[i], "setTextColor", 0xFF22c55e);
+                            views.setInt(CHECK_IDS[i], "setTextColor", 0xFF4CAF50);
                             views.setInt(DOT_IDS[i], "setBackgroundResource", R.drawable.labor_done_dot);
-                            views.setInt(TEXT_IDS[i], "setTextColor", 0xFF6b7280);
+                            views.setInt(TEXT_IDS[i], "setTextColor", 0x80FFFFFF);
                         } else {
                             views.setTextViewText(CHECK_IDS[i], "○");
-                            views.setInt(CHECK_IDS[i], "setTextColor", 0xFF6b7280);
+                            views.setInt(CHECK_IDS[i], "setTextColor", 0x60FFFFFF);
                             views.setInt(DOT_IDS[i], "setBackgroundResource", R.drawable.labor_pending_dot);
-                            views.setInt(TEXT_IDS[i], "setTextColor", 0xFFd1d5db);
+                            views.setInt(TEXT_IDS[i], "setTextColor", 0xE0FFFFFF);
                             openCount++;
                         }
                     } else {

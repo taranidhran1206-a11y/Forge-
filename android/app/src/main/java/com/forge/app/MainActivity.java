@@ -173,6 +173,25 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @JavascriptInterface
+        public void updateMood(int moodIndex) {
+            SharedPreferences prefs = getSharedPreferences("forge_widget_prefs", MODE_PRIVATE);
+            prefs.edit()
+                .putInt("moodIndex", moodIndex)
+                .apply();
+            ForgeWidgetProvider.triggerUpdate(MainActivity.this);
+        }
+
+        @JavascriptInterface
+        public void updateStreakData(String weeklyStreakJson, String dateRange) {
+            SharedPreferences prefs = getSharedPreferences("forge_widget_prefs", MODE_PRIVATE);
+            prefs.edit()
+                .putString("weeklyStreakJson", weeklyStreakJson)
+                .putString("streakDateRange", dateRange)
+                .apply();
+            ForgeWidgetProvider.triggerUpdate(MainActivity.this);
+        }
+
+        @JavascriptInterface
         public void vibratePattern(long[] pattern) {
             Vibrator v = (Vibrator) getSystemService(VIBRATOR_SERVICE);
             if (v != null && v.hasVibrator()) {

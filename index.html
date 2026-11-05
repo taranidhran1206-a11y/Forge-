@@ -62,6 +62,21 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--fg);font-
 .rank-gold{background:#FFD54F;color:#1a1a1a}.rank-platinum{background:#80DEEA;color:#1a1a1a}.rank-diamond{background:#CE93D8;color:#fff}
 .rank-titan{background:linear-gradient(135deg,#FF5252,#FFD740,#69F0AE);color:#1a1a1a}.rank-legend{background:linear-gradient(135deg,#E53935,#FF6F00);color:#fff}
 
+/* === MOOD === */
+.mood-row{display:flex;gap:6px;justify-content:center}
+.mood-btn{background:var(--s2);border:1.5px solid var(--s3);border-radius:12px;padding:10px 6px 8px;flex:1;max-width:64px;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:24px;cursor:pointer;transition:all .2s}
+.mood-btn span{font-size:9px;font-family:var(--mono);color:var(--fg3);letter-spacing:.3px}
+.mood-btn:active,.mood-btn.sel{background:var(--rg);border-color:var(--red);transform:scale(1.08)}
+.mood-btn.sel span{color:var(--red2)}
+
+/* === BADGES === */
+.badge{display:flex;flex-direction:column;align-items:center;width:62px;padding:8px 4px;border-radius:10px;background:var(--s2);border:1px solid var(--s3);gap:4px;transition:all .2s}
+.badge.unlocked{border-color:rgba(229,57,53,.3);background:var(--rg)}
+.badge .b-icon{font-size:22px;filter:grayscale(1) brightness(.4)}
+.badge.unlocked .b-icon{filter:none}
+.badge .b-name{font-size:8px;font-family:var(--mono);color:var(--fg3);text-align:center;line-height:1.2;letter-spacing:.2px}
+.badge.unlocked .b-name{color:var(--fg2)}
+
 /* === BOTTOM NAV === */
 .nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;display:flex;justify-content:space-around;align-items:center;padding:8px 0 max(8px,env(safe-area-inset-bottom));background:rgba(10,10,10,.92);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-top:1px solid var(--s3);z-index:100}
 .nav-btn{display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:none;color:var(--fg3);font-size:9px;font-family:var(--mono);cursor:pointer;padding:4px 8px;transition:color .2s;letter-spacing:.3px}
@@ -614,6 +629,23 @@ What's the <em>single biggest time leak</em> you noticed? Name it. That's where 
 <div class="chip" data-f="prod">productivity</div>
 <div class="chip" data-f="disc">discipline</div>
 </div>
+
+<!-- Mood Check-in -->
+<div class="block">
+<div class="block-header"><span class="block-tag">// mood check-in</span><span style="font-family:var(--mono);font-size:10px;color:var(--fg3)" id="moodTime"></span></div>
+<div class="block-body" style="text-align:center">
+<div style="font-size:13px;color:var(--fg2);margin-bottom:12px">How are you feeling right now?</div>
+<div class="mood-row" id="moodRow">
+<button class="mood-btn" data-mood="0" data-emoji="😢" data-label="Rough">😢<span>Rough</span></button>
+<button class="mood-btn" data-mood="1" data-emoji="😕" data-label="Meh">😕<span>Meh</span></button>
+<button class="mood-btn" data-mood="2" data-emoji="😐" data-label="Okay">😐<span>Okay</span></button>
+<button class="mood-btn" data-mood="3" data-emoji="😊" data-label="Good">😊<span>Good</span></button>
+<button class="mood-btn" data-mood="4" data-emoji="🤩" data-label="Amazing">🤩<span>Amazing</span></button>
+</div>
+<div style="font-family:var(--mono);font-size:11px;color:var(--fg3);margin-top:8px" id="moodStatus"></div>
+</div>
+</div>
+
 <div class="block">
 <div class="align-box">
 <div class="align-label">alignment score</div>
@@ -638,14 +670,22 @@ What's the <em>single biggest time leak</em> you noticed? Name it. That's where 
 </div>
 </div>
 <div class="block">
-<div class="block-header"><span class="block-tag">// xp breakdown</span></div>
+<div class="block-header"><span class="block-tag">// xp breakdown</span><span style="font-family:var(--mono);font-size:10px;color:var(--fg3)" id="streakMult"></span></div>
 <div class="block-body-flush">
 <div class="cmd-line"><span class="flag">total</span> <span class="val" id="xpTotal">0</span> XP</div>
 <div class="cmd-line"><span class="flag">rank</span> <span class="val" id="xpRank">IRON</span></div>
 <div class="cmd-line"><span class="flag">level</span> <span class="val" id="xpLvl">01</span></div>
 <div class="cmd-line"><span class="flag">from_labors</span> <span class="val" id="xpLab">0</span></div>
 <div class="cmd-line"><span class="flag">from_focus</span> <span class="val" id="xpFoc">0</span></div>
+<div class="cmd-line"><span class="flag">from_mood</span> <span class="val" id="xpMood">0</span></div>
+<div class="cmd-line"><span class="flag">streak_bonus</span> <span class="val" id="xpStreakBonus">1.0x</span></div>
 </div>
+</div>
+
+<!-- Achievements -->
+<div class="block">
+<div class="block-header"><span class="block-tag">// achievements</span><span style="font-family:var(--mono);font-size:10px;color:var(--fg3)" id="badgeCount">0 unlocked</span></div>
+<div class="block-body" id="badgeGrid" style="display:flex;flex-wrap:wrap;gap:8px"></div>
 </div>
 </div>
 
@@ -804,7 +844,87 @@ let xp=ls('xp',0),level=ls('level',1),streak=ls('streak',0),
     refEntries=ls('refEntries',[]),
     tmRun=false,tmInt=null,tmSec=25*60,tmMax=25*60,
     curEnf=ls('enf',0),opsDone=ls('ops',{}),
-    lastDay=ls('lastDay',''),wkFocus=ls('wkFocus',[0,0,0,0,0,0,0]);
+    lastDay=ls('lastDay',''),wkFocus=ls('wkFocus',[0,0,0,0,0,0,0]),
+    moodToday=ls('moodToday',-1),moodXpGiven=ls('moodXpGiven',false),
+    moodLog=ls('moodLog',[]),
+    achievements=ls('achievements',{}),
+    wkLabors=ls('wkLabors',[false,false,false,false,false,false,false]),
+    wkJournal=ls('wkJournal',[false,false,false,false,false,false,false]),
+    wkFocusDone=ls('wkFocusDone',[false,false,false,false,false,false,false]);
+
+// Achievement definitions
+const BADGES=[
+  {id:'first_labor',name:'First Blood',icon:'⚔️',desc:'Complete your first labor'},
+  {id:'streak_3',name:'3-Day Fire',icon:'🔥',desc:'3 day streak'},
+  {id:'streak_7',name:'Week Warrior',icon:'🗡️',desc:'7 day streak'},
+  {id:'streak_14',name:'Fortnight',icon:'🛡️',desc:'14 day streak'},
+  {id:'streak_30',name:'Monthly',icon:'👑',desc:'30 day streak'},
+  {id:'focus_60',name:'Deep Diver',icon:'🧠',desc:'60 min focus in a day'},
+  {id:'focus_120',name:'Flow State',icon:'⚡',desc:'120 min focus in a day'},
+  {id:'all_labors',name:'Clean Sweep',icon:'✅',desc:'Complete all labors in a day'},
+  {id:'all_ops',name:'Full Send',icon:'🚀',desc:'Complete all 3 daily ops'},
+  {id:'rank_bronze',name:'Bronze Age',icon:'🥉',desc:'Reach Bronze rank'},
+  {id:'rank_silver',name:'Silver Lining',icon:'🥈',desc:'Reach Silver rank'},
+  {id:'rank_gold',name:'Gold Standard',icon:'🥇',desc:'Reach Gold rank'},
+  {id:'rank_diamond',name:'Diamond Hands',icon:'💎',desc:'Reach Diamond rank'},
+  {id:'mood_7',name:'Self Aware',icon:'🪞',desc:'Log mood 7 days in a row'},
+  {id:'reflect_5',name:'Introspect',icon:'📝',desc:'Write 5 reflections'},
+  {id:'xp_1000',name:'Grinder',icon:'💪',desc:'Earn 1000 XP'},
+  {id:'xp_5000',name:'Machine',icon:'🤖',desc:'Earn 5000 XP'},
+];
+
+function getStreakMultiplier(){
+  if(streak>=30)return 2.0;
+  if(streak>=14)return 1.75;
+  if(streak>=7)return 1.5;
+  if(streak>=3)return 1.25;
+  return 1.0;
+}
+
+function unlockBadge(id){
+  if(achievements[id])return;
+  achievements[id]=Date.now();ss('achievements',achievements);
+  const b=BADGES.find(x=>x.id===id);
+  if(b)showToast('🏆 '+b.name+' unlocked!','lvl');
+}
+
+function checkAchievements(){
+  if(labsDone.length>0)unlockBadge('first_labor');
+  if(labsDone.length>=LABOR_DATA.length&&LABOR_DATA.length>0)unlockBadge('all_labors');
+  if(Object.keys(opsDone).length>=3)unlockBadge('all_ops');
+  if(streak>=3)unlockBadge('streak_3');
+  if(streak>=7)unlockBadge('streak_7');
+  if(streak>=14)unlockBadge('streak_14');
+  if(streak>=30)unlockBadge('streak_30');
+  if(tmTotal>=60)unlockBadge('focus_60');
+  if(tmTotal>=120)unlockBadge('focus_120');
+  if(xp>=1000)unlockBadge('xp_1000');
+  if(xp>=5000)unlockBadge('xp_5000');
+  if(refEntries.length>=5)unlockBadge('reflect_5');
+  const r=getRank(level);
+  if(r.name==='BRONZE'||level>=3)unlockBadge('rank_bronze');
+  if(r.name==='SILVER'||level>=5)unlockBadge('rank_silver');
+  if(r.name==='GOLD'||level>=7)unlockBadge('rank_gold');
+  if(r.name==='DIAMOND'||level>=10)unlockBadge('rank_diamond');
+  // mood_7: check consecutive mood log
+  if(moodLog.length>=7){
+    const last7=moodLog.slice(-7);
+    if(last7.every(m=>m!==null&&m>=0))unlockBadge('mood_7');
+  }
+}
+
+function renderBadges(){
+  const g=document.getElementById('badgeGrid');
+  if(!g)return;
+  let unlocked=0;
+  g.innerHTML=BADGES.map(b=>{
+    const u=!!achievements[b.id];
+    if(u)unlocked++;
+    return '<div class="badge'+(u?' unlocked':'')+'" title="'+b.desc+'"><span class="b-icon">'+b.icon+'</span><span class="b-name">'+b.name+'</span></div>';
+  }).join('');
+  const bc=document.getElementById('badgeCount');
+  if(bc)bc.textContent=unlocked+'/'+BADGES.length+' unlocked';
+}
 
 // ==================== RIZE TIME TRACKER ====================
 let rizeActive=false,rizeInt=null,rizeSec=0,rizeCat='deep_work';
@@ -1047,10 +1167,21 @@ function dayReset(){
   if(lastDay&&lastDay!==td){
     const had=labsDone.length>0||tmTotal>0||journal.length>0;
     streak=had?streak+1:0;ss('streak',streak);
+    // Track weekly habit data (shift left, push today's results)
+    wkFocusDone.shift();wkFocusDone.push(tmTotal>=15);ss('wkFocusDone',wkFocusDone);
+    wkLabors.shift();wkLabors.push(labsDone.length>0);ss('wkLabors',wkLabors);
+    wkJournal.shift();wkJournal.push(refEntries.length>0||journal.length>0);ss('wkJournal',wkJournal);
+    // Mood log: push yesterday's mood
+    moodLog.push(moodToday>=0?moodToday:null);
+    if(moodLog.length>30)moodLog=moodLog.slice(-30);
+    ss('moodLog',moodLog);
+    // Reset daily state
     labsDone=[];ss('labsDone',[]);tmTotal=0;ss('tmTotal',0);
     opsDone={};ss('ops',{});auditData={};ss('audit',{});
     wkFocus.shift();wkFocus.push(0);ss('wkFocus',wkFocus);
     rizeLog={};ss('rizeLog',{});
+    moodToday=-1;ss('moodToday',-1);
+    moodXpGiven=false;ss('moodXpGiven',false);
   }
   lastDay=td;ss('lastDay',td);
 }
@@ -1106,6 +1237,17 @@ function syncWidget(){
       ForgeBridge.updateWidget(xp,level,streak,r.name,
         labsDone.length,allLabs.length,focusStr,JSON.stringify(laborsArr));
     }
+    // Sync streak weekly data
+    if(typeof ForgeBridge!=='undefined'&&ForgeBridge.updateStreakData){
+      const td=new Date(),wa=new Date(td);wa.setDate(wa.getDate()-6);
+      const range=wa.toLocaleDateString('en-US',{month:'short',day:'numeric'})+' – '+td.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+      const weeklyData={focus:wkFocusDone,labors:wkLabors,journal:wkJournal};
+      ForgeBridge.updateStreakData(JSON.stringify(weeklyData),range);
+    }
+    // Sync mood
+    if(typeof ForgeBridge!=='undefined'&&ForgeBridge.updateMood&&moodToday>=0){
+      ForgeBridge.updateMood(moodToday);
+    }
   }catch(e){}
 }
 function showToast(msg,type){
@@ -1127,8 +1269,45 @@ function addXP(amt,reason){
       showToast('LEVEL UP → '+String(level).padStart(2,'0')+' ('+newRank.name+')','lvl');
     }
   }
-  showToast('+'+amt+' XP — '+reason,'xp');
-  updBadges();updStatus();
+  const mult=getStreakMultiplier();
+  const bonus=mult>1?' ('+mult+'x streak)':'';
+  showToast('+'+amt+' XP — '+reason+bonus,'xp');
+  updBadges();updStatus();checkAchievements();
+}
+
+// Mood buttons
+document.querySelectorAll('.mood-btn').forEach(btn=>{
+  btn.addEventListener('click',function(){
+    const idx=parseInt(this.dataset.mood);
+    moodToday=idx;ss('moodToday',moodToday);
+    document.querySelectorAll('.mood-btn').forEach(b=>b.classList.remove('sel'));
+    this.classList.add('sel');
+    const label=this.dataset.label;
+    document.getElementById('moodStatus').textContent='logged: '+label+' • '+new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+    document.getElementById('moodTime').textContent=new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+    // XP for mood logging (once per day)
+    if(!moodXpGiven){
+      const mult=getStreakMultiplier();
+      const base=10;
+      addXP(Math.round(base*mult),'mood check-in');
+      moodXpGiven=true;ss('moodXpGiven',true);
+    }
+    // Update mood log
+    moodLog[moodLog.length-1]=idx;ss('moodLog',moodLog);
+    // Sync to widget
+    try{if(typeof ForgeBridge!=='undefined'&&ForgeBridge.updateMood)ForgeBridge.updateMood(idx)}catch(e){}
+    checkAchievements();renderBadges();
+  });
+});
+
+function initMoodUI(){
+  if(moodToday>=0){
+    const btns=document.querySelectorAll('.mood-btn');
+    btns.forEach(b=>b.classList.remove('sel'));
+    if(btns[moodToday])btns[moodToday].classList.add('sel');
+    const labels=['Rough','Meh','Okay','Good','Amazing'];
+    document.getElementById('moodStatus').textContent='logged: '+labels[moodToday];
+  }
 }
 
 // Nav
@@ -1178,7 +1357,7 @@ document.querySelectorAll('.quick-btn').forEach(b=>{
 
 function completeOp(name){
   opsDone[name]=true;ss('ops',opsDone);
-  addXP(name==='audit'?20:10,name+' done');
+  addXP(Math.round((name==='audit'?20:10)*getStreakMultiplier()),name+' done');
   closeSub();
 }
 function saveAudit(){
@@ -1224,7 +1403,7 @@ function renderLabors(){
     const idx=+it.dataset.i;
     if(!labsDone.includes(idx)){
       labsDone.push(idx);ss('labsDone',labsDone);
-      addXP(15,'labor done');renderLabors();updStatus();
+      addXP(Math.round(15*getStreakMultiplier()),'labor done');wkLabors[6]=true;ss('wkLabors',wkLabors);renderLabors();updStatus();
     }
   };
 }
@@ -1267,7 +1446,8 @@ function toggleTm(){
         clearInterval(tmInt);tmRun=false;
         tmTotal+=tmMax/60;ss('tmTotal',tmTotal);
         wkFocus[6]=tmTotal;ss('wkFocus',wkFocus);
-        addXP(Math.round(tmMax/60),'focus session');
+        wkFocusDone[6]=true;ss('wkFocusDone',wkFocusDone);
+        addXP(Math.round(tmMax/60*getStreakMultiplier()),'focus session');
         try{const a=new(window.AudioContext||window.webkitAudioContext)();const o=a.createOscillator();o.connect(a.destination);o.frequency.value=800;o.start();o.stop(a.currentTime+.3)}catch{}
         try{navigator.vibrate([200,100,200])}catch{}
         document.getElementById('tmStart').textContent='start';tmSec=tmMax;
@@ -1419,7 +1599,8 @@ function sendRef(){
   if(refEntries.length>50)refEntries=refEntries.slice(0,50);
   ss('refEntries',refEntries);
   inp.value='';
-  addXP(15,'reflection logged');
+  wkJournal[6]=true;ss('wkJournal',wkJournal);
+  addXP(Math.round(15*getStreakMultiplier()),'reflection logged');
   // Add to terminal display
   const el=document.getElementById('refTermBody');
   el.innerHTML+='<div class="term-entry"><span class="term-prompt">forge@reflect:~$</span> <span class="term-user-input">'+txt+'</span></div>';
@@ -1649,6 +1830,11 @@ function updProgress(){
   document.getElementById('xpLab').textContent=nLab*15;
   document.getElementById('xpFoc').textContent=Math.round(tmTotal);
   document.getElementById('xpRank').textContent=getRank(level).name;
+  document.getElementById('xpMood').textContent=moodXpGiven?'10':'0';
+  const mult=getStreakMultiplier();
+  document.getElementById('xpStreakBonus').textContent=mult+'x';
+  document.getElementById('streakMult').textContent=mult>1?'🔥 '+mult+'x multiplier':'';
+  initMoodUI();renderBadges();checkAchievements();
 }
 
 // Filter chips
@@ -1660,7 +1846,7 @@ document.querySelectorAll('.chip').forEach(c=>{
 });
 
 // Init
-initToday();updBadges();updTmDisp();renderPlanTerm();
+initToday();updBadges();updTmDisp();renderPlanTerm();initMoodUI();renderBadges();checkAchievements();
 setInterval(dayReset,60000);
 
 </script>
