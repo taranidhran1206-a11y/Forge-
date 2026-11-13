@@ -8,20 +8,28 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.forge.app.data.model.CoachMessage
 import com.forge.app.databinding.ItemCoachMessageBinding
+import java.text.SimpleDateFormat
+import java.util.*
 
 class CoachMessageAdapter : ListAdapter<CoachMessage, CoachMessageAdapter.ViewHolder>(CoachDiffCallback()) {
+
+    private val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
 
     inner class ViewHolder(private val binding: ItemCoachMessageBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(message: CoachMessage) {
+            val timeStr = timeFormat.format(Date(message.timestamp))
+
             if (message.isUser) {
-                binding.tvUserText.text = message.text
-                binding.tvUserText.visibility = View.VISIBLE
+                binding.llUserMessage.visibility = View.VISIBLE
                 binding.llAiMessage.visibility = View.GONE
+                binding.tvUserText.text = message.text
+                binding.tvUserTime.text = timeStr
             } else {
-                binding.tvAiText.text = message.text
                 binding.llAiMessage.visibility = View.VISIBLE
-                binding.tvUserText.visibility = View.GONE
+                binding.llUserMessage.visibility = View.GONE
+                binding.tvAiText.text = message.text
+                binding.tvAiTime.text = timeStr
             }
         }
     }

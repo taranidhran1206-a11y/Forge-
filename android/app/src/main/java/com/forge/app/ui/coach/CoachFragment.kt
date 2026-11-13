@@ -1,5 +1,6 @@
 package com.forge.app.ui.coach
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,7 +14,6 @@ import com.forge.app.R
 import com.forge.app.databinding.FragmentCoachBinding
 import com.forge.app.ui.ForgeViewModelFactory
 import com.forge.app.ui.adapters.CoachMessageAdapter
-import java.util.Calendar
 
 class CoachFragment : Fragment() {
 
@@ -40,6 +40,7 @@ class CoachFragment : Fragment() {
         setupRecycler()
         setupInput()
         setupChips()
+        setupClearChat()
         observeViewModel()
     }
 
@@ -80,6 +81,7 @@ class CoachFragment : Fragment() {
             chips.forEach { chipText ->
                 val chip = layoutInflater.inflate(R.layout.item_chip, binding.llChips, false) as TextView
                 chip.text = chipText
+                chip.setBackgroundResource(R.drawable.bg_chip_coach)
                 chip.setOnClickListener {
                     viewModel.sendMessage(chipText)
                 }
@@ -88,10 +90,29 @@ class CoachFragment : Fragment() {
         }
     }
 
+    private fun setupClearChat() {
+        binding.btnClearChat.setOnClickListener {
+            AlertDialog.Builder(requireContext(), R.style.ForgeDialogTheme)
+                .setTitle("Clear Chat")
+                .setMessage("Delete all messages? This cannot be undone.")
+                .setPositiveButton("CLEAR") { _, _ ->
+                    viewModel.clearChat()
+                }
+                .setNegativeButton("CANCEL", null)
+                .show()
+        }
+    }
+
     private fun observeViewModel() {
         viewModel.messages.observe(viewLifecycleOwner) { messages ->
             messageAdapter.submitList(messages)
-            if (messages.isNotEmpty()) {
+
+            // Show/hide empty state
+            val isEmpty = messages.isNullOrEmpty()
+            binding.llEmptyState.visibility = if (isEmpty) View.VISIBLE else View.GONE
+            binding.rvMessages.visibility = if (isEmpty) View.GONE else View.VISIBLE
+
+            if (!isEmpty) {
                 binding.rvMessages.postDelayed({
                     binding.rvMessages.smoothScrollToPosition(messages.size - 1)
                 }, 100)

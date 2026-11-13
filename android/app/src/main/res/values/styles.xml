@@ -151,6 +151,15 @@
         <item name="android:fontFamily">monospace</item>
     </style>
 
+    <style name="ForgeDialogTheme" parent="Theme.Material3.Dark.Dialog.Alert">
+        <item name="colorPrimary">@color/red</item>
+        <item name="colorSurface">@color/surface1</item>
+        <item name="colorOnSurface">@color/fg</item>
+        <item name="android:windowBackground">@color/surface1</item>
+        <item name="android:textColorPrimary">@color/fg</item>
+        <item name="android:fontFamily">monospace</item>
+    </style>
+
     <!-- Pill Style -->
     <style name="ForgePill">
         <item name="android:background">@drawable/bg_pill</item>
