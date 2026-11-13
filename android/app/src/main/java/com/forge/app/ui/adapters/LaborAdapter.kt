@@ -11,7 +11,8 @@ import com.forge.app.data.model.Labor
 import com.forge.app.databinding.ItemLaborBinding
 
 class LaborAdapter(
-    private val onLaborClick: (Labor) -> Unit
+    private val onLaborClick: (Labor) -> Unit,
+    private val onLaborLongClick: (Labor) -> Unit = {}
 ) : ListAdapter<Labor, LaborAdapter.ViewHolder>(LaborDiffCallback()) {
 
     inner class ViewHolder(private val binding: ItemLaborBinding) : RecyclerView.ViewHolder(binding.root) {
@@ -37,6 +38,11 @@ class LaborAdapter(
 
             binding.root.setOnClickListener {
                 onLaborClick(labor)
+            }
+
+            binding.root.setOnLongClickListener {
+                onLaborLongClick(labor)
+                true
             }
         }
     }

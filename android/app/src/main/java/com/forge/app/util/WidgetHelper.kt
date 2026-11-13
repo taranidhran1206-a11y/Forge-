@@ -71,6 +71,9 @@ object WidgetHelper {
 
     fun writeStreakData(context: Context, streak: Int) {
         val prefs = context.getSharedPreferences("forge_widget_prefs", Context.MODE_PRIVATE)
-        prefs.edit().putInt("streak_count", streak).apply()
+        prefs.edit()
+            .putInt("streak_count", streak)
+            .putInt("streak", streak)  // Java provider reads "streak"
+            .apply()
     }
 }

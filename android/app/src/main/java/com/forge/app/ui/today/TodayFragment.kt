@@ -9,12 +9,16 @@ import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.forge.app.R
+import com.forge.app.data.model.Labor
 import com.forge.app.data.model.RankSystem
 import com.forge.app.databinding.FragmentTodayBinding
 import com.forge.app.ui.ForgeViewModelFactory
@@ -51,6 +55,7 @@ class TodayFragment : Fragment() {
         setupDate()
         setupDayDots()
         setupLaborsRecycler()
+        setupAddLaborButton()
         setupTimeTracker()
         setupFocusTimer()
         setupShieldWall()
@@ -83,9 +88,10 @@ class TodayFragment : Fragment() {
     }
 
     private fun setupLaborsRecycler() {
-        laborAdapter = LaborAdapter { labor ->
-            viewModel.toggleLabor(labor)
-        }
+        laborAdapter = LaborAdapter(
+            onLaborClick = { labor -> viewModel.toggleLabor(labor) },
+            onLaborLongClick = { labor -> showLaborOptionsDialog(labor) }
+        )
         binding.rvLabors.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = laborAdapter
@@ -93,35 +99,140 @@ class TodayFragment : Fragment() {
         }
     }
 
+    private fun setupAddLaborButton() {
+        binding.btnAddLabor.setOnClickListener {
+            showAddLaborDialog()
+        }
+    }
+
+    private fun showAddLaborDialog() {
+        val context = requireContext()
+        val layout = LinearLayout(context).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(48, 32, 48, 16)
+        }
+
+        val nameInput = EditText(context).apply {
+            hint = "Labor name"
+            setTextColor(Color.parseColor("#F5F5F5"))
+            setHintTextColor(Color.parseColor("#555555"))
+            typeface = android.graphics.Typeface.MONOSPACE
+            setBackgroundResource(R.drawable.bg_input)
+            setPadding(24, 16, 24, 16)
+        }
+        layout.addView(nameInput)
+
+        val descInput = EditText(context).apply {
+            hint = "Description (optional)"
+            setTextColor(Color.parseColor("#F5F5F5"))
+            setHintTextColor(Color.parseColor("#555555"))
+            typeface = android.graphics.Typeface.MONOSPACE
+            setBackgroundResource(R.drawable.bg_input)
+            setPadding(24, 16, 24, 16)
+            val params = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            )
+            params.topMargin = 16
+            layoutParams = params
+        }
+        layout.addView(descInput)
+
+        AlertDialog.Builder(context, R.style.TerminalDialogTheme)
+            .setTitle("Add Labor")
+            .setView(layout)
+            .setPositiveButton("ADD") { _, _ ->
+                val name = nameInput.text.toString().trim()
+                if (name.isNotEmpty()) {
+                    viewModel.addLabor(name, descInput.text.toString().trim())
+                }
+            }
+            .setNegativeButton("CANCEL", null)
+            .show()
+    }
+
+    private fun showLaborOptionsDialog(labor: Labor) {
+        val options = arrayOf("✏️ Edit", "🗑️ Delete")
+
+        AlertDialog.Builder(requireContext(), R.style.TerminalDialogTheme)
+            .setTitle(labor.name)
+            .setItems(options) { _, which ->
+                when (which) {
+                    0 -> showEditLaborDialog(labor)
+                    1 -> {
+                        AlertDialog.Builder(requireContext(), R.style.TerminalDialogTheme)
+                            .setTitle("Delete Labor")
+                            .setMessage("Remove \"${labor.name}\"?")
+                            .setPositiveButton("DELETE") { _, _ ->
+                                viewModel.deleteLabor(labor)
+                            }
+                            .setNegativeButton("CANCEL", null)
+                            .show()
+                    }
+                }
+            }
+            .show()
+    }
+
+    private fun showEditLaborDialog(labor: Labor) {
+        val context = requireContext()
+        val layout = LinearLayout(context).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(48, 32, 48, 16)
+        }
+
+        val nameInput = EditText(context).apply {
+            setText(labor.name)
+            setTextColor(Color.parseColor("#F5F5F5"))
+            setHintTextColor(Color.parseColor("#555555"))
+            typeface = android.graphics.Typeface.MONOSPACE
+            setBackgroundResource(R.drawable.bg_input)
+            setPadding(24, 16, 24, 16)
+        }
+        layout.addView(nameInput)
+
+        val descInput = EditText(context).apply {
+            setText(labor.description)
+            setTextColor(Color.parseColor("#F5F5F5"))
+            setHintTextColor(Color.parseColor("#555555"))
+            typeface = android.graphics.Typeface.MONOSPACE
+            setBackgroundResource(R.drawable.bg_input)
+            setPadding(24, 16, 24, 16)
+            val params = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            )
+            params.topMargin = 16
+            layoutParams = params
+        }
+        layout.addView(descInput)
+
+        AlertDialog.Builder(context, R.style.TerminalDialogTheme)
+            .setTitle("Edit Labor")
+            .setView(layout)
+            .setPositiveButton("SAVE") { _, _ ->
+                val name = nameInput.text.toString().trim()
+                if (name.isNotEmpty()) {
+                    viewModel.editLabor(labor, name, descInput.text.toString().trim())
+                }
+            }
+            .setNegativeButton("CANCEL", null)
+            .show()
+    }
+
     private fun setupTimeTracker() {
+        // Single tap to start/stop — no category picker, Rize-style
         binding.btnTrackToggle.setOnClickListener {
             val activeTrack = viewModel.activeTimeTrack.value
             if (activeTrack != null) {
                 viewModel.stopTimeTrack()
                 stopTimeTrackUpdater()
             } else {
-                showCategoryPicker()
+                // Auto-start tracking immediately — no category selection needed
+                viewModel.startTimeTrack("general")
+                startTimeTrackUpdater()
             }
         }
-    }
-
-    private fun showCategoryPicker() {
-        val categories = arrayOf(
-            "🧠 Deep Work", "📧 Admin", "📱 Social Media", "▶️ YouTube",
-            "💪 Exercise", "😴 Rest", "📚 Learning", "🔄 Other"
-        )
-        val categoryKeys = arrayOf(
-            "deep_work", "admin", "social_media", "youtube",
-            "exercise", "rest", "learning", "other"
-        )
-
-        val builder = AlertDialog.Builder(requireContext(), R.style.TerminalDialogTheme)
-        builder.setTitle("Select Category")
-        builder.setItems(categories) { _, which ->
-            viewModel.startTimeTrack(categoryKeys[which])
-            startTimeTrackUpdater()
-        }
-        builder.show()
     }
 
     private fun startTimeTrackUpdater() {
@@ -130,10 +241,11 @@ class TodayFragment : Fragment() {
                 val track = viewModel.activeTimeTrack.value
                 if (track != null) {
                     val elapsed = System.currentTimeMillis() - track.startTime
-                    val minutes = (elapsed / 60000).toInt()
-                    val hours = minutes / 60
-                    val mins = minutes % 60
-                    binding.tvTrackDuration.text = String.format("%02d:%02d", hours, mins)
+                    val totalSeconds = (elapsed / 1000).toInt()
+                    val hours = totalSeconds / 3600
+                    val minutes = (totalSeconds % 3600) / 60
+                    val seconds = totalSeconds % 60
+                    binding.tvTrackDuration.text = String.format("%02d:%02d:%02d", hours, minutes, seconds)
                     handler.postDelayed(this, 1000)
                 }
             }
@@ -144,7 +256,7 @@ class TodayFragment : Fragment() {
     private fun stopTimeTrackUpdater() {
         timeTrackRunnable?.let { handler.removeCallbacks(it) }
         timeTrackRunnable = null
-        binding.tvTrackDuration.text = "00:00"
+        binding.tvTrackDuration.text = "00:00:00"
     }
 
     private fun setupFocusTimer() {
@@ -210,14 +322,18 @@ class TodayFragment : Fragment() {
 
         viewModel.activeTimeTrack.observe(viewLifecycleOwner) { track ->
             if (track != null) {
-                binding.tvTrackCategory.text = formatCategory(track.category)
+                binding.tvTrackCategory.text = "Tracking"
+                binding.tvTrackStatus.text = "Active"
+                binding.tvTrackStatus.setTextColor(Color.parseColor("#4CAF50"))
                 binding.btnTrackToggle.text = "■ STOP"
                 binding.btnTrackToggle.setBackgroundResource(R.drawable.bg_button_primary)
                 startTimeTrackUpdater()
             } else {
                 binding.tvTrackCategory.text = "Not tracking"
-                binding.tvTrackDuration.text = "00:00"
-                binding.btnTrackToggle.text = "▶ START"
+                binding.tvTrackStatus.text = "Tap to start"
+                binding.tvTrackStatus.setTextColor(Color.parseColor("#9E9E9E"))
+                binding.tvTrackDuration.text = "00:00:00"
+                binding.btnTrackToggle.text = "▶ TRACK"
                 binding.btnTrackToggle.setBackgroundResource(R.drawable.bg_button_outlined)
                 stopTimeTrackUpdater()
             }
@@ -261,20 +377,6 @@ class TodayFragment : Fragment() {
                     dayDots[index].setTextColor(Color.WHITE)
                 }
             }
-        }
-    }
-
-    private fun formatCategory(category: String): String {
-        return when (category) {
-            "deep_work" -> "🧠 Deep Work"
-            "admin" -> "📧 Admin"
-            "social_media" -> "📱 Social Media"
-            "youtube" -> "▶️ YouTube"
-            "exercise" -> "💪 Exercise"
-            "rest" -> "😴 Rest"
-            "learning" -> "📚 Learning"
-            "other" -> "🔄 Other"
-            else -> category
         }
     }
 

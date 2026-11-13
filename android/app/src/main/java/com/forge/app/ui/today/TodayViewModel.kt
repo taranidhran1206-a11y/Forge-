@@ -130,6 +130,35 @@ class TodayViewModel(private val repository: ForgeRepository) : ViewModel() {
         _xpToastEvent.value = null
     }
 
+    fun addLabor(name: String, description: String) {
+        viewModelScope.launch {
+            val labor = Labor(
+                name = name,
+                emoji = "⚔️",
+                description = description,
+                time = "12:00",
+                timeOfDay = "AFTERNOON",
+                xpReward = 10,
+                date = today,
+                sortOrder = (todayLabors.value?.size ?: 0) + 1
+            )
+            repository.insertLabor(labor)
+        }
+    }
+
+    fun editLabor(labor: Labor, newName: String, newDescription: String) {
+        viewModelScope.launch {
+            val updated = labor.copy(name = newName, description = newDescription)
+            repository.updateLabor(updated)
+        }
+    }
+
+    fun deleteLabor(labor: Labor) {
+        viewModelScope.launch {
+            repository.deleteLabor(labor)
+        }
+    }
+
     // --- Time tracking (Rize) ---
 
     fun startTimeTrack(category: String) {

@@ -28,6 +28,15 @@
         <item name="android:fontFamily">monospace</item>
     </style>
 
+    <!-- Splash Theme -->
+    <style name="Theme.Forge.Splash" parent="Theme.Forge">
+        <item name="android:windowBackground">@color/bg</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowFullscreen">false</item>
+        <item name="android:windowContentOverlay">@null</item>
+    </style>
+
     <!-- Terminal Text Styles -->
     <style name="TextTerminal">
         <item name="android:fontFamily">monospace</item>

@@ -16,17 +16,24 @@
         android:theme="@style/Theme.Forge"
         android:supportsRtl="true">
 
+        <!-- Splash/Boot Screen — the launcher -->
         <activity
-            android:name=".MainActivity"
+            android:name=".SplashActivity"
             android:exported="true"
-            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
-            android:screenOrientation="unspecified"
-            android:windowSoftInputMode="adjustResize">
+            android:theme="@style/Theme.Forge.Splash"
+            android:screenOrientation="unspecified">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="false"
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
+            android:screenOrientation="unspecified"
+            android:windowSoftInputMode="adjustResize" />
 
         <service
             android:name=".service.TimeTrackService"

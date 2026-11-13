@@ -15,8 +15,10 @@ import com.forge.app.data.ForgeDatabase
 import com.forge.app.data.ForgeRepository
 import com.forge.app.data.model.Labor
 import com.forge.app.databinding.ActivityMainBinding
+import com.forge.app.data.model.RankSystem
 import com.forge.app.util.WidgetHelper
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
@@ -60,6 +62,15 @@ class MainActivity : AppCompatActivity() {
         if (!prefs.getBoolean("labors_seeded", false)) {
             seedDefaultLabors()
             prefs.edit().putBoolean("labors_seeded", true).apply()
+        }
+
+        // Update app bar XP and rank
+        lifecycleScope.launch {
+            repository.getTotalXp().collectLatest { xp ->
+                val rank = RankSystem.getRank(xp)
+                binding.tvAppbarXp.text = "$xp XP"
+                binding.tvAppbarRank.text = rank.title
+            }
         }
     }
 
