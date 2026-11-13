@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/bg_card"
+    android:padding="14dp"
+    android:layout_marginBottom="8dp">
+
+    <TextView
+        android:id="@+id/tv_ref_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Nov 12, 2026"
+        android:textColor="#9E9E9E"
+        android:textSize="11sp"
+        android:fontFamily="monospace"
+        android:layout_marginBottom="4dp" />
+
+    <TextView
+        android:id="@+id/tv_ref_prompt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="What did you fight for today?"
+        android:textColor="#555555"
+        android:textSize="12sp"
+        android:fontFamily="monospace"
+        android:textStyle="italic"
+        android:layout_marginBottom="6dp" />
+
+    <TextView
+        android:id="@+id/tv_ref_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Entry text here..."
+        android:textColor="#F5F5F5"
+        android:textSize="14sp"
+        android:fontFamily="monospace"
+        android:lineSpacingMultiplier="1.3"
+        android:layout_marginBottom="8dp" />
+
+    <TextView
+        android:id="@+id/tv_ref_ai_response"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="AI response..."
+        android:textColor="#9E9E9E"
+        android:textSize="13sp"
+        android:fontFamily="monospace"
+        android:lineSpacingMultiplier="1.3"
+        android:background="@drawable/bg_card_elevated"
+        android:padding="10dp"
+        android:visibility="gone" />
+
+</LinearLayout>

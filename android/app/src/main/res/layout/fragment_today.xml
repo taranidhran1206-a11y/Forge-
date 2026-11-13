@@ -1,0 +1,560 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#0A0A0A"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Terminal Header -->
+        <TextView
+            android:id="@+id/tv_terminal_prompt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="forge@today:~$"
+            android:textColor="#E53935"
+            android:textSize="14sp"
+            android:fontFamily="monospace"
+            android:layout_marginBottom="4dp" />
+
+        <TextView
+            android:id="@+id/tv_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="NOVEMBER 13, 2026"
+            android:textColor="#F5F5F5"
+            android:textSize="20sp"
+            android:fontFamily="monospace"
+            android:textStyle="bold"
+            android:layout_marginBottom="12dp" />
+
+        <!-- Day Dots Row -->
+        <LinearLayout
+            android:id="@+id/ll_day_dots"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:id="@+id/dot_sun"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:text="S"
+                android:textColor="#9E9E9E"
+                android:textSize="12sp"
+                android:fontFamily="monospace"
+                android:gravity="center"
+                android:background="@drawable/bg_day_dot"
+                android:layout_marginEnd="6dp" />
+
+            <TextView
+                android:id="@+id/dot_mon"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:text="M"
+                android:textColor="#9E9E9E"
+                android:textSize="12sp"
+                android:fontFamily="monospace"
+                android:gravity="center"
+                android:background="@drawable/bg_day_dot"
+                android:layout_marginEnd="6dp" />
+
+            <TextView
+                android:id="@+id/dot_tue"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:text="T"
+                android:textColor="#9E9E9E"
+                android:textSize="12sp"
+                android:fontFamily="monospace"
+                android:gravity="center"
+                android:background="@drawable/bg_day_dot"
+                android:layout_marginEnd="6dp" />
+
+            <TextView
+                android:id="@+id/dot_wed"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:text="W"
+                android:textColor="#9E9E9E"
+                android:textSize="12sp"
+                android:fontFamily="monospace"
+                android:gravity="center"
+                android:background="@drawable/bg_day_dot"
+                android:layout_marginEnd="6dp" />
+
+            <TextView
+                android:id="@+id/dot_thu"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:text="T"
+                android:textColor="#9E9E9E"
+                android:textSize="12sp"
+                android:fontFamily="monospace"
+                android:gravity="center"
+                android:background="@drawable/bg_day_dot"
+                android:layout_marginEnd="6dp" />
+
+            <TextView
+                android:id="@+id/dot_fri"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:text="F"
+                android:textColor="#9E9E9E"
+                android:textSize="12sp"
+                android:fontFamily="monospace"
+                android:gravity="center"
+                android:background="@drawable/bg_day_dot"
+                android:layout_marginEnd="6dp" />
+
+            <TextView
+                android:id="@+id/dot_sat"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:text="S"
+                android:textColor="#9E9E9E"
+                android:textSize="12sp"
+                android:fontFamily="monospace"
+                android:gravity="center"
+                android:background="@drawable/bg_day_dot" />
+        </LinearLayout>
+
+        <!-- XP / Rank Bar -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@drawable/bg_card"
+            android:padding="12dp"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:id="@+id/tv_rank_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="IRON"
+                android:textColor="#78909C"
+                android:textSize="12sp"
+                android:fontFamily="monospace"
+                android:textStyle="bold"
+                android:background="@drawable/bg_pill_red"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="4dp" />
+
+            <TextView
+                android:id="@+id/tv_xp_amount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0 XP"
+                android:textColor="#F5F5F5"
+                android:textSize="14sp"
+                android:fontFamily="monospace"
+                android:textStyle="bold"
+                android:layout_marginStart="10dp" />
+
+            <ProgressBar
+                android:id="@+id/pb_xp"
+                style="@android:style/Widget.ProgressBar.Horizontal"
+                android:layout_width="0dp"
+                android:layout_height="6dp"
+                android:layout_weight="1"
+                android:layout_marginHorizontal="10dp"
+                android:max="100"
+                android:progress="0"
+                android:progressDrawable="@drawable/bg_xp_progress"
+                android:background="@drawable/bg_xp_bar" />
+
+            <TextView
+                android:id="@+id/tv_global_rank"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TOP 99%"
+                android:textColor="#9E9E9E"
+                android:textSize="10sp"
+                android:fontFamily="monospace" />
+        </LinearLayout>
+
+        <!-- LABORS Section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="8dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="// LABORS"
+                android:textColor="#555555"
+                android:textSize="12sp"
+                android:fontFamily="monospace" />
+
+            <TextView
+                android:id="@+id/tv_labor_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0/0"
+                android:textColor="#9E9E9E"
+                android:textSize="12sp"
+                android:fontFamily="monospace"
+                android:background="@drawable/bg_pill"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="2dp" />
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_labors"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false"
+            android:layout_marginBottom="20dp" />
+
+        <!-- RIZE TRACKER Section -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="// RIZE TRACKER"
+            android:textColor="#555555"
+            android:textSize="12sp"
+            android:fontFamily="monospace"
+            android:layout_marginBottom="8dp" />
+
+        <LinearLayout
+            android:id="@+id/card_time_tracker"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/bg_card"
+            android:padding="16dp"
+            android:layout_marginBottom="20dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="12dp">
+
+                <TextView
+                    android:id="@+id/tv_track_category_emoji"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="🧠"
+                    android:textSize="24sp" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:layout_marginStart="12dp">
+
+                    <TextView
+                        android:id="@+id/tv_track_category"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Deep Work"
+                        android:textColor="#F5F5F5"
+                        android:textSize="16sp"
+                        android:fontFamily="monospace"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tv_track_status"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Not tracking"
+                        android:textColor="#9E9E9E"
+                        android:textSize="12sp"
+                        android:fontFamily="monospace" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/btn_change_category"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="CHANGE"
+                    android:textColor="#E53935"
+                    android:textSize="12sp"
+                    android:fontFamily="monospace"
+                    android:background="@drawable/bg_button_outlined"
+                    android:paddingHorizontal="12dp"
+                    android:paddingVertical="6dp" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_track_duration"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="00:00:00"
+                android:textColor="#F5F5F5"
+                android:textSize="32sp"
+                android:fontFamily="monospace"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:layout_marginBottom="12dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center">
+
+                <TextView
+                    android:id="@+id/btn_track_toggle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="START"
+                    android:textColor="#F5F5F5"
+                    android:textSize="14sp"
+                    android:fontFamily="monospace"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    android:background="@drawable/bg_button_primary"
+                    android:paddingVertical="12dp"
+                    android:layout_marginEnd="8dp" />
+
+                <TextView
+                    android:id="@+id/btn_track_stop"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="STOP"
+                    android:textColor="#E53935"
+                    android:textSize="14sp"
+                    android:fontFamily="monospace"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    android:background="@drawable/bg_button_outlined"
+                    android:paddingVertical="12dp"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <!-- Today's time summary -->
+            <LinearLayout
+                android:id="@+id/ll_time_summary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="12dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Today's Time"
+                    android:textColor="#555555"
+                    android:textSize="10sp"
+                    android:fontFamily="monospace"
+                    android:layout_marginBottom="4dp" />
+
+                <LinearLayout
+                    android:id="@+id/ll_time_categories"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- FOCUS Section -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="// FOCUS"
+            android:textColor="#555555"
+            android:textSize="12sp"
+            android:fontFamily="monospace"
+            android:layout_marginBottom="8dp" />
+
+        <LinearLayout
+            android:id="@+id/card_focus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/bg_card"
+            android:padding="16dp"
+            android:gravity="center"
+            android:layout_marginBottom="20dp">
+
+            <FrameLayout
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:layout_marginBottom="16dp">
+
+                <ProgressBar
+                    android:id="@+id/pb_focus_ring"
+                    style="@android:style/Widget.ProgressBar.Horizontal"
+                    android:layout_width="200dp"
+                    android:layout_height="200dp"
+                    android:max="100"
+                    android:progress="0"
+                    android:indeterminate="false"
+                    android:progressDrawable="@drawable/bg_focus_ring" />
+
+                <TextView
+                    android:id="@+id/tv_focus_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="25:00"
+                    android:textColor="#F5F5F5"
+                    android:textSize="36sp"
+                    android:fontFamily="monospace"
+                    android:textStyle="bold" />
+            </FrameLayout>
+
+            <TextView
+                android:id="@+id/tv_focus_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="POMODORO"
+                android:textColor="#9E9E9E"
+                android:textSize="12sp"
+                android:fontFamily="monospace"
+                android:layout_marginBottom="12dp" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center">
+
+                <ImageView
+                    android:id="@+id/btn_focus_start"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/ic_play"
+                    android:background="@drawable/bg_button_primary"
+                    android:padding="12dp"
+                    android:layout_marginEnd="12dp"
+                    android:contentDescription="Start focus" />
+
+                <ImageView
+                    android:id="@+id/btn_focus_pause"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/ic_pause"
+                    android:background="@drawable/bg_button_outlined"
+                    android:padding="12dp"
+                    android:layout_marginEnd="12dp"
+                    android:visibility="gone"
+                    android:contentDescription="Pause focus" />
+
+                <ImageView
+                    android:id="@+id/btn_focus_stop"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/ic_stop"
+                    android:background="@drawable/bg_button_outlined"
+                    android:padding="12dp"
+                    android:contentDescription="Stop focus" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- STREAK Section -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="// STREAK"
+            android:textColor="#555555"
+            android:textSize="12sp"
+            android:fontFamily="monospace"
+            android:layout_marginBottom="8dp" />
+
+        <LinearLayout
+            android:id="@+id/card_streak"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/bg_card"
+            android:padding="16dp"
+            android:layout_marginBottom="20dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="12dp">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_streak_flame"
+                    android:contentDescription="Streak" />
+
+                <TextView
+                    android:id="@+id/tv_streak_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textColor="#FFB300"
+                    android:textSize="28sp"
+                    android:fontFamily="monospace"
+                    android:textStyle="bold"
+                    android:layout_marginStart="8dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" day streak"
+                    android:textColor="#9E9E9E"
+                    android:textSize="14sp"
+                    android:fontFamily="monospace" />
+            </LinearLayout>
+
+            <!-- Mini calendar grid - 7 columns -->
+            <GridLayout
+                android:id="@+id/grid_streak_calendar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:columnCount="7"
+                android:rowCount="5"
+                android:useDefaultMargins="true" />
+        </LinearLayout>
+
+        <!-- SHIELD WALL Section -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="// SHIELD WALL"
+            android:textColor="#555555"
+            android:textSize="12sp"
+            android:fontFamily="monospace"
+            android:layout_marginBottom="8dp" />
+
+        <LinearLayout
+            android:id="@+id/card_shield"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/bg_terminal"
+            android:padding="16dp"
+            android:layout_marginBottom="24dp">
+
+            <TextView
+                android:id="@+id/tv_shield_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="[ENFORCER] Hold the line. No retreat.\nEvery rep counts. Every minute matters.\nYou are forged in discipline."
+                android:textColor="#E53935"
+                android:textSize="14sp"
+                android:fontFamily="monospace"
+                android:lineSpacingMultiplier="1.4" />
+        </LinearLayout>
+
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

@@ -1,14 +1,151 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.Forge" parent="Theme.AppCompat.NoActionBar">
-        <item name="android:windowBackground">#FF0A0A0A</item>
-        <item name="android:statusBarColor">#FF0A0A0A</item>
-        <item name="android:navigationBarColor">#FF0A0A0A</item>
-        <item name="android:windowFullscreen">true</item>
-        <item name="android:windowActionBar">false</item>
-        <item name="android:windowNoTitle">true</item>
-        <item name="colorPrimary">#FFCF4A</item>
-        <item name="colorPrimaryDark">#0A0A0A</item>
-        <item name="colorAccent">#FFCF4A</item>
+
+    <!-- App Theme -->
+    <style name="Theme.Forge" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="colorPrimary">@color/red</item>
+        <item name="colorPrimaryContainer">@color/red_alpha30</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorSecondary">@color/red</item>
+        <item name="colorSecondaryContainer">@color/red_alpha20</item>
+        <item name="colorOnSecondary">@color/white</item>
+        <item name="colorSurface">@color/surface1</item>
+        <item name="colorOnSurface">@color/fg</item>
+        <item name="colorSurfaceVariant">@color/surface2</item>
+        <item name="colorOnSurfaceVariant">@color/fg2</item>
+        <item name="colorError">@color/red_light</item>
+        <item name="colorOnError">@color/white</item>
+        <item name="android:colorBackground">@color/bg</item>
+        <item name="colorOnBackground">@color/fg</item>
+        <item name="android:windowBackground">@color/bg</item>
+        <item name="android:statusBarColor">@color/bg</item>
+        <item name="android:navigationBarColor">@color/bg</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightNavigationBar">false</item>
+        <item name="android:textColorPrimary">@color/fg</item>
+        <item name="android:textColorSecondary">@color/fg2</item>
+        <item name="android:textColorHint">@color/fg3</item>
+        <item name="android:fontFamily">monospace</item>
     </style>
+
+    <!-- Terminal Text Styles -->
+    <style name="TextTerminal">
+        <item name="android:fontFamily">monospace</item>
+        <item name="android:textColor">@color/fg</item>
+    </style>
+
+    <style name="TextTerminal.Large">
+        <item name="android:textSize">@dimen/text_xl</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="TextTerminal.Medium">
+        <item name="android:textSize">@dimen/text_md</item>
+    </style>
+
+    <style name="TextTerminal.Small">
+        <item name="android:textSize">@dimen/text_sm</item>
+        <item name="android:textColor">@color/fg2</item>
+    </style>
+
+    <style name="TextTerminal.XSmall">
+        <item name="android:textSize">@dimen/text_xs</item>
+        <item name="android:textColor">@color/fg3</item>
+    </style>
+
+    <style name="TextTerminal.Header">
+        <item name="android:textSize">@dimen/text_xxl</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/fg</item>
+    </style>
+
+    <style name="TextTerminal.Accent">
+        <item name="android:textSize">@dimen/text_sm</item>
+        <item name="android:textColor">@color/red</item>
+    </style>
+
+    <!-- Card Styles -->
+    <style name="ForgeCard">
+        <item name="android:background">@drawable/bg_card</item>
+        <item name="android:padding">@dimen/space_md</item>
+    </style>
+
+    <style name="ForgeCard.Elevated">
+        <item name="android:background">@drawable/bg_card_elevated</item>
+    </style>
+
+    <style name="ForgeCard.Terminal">
+        <item name="android:background">@drawable/bg_terminal</item>
+    </style>
+
+    <!-- Button Styles -->
+    <style name="ForgeButton" parent="Widget.Material3.Button">
+        <item name="android:background">@drawable/bg_button_primary</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">@dimen/text_sm</item>
+        <item name="android:fontFamily">monospace</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:paddingStart">@dimen/space_lg</item>
+        <item name="android:paddingEnd">@dimen/space_lg</item>
+        <item name="android:paddingTop">@dimen/space_sm</item>
+        <item name="android:paddingBottom">@dimen/space_sm</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textAllCaps">true</item>
+    </style>
+
+    <style name="ForgeButton.Outlined">
+        <item name="android:background">@drawable/bg_button_outlined</item>
+        <item name="android:textColor">@color/red</item>
+    </style>
+
+    <!-- Input Style -->
+    <style name="ForgeInput">
+        <item name="android:background">@drawable/input_selector</item>
+        <item name="android:textColor">@color/fg</item>
+        <item name="android:textColorHint">@color/fg3</item>
+        <item name="android:textSize">@dimen/text_sm</item>
+        <item name="android:fontFamily">monospace</item>
+        <item name="android:padding">@dimen/space_sm</item>
+    </style>
+
+    <!-- Bottom Navigation Style -->
+    <style name="ForgeBottomNav">
+        <item name="android:background">@drawable/bg_bottom_nav</item>
+    </style>
+
+    <!-- Chip Style -->
+    <style name="ForgeChip">
+        <item name="android:background">@drawable/bg_chip</item>
+        <item name="android:textColor">@color/fg2</item>
+        <item name="android:textSize">@dimen/text_xs</item>
+        <item name="android:fontFamily">monospace</item>
+        <item name="android:paddingStart">@dimen/space_sm</item>
+        <item name="android:paddingEnd">@dimen/space_sm</item>
+        <item name="android:paddingTop">@dimen/space_xs</item>
+        <item name="android:paddingBottom">@dimen/space_xs</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <!-- Dialog Style -->
+    <style name="TerminalDialogTheme" parent="Theme.Material3.Dark.Dialog.Alert">
+        <item name="colorPrimary">@color/red</item>
+        <item name="colorSurface">@color/surface1</item>
+        <item name="colorOnSurface">@color/fg</item>
+        <item name="android:windowBackground">@color/surface1</item>
+        <item name="android:textColorPrimary">@color/fg</item>
+        <item name="android:fontFamily">monospace</item>
+    </style>
+
+    <!-- Pill Style -->
+    <style name="ForgePill">
+        <item name="android:background">@drawable/bg_pill</item>
+        <item name="android:textColor">@color/fg</item>
+        <item name="android:textSize">@dimen/text_xs</item>
+        <item name="android:fontFamily">monospace</item>
+        <item name="android:paddingStart">@dimen/space_sm</item>
+        <item name="android:paddingEnd">@dimen/space_sm</item>
+        <item name="android:paddingTop">@dimen/space_xxs</item>
+        <item name="android:paddingBottom">@dimen/space_xxs</item>
+    </style>
+
 </resources>

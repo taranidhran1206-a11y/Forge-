@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_today"
+        android:icon="@drawable/ic_today"
+        android:title="@string/tab_today" />
+    <item
+        android:id="@+id/nav_plan"
+        android:icon="@drawable/ic_plan"
+        android:title="@string/tab_plan" />
+    <item
+        android:id="@+id/nav_progress"
+        android:icon="@drawable/ic_progress"
+        android:title="@string/tab_progress" />
+    <item
+        android:id="@+id/nav_reflect"
+        android:icon="@drawable/ic_reflect"
+        android:title="@string/tab_reflect" />
+    <item
+        android:id="@+id/nav_coach"
+        android:icon="@drawable/ic_coach"
+        android:title="@string/tab_coach" />
+</menu>

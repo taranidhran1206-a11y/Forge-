@@ -1,4 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="ic_launcher_background">#1A1F3D</color>
+    <!-- Base -->
+    <color name="transparent">#00000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="black">#FF000000</color>
+
+    <!-- Background -->
+    <color name="bg">#FF0A0A0A</color>
+    <color name="surface1">#FF111111</color>
+    <color name="surface2">#FF171717</color>
+    <color name="surface3">#FF1E1E1E</color>
+
+    <!-- Accent -->
+    <color name="red">#FFE53935</color>
+    <color name="red_light">#FFFF5252</color>
+    <color name="red_alpha20">#33E53935</color>
+    <color name="red_alpha30">#4DE53935</color>
+    <color name="green">#FF00E676</color>
+    <color name="amber">#FFFFB300</color>
+
+    <!-- Foreground -->
+    <color name="fg">#FFF5F5F5</color>
+    <color name="fg2">#FF9E9E9E</color>
+    <color name="fg3">#FF555555</color>
+
+    <!-- Rank Colors -->
+    <color name="rank_iron">#FF78909C</color>
+    <color name="rank_bronze">#FFA1887F</color>
+    <color name="rank_silver">#FFB0BEC5</color>
+    <color name="rank_gold">#FFFFD54F</color>
+    <color name="rank_platinum">#FF80DEEA</color>
+    <color name="rank_diamond">#FFCE93D8</color>
+    <color name="rank_titan">#FFFF5252</color>
+    <color name="rank_legend">#FFE53935</color>
+
+    <!-- Widget -->
+    <color name="widget_bg">#E60A0A0A</color>
+    <color name="widget_bg_glass">#D9111111</color>
+
+    <!-- Material Theme Overrides -->
+    <color name="colorPrimary">#FFE53935</color>
+    <color name="colorPrimaryVariant">#FFFF5252</color>
+    <color name="colorOnPrimary">#FFFFFFFF</color>
+    <color name="colorSecondary">#FFE53935</color>
+    <color name="colorSecondaryVariant">#FFFF5252</color>
+    <color name="colorOnSecondary">#FFFFFFFF</color>
+    <color name="colorSurface">#FF111111</color>
+    <color name="colorOnSurface">#FFF5F5F5</color>
+    <color name="colorError">#FFFF5252</color>
+    <color name="colorOnError">#FFFFFFFF</color>
+    <color name="colorBackground">#FF0A0A0A</color>
+    <color name="colorOnBackground">#FFF5F5F5</color>
+
+    <!-- Launcher -->
+    <color name="ic_launcher_background">#FF0A0A0A</color>
 </resources>

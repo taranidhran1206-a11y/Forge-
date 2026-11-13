@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/widget_bg"
+    android:padding="14dp">
+
+    <!-- Date Header -->
+    <TextView
+        android:id="@+id/tv_widget_date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="TODAY'S PLAN"
+        android:textColor="#E53935"
+        android:textSize="12sp"
+        android:fontFamily="monospace"
+        android:textStyle="bold"
+        android:layout_marginBottom="8dp" />
+
+    <!-- Labor 1 -->
+    <LinearLayout
+        android:id="@+id/ll_labor_1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="4dp"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/iv_check_1"
+            android:layout_width="14dp"
+            android:layout_height="14dp"
+            android:src="@drawable/labor_dot_pending"
+            android:contentDescription="Status" />
+
+        <TextView
+            android:id="@+id/tv_labor_name_1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#F5F5F5"
+            android:textSize="12sp"
+            android:fontFamily="monospace"
+            android:layout_marginStart="8dp"
+            android:maxLines="1"
+            android:ellipsize="end" />
+    </LinearLayout>
+
+    <!-- Labor 2 -->
+    <LinearLayout
+        android:id="@+id/ll_labor_2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="4dp"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/iv_check_2"
+            android:layout_width="14dp"
+            android:layout_height="14dp"
+            android:src="@drawable/labor_dot_pending"
+            android:contentDescription="Status" />
+
+        <TextView
+            android:id="@+id/tv_labor_name_2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#F5F5F5"
+            android:textSize="12sp"
+            android:fontFamily="monospace"
+            android:layout_marginStart="8dp"
+            android:maxLines="1"
+            android:ellipsize="end" />
+    </LinearLayout>
+
+    <!-- Labor 3 -->
+    <LinearLayout
+        android:id="@+id/ll_labor_3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="4dp"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/iv_check_3"
+            android:layout_width="14dp"
+            android:layout_height="14dp"
+            android:src="@drawable/labor_dot_pending"
+            android:contentDescription="Status" />
+
+        <TextView
+            android:id="@+id/tv_labor_name_3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#F5F5F5"
+            android:textSize="12sp"
+            android:fontFamily="monospace"
+            android:layout_marginStart="8dp"
+            android:maxLines="1"
+            android:ellipsize="end" />
+    </LinearLayout>
+
+    <!-- Labor 4 -->
+    <LinearLayout
+        android:id="@+id/ll_labor_4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="4dp"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/iv_check_4"
+            android:layout_width="14dp"
+            android:layout_height="14dp"
+            android:src="@drawable/labor_dot_pending"
+            android:contentDescription="Status" />
+
+        <TextView
+            android:id="@+id/tv_labor_name_4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#F5F5F5"
+            android:textSize="12sp"
+            android:fontFamily="monospace"
+            android:layout_marginStart="8dp"
+            android:maxLines="1"
+            android:ellipsize="end" />
+    </LinearLayout>
+
+    <!-- Labor 5 -->
+    <LinearLayout
+        android:id="@+id/ll_labor_5"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="4dp"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/iv_check_5"
+            android:layout_width="14dp"
+            android:layout_height="14dp"
+            android:src="@drawable/labor_dot_pending"
+            android:contentDescription="Status" />
+
+        <TextView
+            android:id="@+id/tv_labor_name_5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#F5F5F5"
+            android:textSize="12sp"
+            android:fontFamily="monospace"
+            android:layout_marginStart="8dp"
+            android:maxLines="1"
+            android:ellipsize="end" />
+    </LinearLayout>
+
+    <!-- Labor 6 -->
+    <LinearLayout
+        android:id="@+id/ll_labor_6"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="4dp"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/iv_check_6"
+            android:layout_width="14dp"
+            android:layout_height="14dp"
+            android:src="@drawable/labor_dot_pending"
+            android:contentDescription="Status" />
+
+        <TextView
+            android:id="@+id/tv_labor_name_6"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#F5F5F5"
+            android:textSize="12sp"
+            android:fontFamily="monospace"
+            android:layout_marginStart="8dp"
+            android:maxLines="1"
+            android:ellipsize="end" />
+    </LinearLayout>
+
+    <!-- Spacer -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <!-- Progress bar -->
+    <ProgressBar
+        android:id="@+id/pb_widget_progress"
+        style="@android:style/Widget.ProgressBar.Horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="4dp"
+        android:max="100"
+        android:progress="0"
+        android:progressDrawable="@drawable/bg_xp_progress"
+        android:background="@drawable/bg_xp_bar"
+        android:layout_marginTop="8dp" />
+
+</LinearLayout>

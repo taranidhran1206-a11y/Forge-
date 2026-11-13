@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:paddingVertical="6dp">
+
+    <TextView
+        android:id="@+id/tv_xp_source_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Labors"
+        android:textColor="#F5F5F5"
+        android:textSize="13sp"
+        android:fontFamily="monospace" />
+
+    <ProgressBar
+        android:id="@+id/pb_xp_source_bar"
+        style="@android:style/Widget.ProgressBar.Horizontal"
+        android:layout_width="100dp"
+        android:layout_height="4dp"
+        android:max="100"
+        android:progress="60"
+        android:progressDrawable="@drawable/bg_xp_progress"
+        android:background="@drawable/bg_xp_bar"
+        android:layout_marginHorizontal="8dp" />
+
+    <TextView
+        android:id="@+id/tv_xp_source_amount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="120 XP"
+        android:textColor="#00E676"
+        android:textSize="12sp"
+        android:fontFamily="monospace"
+        android:textStyle="bold"
+        android:minWidth="56dp"
+        android:gravity="end" />
+
+</LinearLayout>

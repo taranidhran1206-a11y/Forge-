@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Spacing -->
+    <dimen name="space_xxs">4dp</dimen>
+    <dimen name="space_xs">8dp</dimen>
+    <dimen name="space_sm">12dp</dimen>
+    <dimen name="space_md">16dp</dimen>
+    <dimen name="space_lg">24dp</dimen>
+    <dimen name="space_xl">32dp</dimen>
+
+    <!-- Corner Radii -->
+    <dimen name="radius_xl">14dp</dimen>
+    <dimen name="radius_lg">10dp</dimen>
+    <dimen name="radius_md">8dp</dimen>
+    <dimen name="radius_sm">4dp</dimen>
+    <dimen name="radius_pill">50dp</dimen>
+
+    <!-- Text Sizes -->
+    <dimen name="text_xxs">10sp</dimen>
+    <dimen name="text_xs">12sp</dimen>
+    <dimen name="text_sm">14sp</dimen>
+    <dimen name="text_md">16sp</dimen>
+    <dimen name="text_lg">20sp</dimen>
+    <dimen name="text_xl">24sp</dimen>
+    <dimen name="text_xxl">32sp</dimen>
+
+    <!-- Icon Sizes -->
+    <dimen name="icon_sm">16dp</dimen>
+    <dimen name="icon_md">24dp</dimen>
+    <dimen name="icon_lg">32dp</dimen>
+    <dimen name="icon_xl">48dp</dimen>
+
+    <!-- Specific -->
+    <dimen name="bottom_nav_height">60dp</dimen>
+    <dimen name="header_height">56dp</dimen>
+    <dimen name="day_dot_size">32dp</dimen>
+    <dimen name="focus_ring_size">200dp</dimen>
+    <dimen name="xp_bar_height">6dp</dimen>
+    <dimen name="labor_dot_size">8dp</dimen>
+    <dimen name="streak_day_size">36dp</dimen>
+</resources>

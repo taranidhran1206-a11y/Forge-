@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/nav_today">
+
+    <fragment
+        android:id="@+id/nav_today"
+        android:name="com.forge.app.ui.today.TodayFragment"
+        android:label="@string/tab_today" />
+
+    <fragment
+        android:id="@+id/nav_plan"
+        android:name="com.forge.app.ui.plan.PlanFragment"
+        android:label="@string/tab_plan" />
+
+    <fragment
+        android:id="@+id/nav_progress"
+        android:name="com.forge.app.ui.progress.ProgressFragment"
+        android:label="@string/tab_progress" />
+
+    <fragment
+        android:id="@+id/nav_reflect"
+        android:name="com.forge.app.ui.reflect.ReflectFragment"
+        android:label="@string/tab_reflect" />
+
+    <fragment
+        android:id="@+id/nav_coach"
+        android:name="com.forge.app.ui.coach.CoachFragment"
+        android:label="@string/tab_coach" />
+
+</navigation>

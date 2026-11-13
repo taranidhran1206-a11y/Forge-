@@ -5,14 +5,15 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
 
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:roundIcon="@mipmap/ic_launcher_round"
-        android:label="Forge"
+        android:label="@string/app_name"
         android:theme="@style/Theme.Forge"
-        android:usesCleartextTraffic="true"
         android:supportsRtl="true">
 
         <activity
@@ -27,26 +28,42 @@
             </intent-filter>
         </activity>
 
+        <service
+            android:name=".service.TimeTrackService"
+            android:exported="false"
+            android:foregroundServiceType="specialUse" />
+
         <receiver
-            android:name=".ForgeWidgetProvider"
+            android:name=".widget.TodayPlanWidget"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
             <meta-data
                 android:name="android.appwidget.provider"
-                android:resource="@xml/forge_widget_info" />
+                android:resource="@xml/widget_today_plan_info" />
         </receiver>
 
         <receiver
-            android:name=".ForgeLaborsWidgetProvider"
+            android:name=".widget.RankWidget"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
             <meta-data
                 android:name="android.appwidget.provider"
-                android:resource="@xml/widget_labors_info" />
+                android:resource="@xml/widget_rank_info" />
+        </receiver>
+
+        <receiver
+            android:name=".widget.StreakWidget"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_streak_info" />
         </receiver>
 
         <receiver
