@@ -219,8 +219,6 @@ class ForgeRepository(private val database: ForgeDatabase) {
 
     fun getLaborsForDateSync(date: String): List<Labor> = laborDao.getLaborsForDateSync(date)
 
-    fun getTotalXpSync(): Int = xpDao.getTotalXpSync()
-
     // ── Internal helpers ─────────────────────────────────────────
 
     private suspend fun updateDailyLaborStats() {

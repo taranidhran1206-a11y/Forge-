@@ -230,7 +230,7 @@ class TodayFragment : Fragment() {
         }
 
         viewModel.focusRunning.observe(viewLifecycleOwner) { running ->
-            binding.btnFocusStart.text = if (running) "⏸ PAUSE" else "▶ START"
+            binding.btnFocusStart.setImageResource(if (running) R.drawable.ic_pause else R.drawable.ic_play)
         }
 
         viewModel.focusProgress.observe(viewLifecycleOwner) { progress ->

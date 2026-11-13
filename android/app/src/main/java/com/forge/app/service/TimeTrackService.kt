@@ -101,7 +101,7 @@ class TimeTrackService : Service() {
         val durationMinutes = ((endTime - startTime) / 60000).toInt()
 
         serviceScope.launch {
-            repository.stopTracking(trackId, endTime, durationMinutes)
+            repository.stopTracking(trackId)
         }
 
         val prefs = getSharedPreferences("forge_widget_prefs", Context.MODE_PRIVATE)
