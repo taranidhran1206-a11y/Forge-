@@ -113,6 +113,12 @@
         <item name="android:background">@drawable/bg_bottom_nav</item>
     </style>
 
+    <style name="TextAppearance.Forge.BottomNav" parent="TextAppearance.Material3.LabelSmall">
+        <item name="android:textSize">@dimen/text_xs</item>
+        <item name="android:fontFamily">monospace</item>
+        <item name="android:textColor">@color/fg2</item>
+    </style>
+
     <!-- Chip Style -->
     <style name="ForgeChip">
         <item name="android:background">@drawable/bg_chip</item>

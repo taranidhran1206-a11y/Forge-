@@ -5,4 +5,15 @@
     <string name="labors_widget_description">Your active labors checklist</string>
     <string name="streak_widget_description">Weekly habit tracker — focus, labors, journal streaks</string>
     <string name="mood_widget_description">Track your daily mood at a glance</string>
+
+    <!-- Bottom nav tabs -->
+    <string name="tab_today">Today</string>
+    <string name="tab_plan">Plan</string>
+    <string name="tab_progress">Progress</string>
+    <string name="tab_reflect">Reflect</string>
+    <string name="tab_coach">Coach</string>
+
+    <!-- Widget descriptions -->
+    <string name="widget_rank_description">Shows your current Forge rank and XP</string>
+    <string name="widget_today_description">Shows today\'s labors and progress</string>
 </resources>
