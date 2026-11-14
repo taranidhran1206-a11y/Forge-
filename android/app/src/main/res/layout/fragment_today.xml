@@ -13,25 +13,24 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <!-- Terminal Header -->
+        <!-- Header -->
         <TextView
             android:id="@+id/tv_terminal_prompt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="forge@today:~$"
-            android:textColor="#E53935"
-            android:textSize="14sp"
-            android:fontFamily="monospace"
-            android:layout_marginBottom="4dp" />
+            android:text="TODAY'S PLAN"
+            android:textColor="#80FFFFFF"
+            android:textSize="12sp"
+            android:letterSpacing="0.05"
+            android:layout_marginBottom="2dp" />
 
         <TextView
             android:id="@+id/tv_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="NOVEMBER 13, 2026"
+            android:text="Wednesday, Nov 15"
             android:textColor="#F5F5F5"
             android:textSize="20sp"
-            android:fontFamily="monospace"
             android:textStyle="bold"
             android:layout_marginBottom="12dp" />
 
@@ -183,7 +182,7 @@
                 android:fontFamily="monospace" />
         </LinearLayout>
 
-        <!-- LABORS Section -->
+        <!-- MORNING Section Header -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -195,22 +194,21 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="// LABORS"
-                android:textColor="#555555"
-                android:textSize="12sp"
-                android:fontFamily="monospace" />
+                android:text="MORNING"
+                android:textColor="#80FFFFFF"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.05"
+                android:drawablePadding="6dp" />
 
             <TextView
                 android:id="@+id/tv_labor_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="0/0"
-                android:textColor="#9E9E9E"
-                android:textSize="12sp"
-                android:fontFamily="monospace"
-                android:background="@drawable/bg_pill"
-                android:paddingHorizontal="8dp"
-                android:paddingVertical="2dp" />
+                android:textColor="#4CAF50"
+                android:textSize="13sp"
+                android:textStyle="bold" />
         </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
@@ -239,10 +237,11 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="// RIZE TRACKER"
-            android:textColor="#555555"
-            android:textSize="12sp"
-            android:fontFamily="monospace"
+            android:text="RIZE TRACKER"
+            android:textColor="#80FFFFFF"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.05"
             android:layout_marginBottom="8dp" />
 
         <LinearLayout
@@ -323,10 +322,11 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="// FOCUS"
-            android:textColor="#555555"
-            android:textSize="12sp"
-            android:fontFamily="monospace"
+            android:text="FOCUS"
+            android:textColor="#80FFFFFF"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.05"
             android:layout_marginBottom="8dp" />
 
         <LinearLayout
@@ -418,10 +418,11 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="// STREAK"
-            android:textColor="#555555"
-            android:textSize="12sp"
-            android:fontFamily="monospace"
+            android:text="STREAK"
+            android:textColor="#80FFFFFF"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.05"
             android:layout_marginBottom="8dp" />
 
         <LinearLayout
@@ -480,10 +481,11 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="// SHIELD WALL"
-            android:textColor="#555555"
-            android:textSize="12sp"
-            android:fontFamily="monospace"
+            android:text="SHIELD WALL"
+            android:textColor="#80FFFFFF"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.05"
             android:layout_marginBottom="8dp" />
 
         <LinearLayout

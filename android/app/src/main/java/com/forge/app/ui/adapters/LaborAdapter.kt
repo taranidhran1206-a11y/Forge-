@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.forge.app.R
 import com.forge.app.data.model.Labor
 import com.forge.app.databinding.ItemLaborBinding
 
@@ -18,22 +19,23 @@ class LaborAdapter(
     inner class ViewHolder(private val binding: ItemLaborBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(labor: Labor) {
-            binding.tvEmoji.text = labor.emoji
-            binding.tvLaborName.text = labor.name
-            binding.tvLaborDesc.text = labor.description
-            binding.tvLaborTime.text = labor.time
+            binding.tvLaborName.text = "${labor.emoji} ${labor.name}"
+            binding.tvLaborDesc.text = labor.description.ifEmpty { "Complete this task" }
             binding.tvXpReward.text = "+${labor.xpReward} XP"
 
-            // Done state
-            binding.cbDone.isChecked = labor.done
+            // Done state - use green check circle vs pending circle
             if (labor.done) {
+                binding.ivLaborCheck.setImageResource(R.drawable.widget_check_done)
                 binding.tvLaborName.paintFlags = binding.tvLaborName.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-                binding.root.alpha = 0.6f
-                binding.tvXpReward.setTextColor(Color.parseColor("#9E9E9E"))
+                binding.tvLaborName.setTextColor(Color.parseColor("#666666"))
+                binding.tvXpReward.setTextColor(Color.parseColor("#666666"))
+                binding.root.alpha = 0.7f
             } else {
+                binding.ivLaborCheck.setImageResource(R.drawable.widget_check_pending)
                 binding.tvLaborName.paintFlags = binding.tvLaborName.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
+                binding.tvLaborName.setTextColor(Color.parseColor("#F5F5F5"))
+                binding.tvXpReward.setTextColor(Color.parseColor("#4CAF50"))
                 binding.root.alpha = 1.0f
-                binding.tvXpReward.setTextColor(Color.parseColor("#00E676"))
             }
 
             binding.root.setOnClickListener {

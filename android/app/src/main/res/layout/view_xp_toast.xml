@@ -5,36 +5,40 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:gravity="center_vertical"
-    android:background="@drawable/bg_pill_red"
-    android:paddingHorizontal="16dp"
-    android:paddingVertical="8dp">
+    android:background="@drawable/bg_toast_green"
+    android:paddingHorizontal="20dp"
+    android:paddingVertical="12dp"
+    android:elevation="8dp">
 
+    <!-- Green check circle -->
     <ImageView
-        android:layout_width="16dp"
-        android:layout_height="16dp"
-        android:src="@drawable/ic_xp_star"
-        android:contentDescription="XP" />
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:src="@drawable/widget_check_done"
+        android:contentDescription="Done" />
 
-    <TextView
-        android:id="@+id/tv_xp_toast_amount"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="+10 XP"
-        android:textColor="#F5F5F5"
-        android:textSize="14sp"
-        android:fontFamily="monospace"
-        android:textStyle="bold"
-        android:layout_marginStart="6dp" />
+        android:orientation="vertical"
+        android:layout_marginStart="10dp">
 
-    <TextView
-        android:id="@+id/tv_xp_toast_source"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Labor completed"
-        android:textColor="#F5F5F5"
-        android:textSize="12sp"
-        android:fontFamily="monospace"
-        android:alpha="0.8"
-        android:layout_marginStart="8dp" />
+        <TextView
+            android:id="@+id/tv_xp_toast_amount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="+50 XP"
+            android:textColor="#4CAF50"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv_xp_toast_source"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Task Completed"
+            android:textColor="#B0FFFFFF"
+            android:textSize="12sp" />
+    </LinearLayout>
 
 </LinearLayout>

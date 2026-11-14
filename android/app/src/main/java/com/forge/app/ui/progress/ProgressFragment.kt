@@ -44,11 +44,14 @@ class ProgressFragment : Fragment() {
 
     private fun observeViewModel() {
         viewModel.totalXp.observe(viewLifecycleOwner) { xp ->
-            binding.tvXpCurrent.text = "${xp} XP"
+            // Format XP nicely like video: 15,700 or 15.7k
+            binding.tvXpCurrent.text = formatXp(xp)
         }
 
         viewModel.currentRank.observe(viewLifecycleOwner) { rank ->
             binding.tvRankTitle.text = rank.title
+            binding.tvRankBadge.text = getRankEmoji(rank.title)
+            binding.tvRankLevel.text = "LEVEL ${getRankLevel(rank.title)}"
             try {
                 binding.tvRankTitle.setTextColor(Color.parseColor(rank.colorHex))
             } catch (_: Exception) {
@@ -61,7 +64,8 @@ class ProgressFragment : Fragment() {
         }
 
         viewModel.xpToNextRank.observe(viewLifecycleOwner) { xpNeeded ->
-            binding.tvXpNext.text = "$xpNeeded XP to next rank"
+            val nextRank = viewModel.nextRankName.value ?: "next rank"
+            binding.tvXpNext.text = "${formatXp(xpNeeded)} to $nextRank"
         }
 
         viewModel.globalRankPercent.observe(viewLifecycleOwner) { percent ->
@@ -164,6 +168,47 @@ class ProgressFragment : Fragment() {
                 }
             })
         }, 2500)
+    }
+
+    private fun formatXp(xp: Int): String {
+        return when {
+            xp >= 1000000 -> String.format("%.1fM", xp / 1000000.0)
+            xp >= 10000 -> String.format("%.1fk", xp / 1000.0)
+            xp >= 1000 -> String.format("%,d", xp)
+            else -> "$xp"
+        }
+    }
+
+    private fun getRankEmoji(rankTitle: String): String {
+        return when (rankTitle.uppercase()) {
+            "IRON" -> "⚔️"
+            "BRONZE" -> "🥉"
+            "SILVER" -> "🥈"
+            "GOLD" -> "🥇"
+            "PLATINUM" -> "💎"
+            "DIAMOND" -> "💠"
+            "TITAN" -> "✨"
+            "MYTHIC" -> "🔮"
+            "APEX" -> "🏆"
+            "LEGEND" -> "👑"
+            else -> "⚔️"
+        }
+    }
+
+    private fun getRankLevel(rankTitle: String): Int {
+        return when (rankTitle.uppercase()) {
+            "IRON" -> 1
+            "BRONZE" -> 2
+            "SILVER" -> 3
+            "GOLD" -> 4
+            "PLATINUM" -> 5
+            "DIAMOND" -> 6
+            "TITAN" -> 7
+            "MYTHIC" -> 8
+            "APEX" -> 9
+            "LEGEND" -> 10
+            else -> 1
+        }
     }
 
     private fun formatCategoryName(category: String): String {

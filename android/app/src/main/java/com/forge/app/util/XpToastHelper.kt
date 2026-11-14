@@ -25,7 +25,7 @@ object XpToastHelper {
             val tvSource = toastView.findViewById<TextView>(R.id.tv_xp_toast_source)
 
             tvAmount.text = "+$amount XP"
-            tvSource.text = source.replaceFirstChar { it.uppercase() }
+            tvSource.text = "Task Completed"
 
             // Add to window
             val params = WindowManager.LayoutParams(

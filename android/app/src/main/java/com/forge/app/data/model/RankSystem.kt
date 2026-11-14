@@ -9,8 +9,10 @@ object RankSystem {
         GOLD("GOLD", 1000, "#FFD54F"),
         PLATINUM("PLATINUM", 2000, "#80DEEA"),
         DIAMOND("DIAMOND", 4000, "#CE93D8"),
-        TITAN("TITAN", 7500, "#FF5252"),
-        LEGEND("LEGEND", 12000, "#E53935")
+        TITAN("TITAN", 7500, "#448AFF"),
+        MYTHIC("MYTHIC", 15000, "#FF5252"),
+        APEX("APEX", 25000, "#FFD700"),
+        LEGEND("LEGEND", 50000, "#E53935")
     }
 
     private val ranksDescending = Rank.values().sortedByDescending { it.minXp }
@@ -39,14 +41,22 @@ object RankSystem {
         return (next.minXp - totalXp).coerceAtLeast(0)
     }
 
+    fun getNextRankName(totalXp: Int): String {
+        val current = getRank(totalXp)
+        val next = getNextRank(current)
+        return next?.title ?: "MAX"
+    }
+
     fun getGlobalRankPercent(totalXp: Int): Int {
         // Simulated global rank percentage based on XP thresholds
         return when {
-            totalXp >= 12000 -> 99
-            totalXp >= 7500 -> 95
-            totalXp >= 4000 -> 88
-            totalXp >= 2000 -> 75
-            totalXp >= 1000 -> 60
+            totalXp >= 50000 -> 99
+            totalXp >= 25000 -> 98
+            totalXp >= 15000 -> 94
+            totalXp >= 7500 -> 88
+            totalXp >= 4000 -> 80
+            totalXp >= 2000 -> 70
+            totalXp >= 1000 -> 55
             totalXp >= 500 -> 40
             totalXp >= 200 -> 25
             totalXp >= 50 -> 10

@@ -32,6 +32,10 @@ class ProgressViewModel(private val repository: ForgeRepository) : ViewModel() {
         RankSystem.getGlobalRankPercent(xp)
     }
 
+    val nextRankName: LiveData<String> = totalXp.map { xp ->
+        RankSystem.getNextRankName(xp)
+    }
+
     private val _weeklyStats = MutableLiveData<List<DailyStats>>(emptyList())
     val weeklyStats: LiveData<List<DailyStats>> = _weeklyStats
 

@@ -14,38 +14,55 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:layout_marginBottom="12dp">
+        android:layout_marginBottom="2dp">
 
-        <TextView
-            android:id="@+id/tv_widget_title"
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Today's Plan"
-            android:textColor="#FFFFFF"
-            android:textSize="17sp"
-            android:textStyle="bold"/>
+            android:orientation="vertical">
 
+            <TextView
+                android:id="@+id/tv_widget_header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TODAY'S PLAN"
+                android:textColor="#80FFFFFF"
+                android:textSize="11sp"
+                android:letterSpacing="0.05"/>
+
+            <!-- Date subtitle -->
+            <TextView
+                android:id="@+id/tv_widget_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Wednesday, Oct 28"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"
+                android:textStyle="bold"/>
+        </LinearLayout>
+
+        <!-- Green count badge e.g. "3/4" -->
         <TextView
             android:id="@+id/tv_widget_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="0 open"
-            android:textColor="#B0FFFFFF"
-            android:textSize="12sp"
-            android:background="@drawable/widget_badge_bg"
-            android:paddingHorizontal="8dp"
-            android:paddingVertical="3dp"/>
+            android:text="0/0"
+            android:textColor="#4CAF50"
+            android:textSize="18sp"
+            android:textStyle="bold"/>
     </LinearLayout>
 
-    <!-- Date subtitle -->
-    <TextView
-        android:id="@+id/tv_widget_date"
+    <!-- Progress bar at TOP -->
+    <ProgressBar
+        android:id="@+id/pb_widget_progress"
+        style="@android:style/Widget.ProgressBar.Horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Saturday, Nov 15"
-        android:textColor="#60FFFFFF"
-        android:textSize="12sp"
+        android:layout_height="4dp"
+        android:max="100"
+        android:progress="0"
+        android:progressDrawable="@drawable/widget_progress_bar"
+        android:layout_marginTop="8dp"
         android:layout_marginBottom="12dp"/>
 
     <!-- Labor 1 -->
@@ -55,14 +72,15 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="10dp"
         android:visibility="gone">
 
-        <View
-            android:id="@+id/bar_1"
-            android:layout_width="3dp"
-            android:layout_height="24dp"
-            android:background="@drawable/widget_priority_bar"
+        <ImageView
+            android:id="@+id/iv_check_1"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:src="@drawable/widget_check_pending"
+            android:contentDescription="Status"
             android:layout_marginEnd="10dp"/>
 
         <TextView
@@ -74,14 +92,6 @@
             android:textSize="14sp"
             android:maxLines="1"
             android:ellipsize="end"/>
-
-        <ImageView
-            android:id="@+id/iv_check_1"
-            android:layout_width="22dp"
-            android:layout_height="22dp"
-            android:src="@drawable/widget_check_pending"
-            android:contentDescription="Status"
-            android:layout_marginStart="8dp"/>
     </LinearLayout>
 
     <!-- Labor 2 -->
@@ -91,14 +101,15 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="10dp"
         android:visibility="gone">
 
-        <View
-            android:id="@+id/bar_2"
-            android:layout_width="3dp"
-            android:layout_height="24dp"
-            android:background="@drawable/widget_priority_bar"
+        <ImageView
+            android:id="@+id/iv_check_2"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:src="@drawable/widget_check_pending"
+            android:contentDescription="Status"
             android:layout_marginEnd="10dp"/>
 
         <TextView
@@ -110,14 +121,6 @@
             android:textSize="14sp"
             android:maxLines="1"
             android:ellipsize="end"/>
-
-        <ImageView
-            android:id="@+id/iv_check_2"
-            android:layout_width="22dp"
-            android:layout_height="22dp"
-            android:src="@drawable/widget_check_pending"
-            android:contentDescription="Status"
-            android:layout_marginStart="8dp"/>
     </LinearLayout>
 
     <!-- Labor 3 -->
@@ -127,14 +130,15 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="10dp"
         android:visibility="gone">
 
-        <View
-            android:id="@+id/bar_3"
-            android:layout_width="3dp"
-            android:layout_height="24dp"
-            android:background="@drawable/widget_priority_bar"
+        <ImageView
+            android:id="@+id/iv_check_3"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:src="@drawable/widget_check_pending"
+            android:contentDescription="Status"
             android:layout_marginEnd="10dp"/>
 
         <TextView
@@ -146,14 +150,6 @@
             android:textSize="14sp"
             android:maxLines="1"
             android:ellipsize="end"/>
-
-        <ImageView
-            android:id="@+id/iv_check_3"
-            android:layout_width="22dp"
-            android:layout_height="22dp"
-            android:src="@drawable/widget_check_pending"
-            android:contentDescription="Status"
-            android:layout_marginStart="8dp"/>
     </LinearLayout>
 
     <!-- Labor 4 -->
@@ -163,14 +159,15 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="10dp"
         android:visibility="gone">
 
-        <View
-            android:id="@+id/bar_4"
-            android:layout_width="3dp"
-            android:layout_height="24dp"
-            android:background="@drawable/widget_priority_bar"
+        <ImageView
+            android:id="@+id/iv_check_4"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:src="@drawable/widget_check_pending"
+            android:contentDescription="Status"
             android:layout_marginEnd="10dp"/>
 
         <TextView
@@ -182,14 +179,6 @@
             android:textSize="14sp"
             android:maxLines="1"
             android:ellipsize="end"/>
-
-        <ImageView
-            android:id="@+id/iv_check_4"
-            android:layout_width="22dp"
-            android:layout_height="22dp"
-            android:src="@drawable/widget_check_pending"
-            android:contentDescription="Status"
-            android:layout_marginStart="8dp"/>
     </LinearLayout>
 
     <!-- Labor 5 -->
@@ -199,14 +188,15 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="10dp"
         android:visibility="gone">
 
-        <View
-            android:id="@+id/bar_5"
-            android:layout_width="3dp"
-            android:layout_height="24dp"
-            android:background="@drawable/widget_priority_bar"
+        <ImageView
+            android:id="@+id/iv_check_5"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:src="@drawable/widget_check_pending"
+            android:contentDescription="Status"
             android:layout_marginEnd="10dp"/>
 
         <TextView
@@ -218,14 +208,6 @@
             android:textSize="14sp"
             android:maxLines="1"
             android:ellipsize="end"/>
-
-        <ImageView
-            android:id="@+id/iv_check_5"
-            android:layout_width="22dp"
-            android:layout_height="22dp"
-            android:src="@drawable/widget_check_pending"
-            android:contentDescription="Status"
-            android:layout_marginStart="8dp"/>
     </LinearLayout>
 
     <!-- Labor 6 -->
@@ -235,14 +217,15 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="10dp"
         android:visibility="gone">
 
-        <View
-            android:id="@+id/bar_6"
-            android:layout_width="3dp"
-            android:layout_height="24dp"
-            android:background="@drawable/widget_priority_bar"
+        <ImageView
+            android:id="@+id/iv_check_6"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:src="@drawable/widget_check_pending"
+            android:contentDescription="Status"
             android:layout_marginEnd="10dp"/>
 
         <TextView
@@ -254,14 +237,6 @@
             android:textSize="14sp"
             android:maxLines="1"
             android:ellipsize="end"/>
-
-        <ImageView
-            android:id="@+id/iv_check_6"
-            android:layout_width="22dp"
-            android:layout_height="22dp"
-            android:src="@drawable/widget_check_pending"
-            android:contentDescription="Status"
-            android:layout_marginStart="8dp"/>
     </LinearLayout>
 
     <!-- Spacer -->
@@ -275,23 +250,12 @@
         android:id="@+id/tv_widget_all_done"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="All done — nice work"
+        android:text="All done - nice work"
         android:textColor="#4CAF50"
         android:textSize="14sp"
         android:textStyle="bold"
         android:gravity="center"
         android:visibility="gone"
-        android:layout_marginTop="8dp"/>
-
-    <!-- Progress bar -->
-    <ProgressBar
-        android:id="@+id/pb_widget_progress"
-        style="@android:style/Widget.ProgressBar.Horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="4dp"
-        android:max="100"
-        android:progress="0"
-        android:progressDrawable="@drawable/widget_progress_bar"
         android:layout_marginTop="8dp"/>
 
 </LinearLayout>

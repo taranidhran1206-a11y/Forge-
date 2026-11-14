@@ -63,7 +63,7 @@ class TodayFragment : Fragment() {
     }
 
     private fun setupDate() {
-        val dateFormat = SimpleDateFormat("EEEE, MMMM d", Locale.getDefault())
+        val dateFormat = SimpleDateFormat("EEEE, MMM d", Locale.getDefault())
         binding.tvDate.text = dateFormat.format(Date())
     }
 

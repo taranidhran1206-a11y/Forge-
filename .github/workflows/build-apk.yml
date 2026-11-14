@@ -53,44 +53,48 @@ jobs:
       run: |
         APK_PATH=$(find android/app/build/outputs/apk/release -name "*.apk" | head -1)
         echo "Found APK: $APK_PATH"
-        cp "$APK_PATH" android/Forge-v2.0.3-signed.apk
-        ls -la android/Forge-v2.0.3-signed.apk
+        cp "$APK_PATH" android/Forge-v2.0.4-signed.apk
+        ls -la android/Forge-v2.0.4-signed.apk
 
     - name: Upload APK Artifact
       uses: actions/upload-artifact@v4
       with:
         name: Forge-APK
-        path: android/Forge-v2.0.3-signed.apk
+        path: android/Forge-v2.0.4-signed.apk
 
     - name: Create Release
       uses: softprops/action-gh-release@v2
       with:
-        tag_name: v2.0.3
-        name: "Forge v2.0.3 — Widget Redesign"
+        tag_name: v2.0.4
+        name: "Forge v2.0.4 — Critique AI Style"
         body: |
-          ## Forge v2.0.3 — Widget Redesign
+          ## Forge v2.0.4 — Critique AI Style Update
 
-          ### New Widget Design (Upwell-inspired)
-          - **Today's Plan**: Clean card with priority bars, circle checkboxes, count badge, "All done — nice work" green message when complete, progress bar
-          - **Weekly Streak Grid**: Emoji habit rows (Focus, Labors, Journal, Rize), M-T-W-T-F-S-S columns, green checkmarks, date range header, streak count footer
-          - **Rank Widget**: Rank emoji, rank name with color, formatted XP, progress bar to next rank
-          - **Mood Widget**: Warm gradient background, 5-emoji scale, mood label pill
-          - **All Widgets**: Dark glass rounded cards (24dp corners), proper scaling for phones and tablets, resize support
+          ### Widget Redesign (matching Critique AI video)
+          - **Today's Plan Widget**: "TODAY'S PLAN" header, date, green "X/Y" count badge, progress bar at top, circle checkmarks on left, "All done - nice work" message
+          - **Day Streak Widget**: Simple centered design — fire emoji, large streak number, "DAY STREAK" label, "X/Y today" progress
+          - **Rank Widget**: Rank emoji, rank name, formatted XP, progress bar
 
-          ### Technical
-          - All widget backgrounds use consistent dark glass aesthetic
-          - WidgetHelper now computes weekly streak grid data (focus, labors, journal, rize per day)
-          - Proper layer-list progress drawables for all ProgressBars
-          - Widget info XMLs have min/max resize bounds for phone + tablet
+          ### In-App Updates
+          - **XP Toast**: Green pill style "+50 XP Task Completed" notifications (matching video)
+          - **Task Cards**: Green circle checks for done, pending circles for incomplete, descriptions below task names, chevron arrows
+          - **Section Headers**: Clean "MORNING", "FOCUS", "STREAK" style (no monospace terminal)
+          - **Day Dots**: Green filled for completed days, orange for today
+          - **Rank Ladder Screen**: Large rank badge, LEVEL label, Current XP + Global Rank %, progress bar, Global Leaderboard + Friends cards
+
+          ### Rank System Expanded
+          - Added MYTHIC (15k XP), APEX (25k XP) ranks
+          - LEGEND now at 50k XP
+          - Updated global rank percentages
 
           ### Install
-          1. Download `Forge-v2.0.3-signed.apk`
+          1. Download `Forge-v2.0.4-signed.apk`
           2. Settings > Security > Enable "Install from unknown sources"
           3. Open the APK and install
-          4. Long-press home screen > Widgets > Forge to add widgets
+          4. Long-press home screen > Widgets > Forge
 
           Built by Tarani. Forged in discipline.
-        files: android/Forge-v2.0.3-signed.apk
+        files: android/Forge-v2.0.4-signed.apk
         draft: false
         prerelease: false
       env:

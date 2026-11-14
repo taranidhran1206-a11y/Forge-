@@ -16,15 +16,17 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <!-- Terminal Header -->
+            <!-- RANK LADDER Header -->
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="forge@progress:~$"
-                android:textColor="#E53935"
-                android:textSize="14sp"
-                android:fontFamily="monospace"
-                android:layout_marginBottom="16dp" />
+                android:text="RANK LADDER"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.05"
+                android:gravity="center"
+                android:layout_marginBottom="20dp" />
 
             <!-- Rank Display Card -->
             <LinearLayout
@@ -33,95 +35,230 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:background="@drawable/bg_card"
-                android:padding="20dp"
+                android:padding="24dp"
                 android:gravity="center"
-                android:layout_marginBottom="20dp">
+                android:layout_marginBottom="16dp">
 
+                <!-- Large Rank Badge -->
                 <TextView
                     android:id="@+id/tv_rank_badge"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="⚔️"
-                    android:textSize="48sp"
-                    android:layout_marginBottom="8dp" />
+                    android:textSize="64sp"
+                    android:layout_marginBottom="12dp" />
 
+                <!-- Level Label -->
+                <TextView
+                    android:id="@+id/tv_rank_level"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="LEVEL 1"
+                    android:textColor="#60FFFFFF"
+                    android:textSize="12sp"
+                    android:letterSpacing="0.1"
+                    android:layout_marginBottom="4dp" />
+
+                <!-- Rank Name -->
                 <TextView
                     android:id="@+id/tv_rank_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="IRON"
                     android:textColor="#78909C"
-                    android:textSize="28sp"
-                    android:fontFamily="monospace"
+                    android:textSize="32sp"
                     android:textStyle="bold"
-                    android:layout_marginBottom="4dp" />
+                    android:layout_marginBottom="20dp" />
 
-                <TextView
-                    android:id="@+id/tv_rank_level"
-                    android:layout_width="wrap_content"
+                <!-- Current XP + Global Rank row -->
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Level 1"
-                    android:textColor="#9E9E9E"
-                    android:textSize="14sp"
-                    android:fontFamily="monospace"
-                    android:layout_marginBottom="12dp" />
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="8dp">
 
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="CURRENT XP"
+                            android:textColor="#60FFFFFF"
+                            android:textSize="10sp"
+                            android:letterSpacing="0.05" />
+
+                        <TextView
+                            android:id="@+id/tv_xp_current"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0"
+                            android:textColor="#FFFFFF"
+                            android:textSize="28sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:gravity="end">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="GLOBAL RANK"
+                            android:textColor="#60FFFFFF"
+                            android:textSize="10sp"
+                            android:letterSpacing="0.05" />
+
+                        <TextView
+                            android:id="@+id/tv_global_percent"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Top 99%"
+                            android:textColor="#FFFFFF"
+                            android:textSize="28sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Progress bar to next rank -->
                 <ProgressBar
                     android:id="@+id/pb_rank_xp"
                     style="@android:style/Widget.ProgressBar.Horizontal"
                     android:layout_width="match_parent"
-                    android:layout_height="8dp"
+                    android:layout_height="6dp"
                     android:max="100"
                     android:progress="0"
                     android:progressDrawable="@drawable/bg_xp_progress"
-                    android:background="@drawable/bg_xp_bar"
-                    android:layout_marginBottom="8dp" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/tv_xp_current"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="0 XP"
-                        android:textColor="#F5F5F5"
-                        android:textSize="14sp"
-                        android:fontFamily="monospace"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/tv_xp_next"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="200 XP to BRONZE"
-                        android:textColor="#9E9E9E"
-                        android:textSize="12sp"
-                        android:fontFamily="monospace" />
-                </LinearLayout>
+                    android:layout_marginBottom="6dp" />
 
                 <TextView
-                    android:id="@+id/tv_global_percent"
+                    android:id="@+id/tv_xp_next"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Top 99% globally"
-                    android:textColor="#555555"
-                    android:textSize="11sp"
-                    android:fontFamily="monospace"
-                    android:layout_marginTop="4dp" />
+                    android:text="200 XP to BRONZE"
+                    android:textColor="#60FFFFFF"
+                    android:textSize="12sp" />
             </LinearLayout>
+
+            <!-- Leaderboard + Friends Cards -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="20dp">
+
+                <!-- Global Leaderboard Card -->
+                <LinearLayout
+                    android:id="@+id/card_leaderboard"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:background="@drawable/bg_card"
+                    android:padding="16dp"
+                    android:gravity="center"
+                    android:layout_marginEnd="8dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="🌐"
+                        android:textSize="24sp"
+                        android:layout_marginBottom="8dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Global\nLeaderboard"
+                        android:textColor="#FFFFFF"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:gravity="center" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="See how you rank\nworldwide"
+                        android:textColor="#60FFFFFF"
+                        android:textSize="11sp"
+                        android:gravity="center"
+                        android:layout_marginTop="4dp" />
+                </LinearLayout>
+
+                <!-- Friends Card -->
+                <LinearLayout
+                    android:id="@+id/card_friends"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:background="@drawable/bg_card"
+                    android:padding="16dp"
+                    android:gravity="center"
+                    android:layout_marginStart="8dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="👥"
+                        android:textSize="24sp"
+                        android:layout_marginBottom="8dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Friends"
+                        android:textColor="#FFFFFF"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:gravity="center" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Connect and\ncompete"
+                        android:textColor="#60FFFFFF"
+                        android:textSize="11sp"
+                        android:gravity="center"
+                        android:layout_marginTop="4dp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- XP BREAKDOWN -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="XP BREAKDOWN"
+                android:textColor="#80FFFFFF"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.05"
+                android:layout_marginBottom="8dp" />
+
+            <LinearLayout
+                android:id="@+id/ll_xp_breakdown"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/bg_card"
+                android:padding="12dp"
+                android:layout_marginBottom="20dp" />
 
             <!-- WEEKLY STATS -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="// WEEKLY STATS"
-                android:textColor="#555555"
-                android:textSize="12sp"
-                android:fontFamily="monospace"
+                android:text="WEEKLY STATS"
+                android:textColor="#80FFFFFF"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.05"
                 android:layout_marginBottom="8dp" />
 
             <HorizontalScrollView
@@ -137,33 +274,15 @@
                     android:orientation="horizontal" />
             </HorizontalScrollView>
 
-            <!-- XP BREAKDOWN -->
+            <!-- TIME ALLOCATION -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="// XP BREAKDOWN"
-                android:textColor="#555555"
-                android:textSize="12sp"
-                android:fontFamily="monospace"
-                android:layout_marginBottom="8dp" />
-
-            <LinearLayout
-                android:id="@+id/ll_xp_breakdown"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:background="@drawable/bg_card"
-                android:padding="12dp"
-                android:layout_marginBottom="20dp" />
-
-            <!-- TIME ALLOCATION (Rize-style) -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="// TIME ALLOCATION"
-                android:textColor="#555555"
-                android:textSize="12sp"
-                android:fontFamily="monospace"
+                android:text="TIME ALLOCATION"
+                android:textColor="#80FFFFFF"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.05"
                 android:layout_marginBottom="8dp" />
 
             <LinearLayout
@@ -208,9 +327,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="RANK UP!"
-                android:textColor="#E53935"
+                android:textColor="#4CAF50"
                 android:textSize="32sp"
-                android:fontFamily="monospace"
                 android:textStyle="bold"
                 android:layout_marginBottom="8dp" />
 
@@ -221,7 +339,6 @@
                 android:text="BRONZE"
                 android:textColor="#A1887F"
                 android:textSize="24sp"
-                android:fontFamily="monospace"
                 android:textStyle="bold" />
         </LinearLayout>
     </FrameLayout>
