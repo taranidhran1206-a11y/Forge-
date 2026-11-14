@@ -10,11 +10,11 @@
 
     <!-- Forge Logo -->
     <ImageView
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:src="@mipmap/ic_launcher_foreground"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:src="@mipmap/ic_launcher"
         android:contentDescription="Forge"
-        android:layout_marginBottom="40dp" />
+        android:layout_marginBottom="32dp" />
 
     <!-- Boot Lines Container -->
     <LinearLayout

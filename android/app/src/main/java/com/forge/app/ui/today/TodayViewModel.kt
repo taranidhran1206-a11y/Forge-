@@ -62,6 +62,10 @@ class TodayViewModel(private val repository: ForgeRepository) : ViewModel() {
     private val _xpToastEvent = MutableLiveData<XpEvent?>(null)
     val xpToastEvent: LiveData<XpEvent?> = _xpToastEvent
 
+    // Rank-up event
+    private val _rankUpEvent = MutableLiveData<RankSystem.Rank?>(null)
+    val rankUpEvent: LiveData<RankSystem.Rank?> = _rankUpEvent
+
     // Elapsed time for active time track (updated every second)
     private val _trackElapsedSeconds = MutableLiveData(0L)
     val trackElapsedSeconds: LiveData<Long> = _trackElapsedSeconds
@@ -110,6 +114,9 @@ class TodayViewModel(private val repository: ForgeRepository) : ViewModel() {
     fun toggleLabor(labor: Labor) {
         viewModelScope.launch {
             if (!labor.done) {
+                val oldXp = repository.getTotalXpSync()
+                val oldRank = RankSystem.getRank(oldXp)
+
                 repository.completeLabor(labor)
                 _xpToastEvent.value = XpEvent(
                     amount = labor.xpReward,
@@ -118,6 +125,14 @@ class TodayViewModel(private val repository: ForgeRepository) : ViewModel() {
                     timestamp = System.currentTimeMillis(),
                     date = today
                 )
+
+                // Check for rank up
+                val newXp = repository.getTotalXpSync()
+                val newRank = RankSystem.getRank(newXp)
+                if (newRank != oldRank) {
+                    _rankUpEvent.value = newRank
+                }
+
                 _streakCount.value = repository.calculateStreak()
             } else {
                 val updated = labor.copy(done = false)
@@ -128,6 +143,10 @@ class TodayViewModel(private val repository: ForgeRepository) : ViewModel() {
 
     fun clearXpToast() {
         _xpToastEvent.value = null
+    }
+
+    fun clearRankUp() {
+        _rankUpEvent.value = null
     }
 
     fun addLabor(name: String, description: String) {

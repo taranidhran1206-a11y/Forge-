@@ -316,6 +316,10 @@ class TodayFragment : Fragment() {
             binding.pbXp.progress = (progress * 100).toInt()
         }
 
+        viewModel.globalRankPercent.observe(viewLifecycleOwner) { percent ->
+            binding.tvGlobalRank.text = "TOP ${percent}%"
+        }
+
         viewModel.streakCount.observe(viewLifecycleOwner) { streak ->
             binding.tvStreakCount.text = "$streak"
         }
@@ -325,6 +329,7 @@ class TodayFragment : Fragment() {
                 binding.tvTrackCategory.text = "Tracking"
                 binding.tvTrackStatus.text = "Active"
                 binding.tvTrackStatus.setTextColor(Color.parseColor("#4CAF50"))
+                binding.trackIndicator.setBackgroundResource(R.drawable.bg_day_dot_today)
                 binding.btnTrackToggle.text = "■ STOP"
                 binding.btnTrackToggle.setBackgroundResource(R.drawable.bg_button_primary)
                 startTimeTrackUpdater()
@@ -332,6 +337,7 @@ class TodayFragment : Fragment() {
                 binding.tvTrackCategory.text = "Not tracking"
                 binding.tvTrackStatus.text = "Tap to start"
                 binding.tvTrackStatus.setTextColor(Color.parseColor("#9E9E9E"))
+                binding.trackIndicator.setBackgroundResource(R.drawable.bg_day_dot)
                 binding.tvTrackDuration.text = "00:00:00"
                 binding.btnTrackToggle.text = "▶ TRACK"
                 binding.btnTrackToggle.setBackgroundResource(R.drawable.bg_button_outlined)
@@ -357,6 +363,17 @@ class TodayFragment : Fragment() {
             if (event != null) {
                 activity?.let { XpToastHelper.showXpToast(it, event.amount, event.source) }
                 viewModel.clearXpToast()
+            }
+        }
+
+        viewModel.rankUpEvent.observe(viewLifecycleOwner) { rank ->
+            if (rank != null) {
+                Toast.makeText(
+                    requireContext(),
+                    "⚔️ RANK UP: ${rank.title}!",
+                    Toast.LENGTH_LONG
+                ).show()
+                viewModel.clearRankUp()
             }
         }
 

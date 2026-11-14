@@ -29,7 +29,8 @@ public class ForgeMoodWidgetProvider extends AppWidgetProvider {
             views.setTextViewText(R.id.mood_current_emoji, MOOD_EMOJIS[moodIndex]);
             views.setTextViewText(R.id.mood_current_label, MOOD_LABELS[moodIndex]);
 
-            Intent intent = new Intent(context, MainActivity.class);
+            Intent intent = new Intent(context, SplashActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
             PendingIntent pendingIntent = PendingIntent.getActivity(context, 3, intent,
                     PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
             views.setOnClickPendingIntent(R.id.widget_mood_root, pendingIntent);

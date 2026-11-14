@@ -72,7 +72,8 @@ public class ForgeStreakWidgetProvider extends AppWidgetProvider {
                 // Leave default empty circles
             }
 
-            Intent intent = new Intent(context, MainActivity.class);
+            Intent intent = new Intent(context, SplashActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
             PendingIntent pendingIntent = PendingIntent.getActivity(context, 2, intent,
                     PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
             views.setOnClickPendingIntent(R.id.widget_streak_root, pendingIntent);

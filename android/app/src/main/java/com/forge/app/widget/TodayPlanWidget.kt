@@ -8,7 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.view.View
 import android.widget.RemoteViews
-import com.forge.app.MainActivity
+import com.forge.app.SplashActivity
 import com.forge.app.R
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -44,13 +44,15 @@ class TodayPlanWidget : AppWidgetProvider() {
         val dateFormat = SimpleDateFormat("EEEE, MMM d", Locale.getDefault())
         views.setTextViewText(R.id.tv_widget_date, dateFormat.format(Date()))
 
-        // Open app on tap (use the date text as click target since there's no root ID)
-        val intent = Intent(context, MainActivity::class.java)
+        // Open app on tap
+        val intent = Intent(context, SplashActivity::class.java).apply {
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        }
         val pendingIntent = PendingIntent.getActivity(
             context, 0, intent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
-        views.setOnClickPendingIntent(R.id.tv_widget_date, pendingIntent)
+        views.setOnClickPendingIntent(R.id.widget_today_root, pendingIntent)
 
         // Labors
         val laborsJson = prefs.getString("labors_json", "[]") ?: "[]"

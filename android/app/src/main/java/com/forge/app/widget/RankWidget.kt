@@ -8,7 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.widget.RemoteViews
-import com.forge.app.MainActivity
+import com.forge.app.SplashActivity
 import com.forge.app.R
 
 class RankWidget : AppWidgetProvider() {
@@ -50,7 +50,9 @@ class RankWidget : AppWidgetProvider() {
         views.setProgressBar(R.id.pb_widget_rank, 100, (progress * 100).toInt(), false)
 
         // Open app on tap
-        val intent = Intent(context, MainActivity::class.java)
+        val intent = Intent(context, SplashActivity::class.java).apply {
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        }
         val pendingIntent = PendingIntent.getActivity(
             context, 0, intent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
