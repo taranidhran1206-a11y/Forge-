@@ -226,37 +226,44 @@ class TodayFragment : Fragment() {
             val activeTrack = viewModel.activeTimeTrack.value
             if (activeTrack != null) {
                 viewModel.stopTimeTrack()
-                stopTimeTrackUpdater()
+                // Observer handles UI reset via activeTimeTrack -> null
             } else {
-                // Auto-start tracking immediately — no category selection needed
+                // Show immediate feedback while DB insert runs
+                binding.tvTrackCategory.text = "Starting..."
+                binding.btnTrackToggle.text = "■ STOP"
+                binding.btnTrackToggle.setBackgroundResource(R.drawable.bg_button_primary)
                 viewModel.startTimeTrack("general")
-                startTimeTrackUpdater()
+                // Observer will call startTimeTrackUpdater when _activeTimeTrack is set
             }
         }
     }
 
-    private fun startTimeTrackUpdater() {
+    private var trackStartTime: Long = 0L
+
+    private fun startTimeTrackUpdater(startTime: Long) {
+        stopTimeTrackUpdater(resetText = false)
+        trackStartTime = startTime
         timeTrackRunnable = object : Runnable {
             override fun run() {
-                val track = viewModel.activeTimeTrack.value
-                if (track != null) {
-                    val elapsed = System.currentTimeMillis() - track.startTime
-                    val totalSeconds = (elapsed / 1000).toInt()
-                    val hours = totalSeconds / 3600
-                    val minutes = (totalSeconds % 3600) / 60
-                    val seconds = totalSeconds % 60
-                    binding.tvTrackDuration.text = String.format("%02d:%02d:%02d", hours, minutes, seconds)
-                    handler.postDelayed(this, 1000)
-                }
+                if (_binding == null) return
+                val elapsed = System.currentTimeMillis() - trackStartTime
+                val totalSeconds = (elapsed / 1000).toInt()
+                val hours = totalSeconds / 3600
+                val minutes = (totalSeconds % 3600) / 60
+                val seconds = totalSeconds % 60
+                binding.tvTrackDuration.text = String.format("%02d:%02d:%02d", hours, minutes, seconds)
+                handler.postDelayed(this, 1000)
             }
         }
         handler.post(timeTrackRunnable!!)
     }
 
-    private fun stopTimeTrackUpdater() {
+    private fun stopTimeTrackUpdater(resetText: Boolean = true) {
         timeTrackRunnable?.let { handler.removeCallbacks(it) }
         timeTrackRunnable = null
-        binding.tvTrackDuration.text = "00:00:00"
+        if (resetText && _binding != null) {
+            binding.tvTrackDuration.text = "00:00:00"
+        }
     }
 
     private fun setupFocusTimer() {
@@ -332,13 +339,12 @@ class TodayFragment : Fragment() {
                 binding.trackIndicator.setBackgroundResource(R.drawable.bg_day_dot_today)
                 binding.btnTrackToggle.text = "■ STOP"
                 binding.btnTrackToggle.setBackgroundResource(R.drawable.bg_button_primary)
-                startTimeTrackUpdater()
+                startTimeTrackUpdater(track.startTime)
             } else {
                 binding.tvTrackCategory.text = "Not tracking"
                 binding.tvTrackStatus.text = "Tap to start"
                 binding.tvTrackStatus.setTextColor(Color.parseColor("#9E9E9E"))
                 binding.trackIndicator.setBackgroundResource(R.drawable.bg_day_dot)
-                binding.tvTrackDuration.text = "00:00:00"
                 binding.btnTrackToggle.text = "▶ TRACK"
                 binding.btnTrackToggle.setBackgroundResource(R.drawable.bg_button_outlined)
                 stopTimeTrackUpdater()

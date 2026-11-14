@@ -182,50 +182,62 @@ class TodayViewModel(private val repository: ForgeRepository) : ViewModel() {
 
     fun startTimeTrack(category: String) {
         viewModelScope.launch {
-            // Stop any active track first
-            val active = repository.getActiveTrack()
-            if (active != null) {
-                val now = System.currentTimeMillis()
-                val durationMin = ((now - active.startTime) / 60000).toInt()
-                repository.stopTrack(active.id, now, durationMin)
-            }
+            try {
+                // Stop any active track first
+                val active = repository.getActiveTrack()
+                if (active != null) {
+                    val now = System.currentTimeMillis()
+                    val durationMin = ((now - active.startTime) / 60000).toInt()
+                    repository.stopTrack(active.id, now, durationMin)
+                }
 
-            val track = TimeTrack(
-                category = category,
-                startTime = System.currentTimeMillis(),
-                endTime = null,
-                durationMinutes = 0,
-                date = today
-            )
-            val id = repository.insertTimeTrack(track)
-            val newTrack = track.copy(id = id)
-            _activeTimeTrack.value = newTrack
-            startTrackTimer(newTrack.startTime)
+                val startTime = System.currentTimeMillis()
+                val track = TimeTrack(
+                    category = category,
+                    startTime = startTime,
+                    endTime = null,
+                    durationMinutes = 0,
+                    date = today
+                )
+                val id = repository.insertTimeTrack(track)
+                val newTrack = track.copy(id = id)
+                _activeTimeTrack.value = newTrack
+                startTrackTimer(newTrack.startTime)
+            } catch (e: Exception) {
+                // If DB insert fails, reset state
+                _activeTimeTrack.value = null
+            }
         }
     }
 
     fun stopTimeTrack() {
         viewModelScope.launch {
             val active = _activeTimeTrack.value ?: return@launch
-            val now = System.currentTimeMillis()
-            val durationMin = ((now - active.startTime) / 60000).toInt()
-            repository.stopTrack(active.id, now, durationMin)
+            // Reset UI state immediately
             _activeTimeTrack.value = null
             trackTimer?.cancel()
             trackTimer = null
             _trackElapsedSeconds.value = 0L
 
-            // Award XP for time tracked
-            if (durationMin >= 1) {
-                val xpAmount = (durationMin / 5).coerceAtLeast(1) * 2
-                repository.addXp(xpAmount, "time_track", "${active.category} - ${durationMin}min")
-                _xpToastEvent.value = XpEvent(
-                    amount = xpAmount,
-                    source = "time_track",
-                    description = "${active.category} - ${durationMin}min",
-                    timestamp = System.currentTimeMillis(),
-                    date = today
-                )
+            try {
+                val now = System.currentTimeMillis()
+                val durationMin = ((now - active.startTime) / 60000).toInt()
+                repository.stopTrack(active.id, now, durationMin)
+
+                // Award XP for time tracked
+                if (durationMin >= 1) {
+                    val xpAmount = (durationMin / 5).coerceAtLeast(1) * 2
+                    repository.addXp(xpAmount, "time_track", "${active.category} - ${durationMin}min")
+                    _xpToastEvent.value = XpEvent(
+                        amount = xpAmount,
+                        source = "time_track",
+                        description = "${active.category} - ${durationMin}min",
+                        timestamp = System.currentTimeMillis(),
+                        date = today
+                    )
+                }
+            } catch (_: Exception) {
+                // DB error — UI already reset above
             }
         }
     }
