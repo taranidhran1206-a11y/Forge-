@@ -53,46 +53,43 @@ jobs:
       run: |
         APK_PATH=$(find android/app/build/outputs/apk/release -name "*.apk" | head -1)
         echo "Found APK: $APK_PATH"
-        cp "$APK_PATH" android/Forge-v2.0.0-signed.apk
-        ls -la android/Forge-v2.0.0-signed.apk
+        cp "$APK_PATH" android/Forge-v2.1.0-signed.apk
+        ls -la android/Forge-v2.1.0-signed.apk
 
     - name: Upload APK Artifact
       uses: actions/upload-artifact@v4
       with:
         name: Forge-APK
-        path: android/Forge-v2.0.0-signed.apk
+        path: android/Forge-v2.1.0-signed.apk
 
     - name: Create Release
       uses: softprops/action-gh-release@v2
       with:
-        tag_name: v2.0.0
-        name: "Forge v2.0.0 — Full Native Kotlin Rebuild"
+        tag_name: v2.1.0
+        name: "Forge v2.1.0 — Bug Fixes & Hercules AI"
         body: |
-          ## Forge v2.0.0 — Full Native Kotlin Rebuild
+          ## Forge v2.1.0 — Bug Fixes & Hercules AI
 
-          Complete rebuild from WebView to full native Kotlin/Java Android app.
+          Major bug fix release addressing widget issues, boot screen, AI Coach, and gamification.
 
-          ### Features
-          - Rize-style time tracker with manual category selection
-          - XP/gamification system with animated toasts
-          - Rank ladder (Iron → Legend)
-          - Tasks grouped by time of day (Morning/Afternoon/Evening)
-          - Weekly day dots streak tracker
-          - Home screen widgets (Today's Plan, Rank, Streak)
-          - AI Coach powered by Gemini API
-          - Focus timer (Pomodoro) with ring visualization
-          - Battle Plan terminal-style planning
-          - Reflection/Journal with rotating prompts
-          - Terminal/hacker design theme
-          - Room database persistence, MVVM architecture
+          ### Fixes
+          - **Widgets**: Fixed "Couldn't add widget" error — all 4 widget providers now target exported SplashActivity
+          - **Widget ProgressBar**: Fixed progress bar rendering with proper layer-list drawable
+          - **Boot Logo**: Fixed splash screen logo scaling (was too small due to adaptive icon padding)
+          - **XP Progress Bar**: Fixed progress bar not showing fill correctly in Today view
+
+          ### Changes
+          - **AI Coach**: Reverted to terminal/hacker style with Hercules branding (monospace layout, [HERCULES] label)
+          - **Gamification**: Added rank-up toast notifications, global rank percentage display
+          - **Time Tracker**: Improved visual feedback with indicator dot color changes
 
           ### Install
-          1. Download `Forge-v2.0.0-signed.apk`
+          1. Download `Forge-v2.1.0-signed.apk`
           2. Settings > Security > Enable "Install from unknown sources"
           3. Open the APK and install
 
           Built by Tarani. Forged in discipline.
-        files: android/Forge-v2.0.0-signed.apk
+        files: android/Forge-v2.1.0-signed.apk
         draft: false
         prerelease: false
       env:
