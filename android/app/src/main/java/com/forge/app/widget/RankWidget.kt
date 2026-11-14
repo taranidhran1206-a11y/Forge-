@@ -23,6 +23,20 @@ class RankWidget : AppWidgetProvider() {
             intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
             context.sendBroadcast(intent)
         }
+
+        private fun getRankEmoji(rank: String): String {
+            return when (rank.uppercase()) {
+                "IRON" -> "⚔️"
+                "BRONZE" -> "🥉"
+                "SILVER" -> "🥈"
+                "GOLD" -> "🥇"
+                "PLATINUM" -> "💎"
+                "DIAMOND" -> "✨"
+                "TITAN" -> "🔥"
+                "LEGEND" -> "👑"
+                else -> "⚔️"
+            }
+        }
     }
 
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
@@ -40,24 +54,35 @@ class RankWidget : AppWidgetProvider() {
         val progress = prefs.getFloat("rank_progress", 0f)
         val rankColor = prefs.getString("rank_color", "#78909C") ?: "#78909C"
 
+        // Set rank emoji
+        views.setTextViewText(R.id.tv_widget_rank_emoji, getRankEmoji(rankName))
+
+        // Set rank name with color
         views.setTextViewText(R.id.tv_widget_rank_name, rankName)
         try {
             views.setTextColor(R.id.tv_widget_rank_name, Color.parseColor(rankColor))
         } catch (_: Exception) {
             views.setTextColor(R.id.tv_widget_rank_name, Color.WHITE)
         }
-        views.setTextViewText(R.id.tv_widget_xp, "${xp} XP")
+
+        // Format XP nicely
+        val xpText = if (xp >= 1000) {
+            String.format("%.1fk XP", xp / 1000.0)
+        } else {
+            "$xp XP"
+        }
+        views.setTextViewText(R.id.tv_widget_xp, xpText)
         views.setProgressBar(R.id.pb_widget_rank, 100, (progress * 100).toInt(), false)
 
-        // Open app on tap
+        // Open app on tap — use root layout for better hit target
         val intent = Intent(context, SplashActivity::class.java).apply {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
         }
         val pendingIntent = PendingIntent.getActivity(
-            context, 0, intent,
+            context, 1, intent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
-        views.setOnClickPendingIntent(R.id.tv_widget_rank_name, pendingIntent)
+        views.setOnClickPendingIntent(R.id.widget_rank_root, pendingIntent)
 
         manager.updateAppWidget(widgetId, views)
     }

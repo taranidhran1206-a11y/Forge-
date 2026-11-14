@@ -12,8 +12,7 @@ public class ForgeMoodWidgetProvider extends AppWidgetProvider {
 
     private static final String PREFS_NAME = "forge_widget_prefs";
 
-    private static final String[] MOOD_EMOJIS = {"😢", "😕", "😐", "😊", "🤩"};
-    private static final String[] MOOD_LABELS = {"Rough", "Meh", "Okay", "Good", "Amazing"};
+    private static final String[] MOOD_LABELS = {"Rough", "Meh", "Okay", "Good", "Great"};
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
@@ -26,7 +25,6 @@ public class ForgeMoodWidgetProvider extends AppWidgetProvider {
         for (int appWidgetId : appWidgetIds) {
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_mood);
 
-            views.setTextViewText(R.id.mood_current_emoji, MOOD_EMOJIS[moodIndex]);
             views.setTextViewText(R.id.mood_current_label, MOOD_LABELS[moodIndex]);
 
             Intent intent = new Intent(context, SplashActivity.class);

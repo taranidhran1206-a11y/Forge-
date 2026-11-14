@@ -29,6 +29,11 @@ public class ForgeStreakWidgetProvider extends AppWidgetProvider {
         R.id.streak_r3_d1, R.id.streak_r3_d2, R.id.streak_r3_d3,
         R.id.streak_r3_d4, R.id.streak_r3_d5, R.id.streak_r3_d6, R.id.streak_r3_d7
     };
+    // Row 4: Rize
+    private static final int[] R4_IDS = {
+        R.id.streak_r4_d1, R.id.streak_r4_d2, R.id.streak_r4_d3,
+        R.id.streak_r4_d4, R.id.streak_r4_d5, R.id.streak_r4_d6, R.id.streak_r4_d7
+    };
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
@@ -48,11 +53,12 @@ public class ForgeStreakWidgetProvider extends AppWidgetProvider {
                 JSONArray focusDays = weekly.optJSONArray("focus");
                 JSONArray laborsDays = weekly.optJSONArray("labors");
                 JSONArray journalDays = weekly.optJSONArray("journal");
+                JSONArray rizeDays = weekly.optJSONArray("rize");
 
-                int[][] rowIds = { R1_IDS, R2_IDS, R3_IDS };
-                JSONArray[] arrays = { focusDays, laborsDays, journalDays };
+                int[][] rowIds = { R1_IDS, R2_IDS, R3_IDS, R4_IDS };
+                JSONArray[] arrays = { focusDays, laborsDays, journalDays, rizeDays };
 
-                for (int r = 0; r < 3; r++) {
+                for (int r = 0; r < 4; r++) {
                     JSONArray days = arrays[r];
                     for (int d = 0; d < 7; d++) {
                         boolean done = false;
@@ -60,11 +66,11 @@ public class ForgeStreakWidgetProvider extends AppWidgetProvider {
                             done = days.optBoolean(d, false);
                         }
                         if (done) {
-                            views.setTextViewText(rowIds[r][d], "✓");
+                            views.setTextViewText(rowIds[r][d], "✔");
                             views.setInt(rowIds[r][d], "setTextColor", 0xFF4CAF50);
                         } else {
                             views.setTextViewText(rowIds[r][d], "○");
-                            views.setInt(rowIds[r][d], "setTextColor", 0x60FFFFFF);
+                            views.setInt(rowIds[r][d], "setTextColor", 0x40FFFFFF);
                         }
                     }
                 }

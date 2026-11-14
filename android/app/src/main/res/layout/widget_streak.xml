@@ -3,47 +3,41 @@
     android:id="@+id/widget_streak_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/widget_bg_glass"
+    android:background="@drawable/widget_bg"
     android:orientation="vertical"
     android:padding="16dp">
 
-    <!-- Header -->
+    <!-- Header row: date range -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:layout_marginBottom="10dp">
+        android:layout_marginBottom="12dp">
+
         <TextView
+            android:id="@+id/streak_date_range"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="🔥 Streak"
+            android:text="Nov 11-17"
             android:textColor="#FFFFFF"
             android:textSize="17sp"
             android:textStyle="bold"/>
-        <TextView
-            android:id="@+id/streak_date_range"
+
+        <!-- Day headers inline -->
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text=""
-            android:textColor="#80ffffff"
-            android:textSize="11sp"/>
-    </LinearLayout>
-
-    <!-- Day headers: M T W T F S S -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginBottom="6dp">
-        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="M" android:textColor="#80ffffff" android:textSize="11sp" android:gravity="center"/>
-        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="T" android:textColor="#80ffffff" android:textSize="11sp" android:gravity="center"/>
-        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="W" android:textColor="#80ffffff" android:textSize="11sp" android:gravity="center"/>
-        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="T" android:textColor="#80ffffff" android:textSize="11sp" android:gravity="center"/>
-        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="F" android:textColor="#80ffffff" android:textSize="11sp" android:gravity="center"/>
-        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="S" android:textColor="#80ffffff" android:textSize="11sp" android:gravity="center"/>
-        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="S" android:textColor="#80ffffff" android:textSize="11sp" android:gravity="center"/>
+            android:orientation="horizontal">
+            <TextView android:layout_width="24dp" android:layout_height="wrap_content" android:text="M" android:textColor="#60ffffff" android:textSize="11sp" android:gravity="center"/>
+            <TextView android:layout_width="24dp" android:layout_height="wrap_content" android:text="T" android:textColor="#60ffffff" android:textSize="11sp" android:gravity="center"/>
+            <TextView android:layout_width="24dp" android:layout_height="wrap_content" android:text="W" android:textColor="#60ffffff" android:textSize="11sp" android:gravity="center"/>
+            <TextView android:layout_width="24dp" android:layout_height="wrap_content" android:text="T" android:textColor="#60ffffff" android:textSize="11sp" android:gravity="center"/>
+            <TextView android:layout_width="24dp" android:layout_height="wrap_content" android:text="F" android:textColor="#60ffffff" android:textSize="11sp" android:gravity="center"/>
+            <TextView android:layout_width="24dp" android:layout_height="wrap_content" android:text="S" android:textColor="#60ffffff" android:textSize="11sp" android:gravity="center"/>
+            <TextView android:layout_width="24dp" android:layout_height="wrap_content" android:text="S" android:textColor="#60ffffff" android:textSize="11sp" android:gravity="center"/>
+        </LinearLayout>
     </LinearLayout>
 
     <!-- Row 1: Focus -->
@@ -52,15 +46,15 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:layout_marginBottom="4dp">
-        <TextView android:id="@+id/streak_r1_label" android:layout_width="50dp" android:layout_height="wrap_content" android:text="Focus" android:textColor="#B0ffffff" android:textSize="11sp" android:maxLines="1"/>
-        <TextView android:id="@+id/streak_r1_d1" android:layout_width="0dp" android:layout_height="22dp" android:layout_weight="1" android:gravity="center" android:text="○" android:textColor="#60ffffff" android:textSize="12sp"/>
-        <TextView android:id="@+id/streak_r1_d2" android:layout_width="0dp" android:layout_height="22dp" android:layout_weight="1" android:gravity="center" android:text="○" android:textColor="#60ffffff" android:textSize="12sp"/>
-        <TextView android:id="@+id/streak_r1_d3" android:layout_width="0dp" android:layout_height="22dp" android:layout_weight="1" android:gravity="center" android:text="○" android:textColor="#60ffffff" android:textSize="12sp"/>
-        <TextView android:id="@+id/streak_r1_d4" android:layout_width="0dp" android:layout_height="22dp" android:layout_weight="1" android:gravity="center" android:text="○" android:textColor="#60ffffff" android:textSize="12sp"/>
-        <TextView android:id="@+id/streak_r1_d5" android:layout_width="0dp" android:layout_height="22dp" android:layout_weight="1" android:gravity="center" android:text="○" android:textColor="#60ffffff" android:textSize="12sp"/>
-        <TextView android:id="@+id/streak_r1_d6" android:layout_width="0dp" android:layout_height="22dp" android:layout_weight="1" android:gravity="center" android:text="○" android:textColor="#60ffffff" android:textSize="12sp"/>
-        <TextView android:id="@+id/streak_r1_d7" android:layout_width="0dp" android:layout_height="22dp" android:layout_weight="1" android:gravity="center" android:text="○" android:textColor="#60ffffff" android:textSize="12sp"/>
+        android:layout_marginBottom="6dp">
+        <TextView android:id="@+id/streak_r1_label" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="🎯 Focus" android:textColor="#D0ffffff" android:textSize="13sp" android:maxLines="1"/>
+        <TextView android:id="@+id/streak_r1_d1" android:layout_width="24dp" android:layout_height="24dp" android:gravity="center" android:text="○" android:textColor="#40ffffff" android:textSize="14sp"/>
+        <TextView android:id="@+id/streak_r1_d2" android:layout_width="24dp" android:layout_height="24dp" android:gravity="center" android:text="○" android:textColor="#40ffffff" android:textSize="14sp"/>
+        <TextView android:id="@+id/streak_r1_d3" android:layout_width="24dp" android:layout_height="24dp" android:gravity="center" android:text="○" android:textColor="#40ffffff" android:textSize="14sp"/>
+        <TextView android:id="@+id/streak_r1_d4" android:layout_width="24dp" android:layout_height="24dp" android:gravity="center" android:text="○" android:textColor="#40ffffff" android:textSize="14sp"/>
+        <TextView android:id="@+id/streak_r1_d5" android:layout_width="24dp" android:layout_height="24dp" android:gravity="center" android:text="○" android:textColor="#40ffffff" android:textSize="14sp"/>
+        <TextView android:id="@+id/streak_r1_d6" android:layout_width="24dp" android:layout_height="24dp" android:gravity="center" android:text="○" android:textColor="#40ffffff" android:textSize="14sp"/>
+        <TextView android:id="@+id/streak_r1_d7" android:layout_width="24dp" android:layout_height="24dp" android:gravity="center" android:text="○" android:textColor="#40ffffff" android:textSize="14sp"/>
     </LinearLayout>
 
     <!-- Row 2: Labors -->
@@ -69,15 +63,15 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:layout_marginBottom="4dp">
-        <TextView android:id="@+id/streak_r2_label" android:layout_width="50dp" android:layout_height="wrap_content" android:text="Labors" android:textColor="#B0ffffff" android:textSize="11sp" android:maxLines="1"/>
-        <TextView android:id="@+id/streak_r2_d1" android:layout_width="0dp" android:layout_height="22dp" android:layout_weight="1" android:gravity="center" android:text="○" android:textColor="#60ffffff" android:textSize="12sp"/>
-        <TextView android:id="@+id/streak_r2_d2" android:layout_width="0dp" android:layout_height="22dp" android:layout_weight="1" android:gravity="center" android:text="○" android:textColor="#60ffffff" android:textSize="12sp"/>
-        <TextView android:id="@+id/streak_r2_d3" android:layout_width="0dp" android:layout_height="22dp" android:layout_weight="1" android:gravity="center" android:text="○" android:textColor="#60ffffff" android:textSize="12sp"/>
-        <TextView android:id="@+id/streak_r2_d4" android:layout_width="0dp" android:layout_height="22dp" android:layout_weight="1" android:gravity="center" android:text="○" android:textColor="#60ffffff" android:textSize="12sp"/>
-        <TextView android:id="@+id/streak_r2_d5" android:layout_width="0dp" android:layout_height="22dp" android:layout_weight="1" android:gravity="center" android:text="○" android:textColor="#60ffffff" android:textSize="12sp"/>
-        <TextView android:id="@+id/streak_r2_d6" android:layout_width="0dp" android:layout_height="22dp" android:layout_weight="1" android:gravity="center" android:text="○" android:textColor="#60ffffff" android:textSize="12sp"/>
-        <TextView android:id="@+id/streak_r2_d7" android:layout_width="0dp" android:layout_height="22dp" android:layout_weight="1" android:gravity="center" android:text="○" android:textColor="#60ffffff" android:textSize="12sp"/>
+        android:layout_marginBottom="6dp">
+        <TextView android:id="@+id/streak_r2_label" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="⚔️ Labors" android:textColor="#D0ffffff" android:textSize="13sp" android:maxLines="1"/>
+        <TextView android:id="@+id/streak_r2_d1" android:layout_width="24dp" android:layout_height="24dp" android:gravity="center" android:text="○" android:textColor="#40ffffff" android:textSize="14sp"/>
+        <TextView android:id="@+id/streak_r2_d2" android:layout_width="24dp" android:layout_height="24dp" android:gravity="center" android:text="○" android:textColor="#40ffffff" android:textSize="14sp"/>
+        <TextView android:id="@+id/streak_r2_d3" android:layout_width="24dp" android:layout_height="24dp" android:gravity="center" android:text="○" android:textColor="#40ffffff" android:textSize="14sp"/>
+        <TextView android:id="@+id/streak_r2_d4" android:layout_width="24dp" android:layout_height="24dp" android:gravity="center" android:text="○" android:textColor="#40ffffff" android:textSize="14sp"/>
+        <TextView android:id="@+id/streak_r2_d5" android:layout_width="24dp" android:layout_height="24dp" android:gravity="center" android:text="○" android:textColor="#40ffffff" android:textSize="14sp"/>
+        <TextView android:id="@+id/streak_r2_d6" android:layout_width="24dp" android:layout_height="24dp" android:gravity="center" android:text="○" android:textColor="#40ffffff" android:textSize="14sp"/>
+        <TextView android:id="@+id/streak_r2_d7" android:layout_width="24dp" android:layout_height="24dp" android:gravity="center" android:text="○" android:textColor="#40ffffff" android:textSize="14sp"/>
     </LinearLayout>
 
     <!-- Row 3: Journal -->
@@ -85,16 +79,39 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:gravity="center_vertical">
-        <TextView android:id="@+id/streak_r3_label" android:layout_width="50dp" android:layout_height="wrap_content" android:text="Journal" android:textColor="#B0ffffff" android:textSize="11sp" android:maxLines="1"/>
-        <TextView android:id="@+id/streak_r3_d1" android:layout_width="0dp" android:layout_height="22dp" android:layout_weight="1" android:gravity="center" android:text="○" android:textColor="#60ffffff" android:textSize="12sp"/>
-        <TextView android:id="@+id/streak_r3_d2" android:layout_width="0dp" android:layout_height="22dp" android:layout_weight="1" android:gravity="center" android:text="○" android:textColor="#60ffffff" android:textSize="12sp"/>
-        <TextView android:id="@+id/streak_r3_d3" android:layout_width="0dp" android:layout_height="22dp" android:layout_weight="1" android:gravity="center" android:text="○" android:textColor="#60ffffff" android:textSize="12sp"/>
-        <TextView android:id="@+id/streak_r3_d4" android:layout_width="0dp" android:layout_height="22dp" android:layout_weight="1" android:gravity="center" android:text="○" android:textColor="#60ffffff" android:textSize="12sp"/>
-        <TextView android:id="@+id/streak_r3_d5" android:layout_width="0dp" android:layout_height="22dp" android:layout_weight="1" android:gravity="center" android:text="○" android:textColor="#60ffffff" android:textSize="12sp"/>
-        <TextView android:id="@+id/streak_r3_d6" android:layout_width="0dp" android:layout_height="22dp" android:layout_weight="1" android:gravity="center" android:text="○" android:textColor="#60ffffff" android:textSize="12sp"/>
-        <TextView android:id="@+id/streak_r3_d7" android:layout_width="0dp" android:layout_height="22dp" android:layout_weight="1" android:gravity="center" android:text="○" android:textColor="#60ffffff" android:textSize="12sp"/>
+        android:gravity="center_vertical"
+        android:layout_marginBottom="6dp">
+        <TextView android:id="@+id/streak_r3_label" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="📖 Journal" android:textColor="#D0ffffff" android:textSize="13sp" android:maxLines="1"/>
+        <TextView android:id="@+id/streak_r3_d1" android:layout_width="24dp" android:layout_height="24dp" android:gravity="center" android:text="○" android:textColor="#40ffffff" android:textSize="14sp"/>
+        <TextView android:id="@+id/streak_r3_d2" android:layout_width="24dp" android:layout_height="24dp" android:gravity="center" android:text="○" android:textColor="#40ffffff" android:textSize="14sp"/>
+        <TextView android:id="@+id/streak_r3_d3" android:layout_width="24dp" android:layout_height="24dp" android:gravity="center" android:text="○" android:textColor="#40ffffff" android:textSize="14sp"/>
+        <TextView android:id="@+id/streak_r3_d4" android:layout_width="24dp" android:layout_height="24dp" android:gravity="center" android:text="○" android:textColor="#40ffffff" android:textSize="14sp"/>
+        <TextView android:id="@+id/streak_r3_d5" android:layout_width="24dp" android:layout_height="24dp" android:gravity="center" android:text="○" android:textColor="#40ffffff" android:textSize="14sp"/>
+        <TextView android:id="@+id/streak_r3_d6" android:layout_width="24dp" android:layout_height="24dp" android:gravity="center" android:text="○" android:textColor="#40ffffff" android:textSize="14sp"/>
+        <TextView android:id="@+id/streak_r3_d7" android:layout_width="24dp" android:layout_height="24dp" android:gravity="center" android:text="○" android:textColor="#40ffffff" android:textSize="14sp"/>
     </LinearLayout>
+
+    <!-- Row 4: Rize -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+        <TextView android:id="@+id/streak_r4_label" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="⏱️ Rize" android:textColor="#D0ffffff" android:textSize="13sp" android:maxLines="1"/>
+        <TextView android:id="@+id/streak_r4_d1" android:layout_width="24dp" android:layout_height="24dp" android:gravity="center" android:text="○" android:textColor="#40ffffff" android:textSize="14sp"/>
+        <TextView android:id="@+id/streak_r4_d2" android:layout_width="24dp" android:layout_height="24dp" android:gravity="center" android:text="○" android:textColor="#40ffffff" android:textSize="14sp"/>
+        <TextView android:id="@+id/streak_r4_d3" android:layout_width="24dp" android:layout_height="24dp" android:gravity="center" android:text="○" android:textColor="#40ffffff" android:textSize="14sp"/>
+        <TextView android:id="@+id/streak_r4_d4" android:layout_width="24dp" android:layout_height="24dp" android:gravity="center" android:text="○" android:textColor="#40ffffff" android:textSize="14sp"/>
+        <TextView android:id="@+id/streak_r4_d5" android:layout_width="24dp" android:layout_height="24dp" android:gravity="center" android:text="○" android:textColor="#40ffffff" android:textSize="14sp"/>
+        <TextView android:id="@+id/streak_r4_d6" android:layout_width="24dp" android:layout_height="24dp" android:gravity="center" android:text="○" android:textColor="#40ffffff" android:textSize="14sp"/>
+        <TextView android:id="@+id/streak_r4_d7" android:layout_width="24dp" android:layout_height="24dp" android:gravity="center" android:text="○" android:textColor="#40ffffff" android:textSize="14sp"/>
+    </LinearLayout>
+
+    <!-- Spacer -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
 
     <!-- Streak count footer -->
     <LinearLayout
@@ -102,7 +119,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:layout_marginTop="10dp">
+        android:layout_marginTop="8dp">
         <TextView
             android:id="@+id/streak_count"
             android:layout_width="wrap_content"

@@ -74,20 +74,38 @@ class TodayPlanWidget : AppWidgetProvider() {
                     views.setViewVisibility(rowId, View.VISIBLE)
                     views.setImageViewResource(
                         checkId,
-                        if (labors[index].done) R.drawable.labor_dot_done else R.drawable.labor_dot_pending
+                        if (labors[index].done) R.drawable.widget_check_done else R.drawable.widget_check_pending
                     )
                     views.setTextViewText(nameId, labors[index].name)
-                    views.setTextColor(nameId, if (labors[index].done) 0xFF555555.toInt() else 0xFFF5F5F5.toInt())
+                    // Strike-through effect: dim completed items
+                    views.setTextColor(nameId, if (labors[index].done) 0xFF666666.toInt() else 0xFFE8E8E8.toInt())
                 } else {
                     views.setViewVisibility(rowId, View.GONE)
                 }
             }
 
-            // Progress
+            // Progress + count badge
             val done = labors.count { it.done }
             val total = labors.size
+            val remaining = total - done
             val percent = if (total > 0) (done * 100 / total) else 0
             views.setProgressBar(R.id.pb_widget_progress, 100, percent, false)
+
+            // Count badge
+            if (remaining > 0) {
+                views.setTextViewText(R.id.tv_widget_count, "$remaining open")
+            } else if (total > 0) {
+                views.setTextViewText(R.id.tv_widget_count, "$done/$total done")
+            } else {
+                views.setTextViewText(R.id.tv_widget_count, "No tasks")
+            }
+
+            // "All done — nice work" message
+            if (total > 0 && done == total) {
+                views.setViewVisibility(R.id.tv_widget_all_done, View.VISIBLE)
+            } else {
+                views.setViewVisibility(R.id.tv_widget_all_done, View.GONE)
+            }
         } catch (_: Exception) {
             // No data available
         }
