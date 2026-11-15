@@ -3,12 +3,22 @@ package com.forge.app;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.widget.RemoteViews;
 
 public class ForgeStreakWidgetProvider extends AppWidgetProvider {
+
+    public static void triggerUpdate(Context context) {
+        Intent intent = new Intent(context, ForgeStreakWidgetProvider.class);
+        intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+        AppWidgetManager manager = AppWidgetManager.getInstance(context);
+        int[] ids = manager.getAppWidgetIds(new ComponentName(context, ForgeStreakWidgetProvider.class));
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
+        context.sendBroadcast(intent);
+    }
 
     private static final String PREFS_NAME = "forge_widget_prefs";
 

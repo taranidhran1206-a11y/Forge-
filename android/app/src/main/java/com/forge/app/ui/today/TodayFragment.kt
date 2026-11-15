@@ -23,6 +23,7 @@ import com.forge.app.data.model.RankSystem
 import com.forge.app.databinding.FragmentTodayBinding
 import com.forge.app.ui.ForgeViewModelFactory
 import com.forge.app.ui.adapters.LaborAdapter
+import com.forge.app.util.WidgetHelper
 import com.forge.app.util.XpToastHelper
 import java.text.SimpleDateFormat
 import java.util.*
@@ -304,6 +305,11 @@ class TodayFragment : Fragment() {
             val done = labors.count { it.done }
             val total = labors.size
             binding.tvLaborCount.text = "$done/$total"
+
+            // Update home screen widgets immediately with current labor data
+            val ctx = requireContext().applicationContext
+            WidgetHelper.writeLaborsJson(ctx, labors)
+            com.forge.app.widget.TodayPlanWidget.triggerUpdate(ctx)
         }
 
         viewModel.totalXp.observe(viewLifecycleOwner) { xp ->
@@ -329,6 +335,11 @@ class TodayFragment : Fragment() {
 
         viewModel.streakCount.observe(viewLifecycleOwner) { streak ->
             binding.tvStreakCount.text = "$streak"
+            // Update streak widget
+            val ctx = requireContext().applicationContext
+            val labors = viewModel.todayLabors.value ?: emptyList()
+            WidgetHelper.writeStreakData(ctx, streak, labors.count { it.done }, labors.size)
+            com.forge.app.ForgeStreakWidgetProvider.triggerUpdate(ctx)
         }
 
         viewModel.activeTimeTrack.observe(viewLifecycleOwner) { track ->
