@@ -24,7 +24,7 @@ object Gemini {
     private const val DEFAULT_KEY_ENCODED = "QVEuQWI4Uk42SUlxcW9KcWd4SHNQUzdPUWVCSWxJS2JrdWpteVdFVHFlLXVnUXFYTVRqNWc="
 
     // Same model as the web app first, then older ones in case it is unavailable
-    private val MODELS = listOf("gemini-3.8-flash", "gemini-2.5-flash", "gemini-2.0-flash")
+    private val MODELS = listOf("gemini-3.8-flash", "gemini-2.5-flash")
 
     class Failure(message: String) : Exception(message)
 
@@ -82,6 +82,7 @@ object Gemini {
         }.toString()
 
         var lastError = "no response"
+        val errors = mutableListOf<String>()
         for (model in MODELS) {
             val request = Request.Builder()
                 .url("https://generativelanguage.googleapis.com/v1beta/models/$model:generateContent")
@@ -102,6 +103,7 @@ object Gemini {
                             ""
                         }
                         lastError = "error ${response.code}" + if (message.isNotBlank()) ": ${message.take(140)}" else ""
+                        errors.add("$model $lastError")
                         // A bad key or blocked request fails the same way on every model
                         if (response.code == 400 || response.code == 401 || response.code == 403) {
                             throw Failure(lastError)
@@ -112,9 +114,11 @@ object Gemini {
                 throw failure
             } catch (e: Exception) {
                 lastError = "no connection (${e.javaClass.simpleName})"
+                errors.add(lastError)
             }
         }
-        throw Failure(lastError)
+        // The first model is the one that matters; later ones are only fallbacks
+        throw Failure(errors.firstOrNull() ?: lastError)
     }
 
     private fun parseReply(json: String): String {

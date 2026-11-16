@@ -5,6 +5,9 @@ on:
     branches: ['fix/**', 'smoke/**']
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   smoke:
     runs-on: ubuntu-latest
@@ -49,3 +52,15 @@ jobs:
       with:
         name: smoke-out
         path: smoke-out
+
+    - name: Publish results to the smoke-results branch
+      if: always()
+      run: |
+        cd smoke-out
+        rm -f ui.xml
+        git init -q -b smoke-results
+        git config user.name "forge-smoke"
+        git config user.email "forge-smoke@users.noreply.github.com"
+        git add -A
+        git commit -q -m "Smoke results for $GITHUB_SHA"
+        git push -q -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}" smoke-results

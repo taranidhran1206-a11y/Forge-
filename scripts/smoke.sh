@@ -48,23 +48,25 @@ note "LABORS   count before='$before' after='$after'"
 [ "$before" != "$after" ] && note "PASS     ticking a labor changes the count" || note "FAIL     ticking a labor did not change the count"
 
 # --- Focus session and nudge
-tap text Focus; shot 03_focus; alive "open Focus" focus
+tap id nav_focus; shot 03_focus; alive "open Focus" focus
 tap id btn_focus_start; sleep 3; shot 04_focus_running; alive "start focus" focusstart
-note "FOCUS    label='$(text_of tv_focus_label)' time='$(text_of tv_focus_time)'"
+note "FOCUS    label='$(text_of tv_focus_label)' time='$(text_of tv_focus_time)' (expect REMAINING)"
 adb shell input keyevent KEYCODE_HOME; sleep 28
 adb shell dumpsys notification --noredact > "$OUT/notifications.txt" 2>/dev/null
-if grep -q "forge_focus_nudge" "$OUT/notifications.txt"; then note "PASS     a nudge notification was posted while away"; else note "FAIL     no nudge notification after 28s away"; fi
-if grep -q "forge_focus_session" "$OUT/notifications.txt"; then note "PASS     the session notification is showing"; else note "FAIL     no session notification"; fi
+# Posted notifications show up as records keyed by package and id (2001 session, 2002 nudge)
+if grep -q "|$PKG|2002|" "$OUT/notifications.txt"; then note "PASS     a nudge notification was posted while away"; else note "FAIL     no nudge notification after 28s away"; fi
+if grep -q "|$PKG|2001|" "$OUT/notifications.txt"; then note "PASS     the session notification is showing"; else note "FAIL     no session notification"; fi
+grep -E "\|$PKG\|200[0-9]\|" "$OUT/notifications.txt" | head -5 >> "$REPORT"
 adb shell cmd statusbar expand-notifications; sleep 2; shot 05_notifications_while_away
 adb shell cmd statusbar collapse; sleep 1
 adb shell am start -n $PKG/.MainActivity >/dev/null 2>&1 || adb shell monkey -p $PKG -c android.intent.category.LAUNCHER 1 >/dev/null 2>&1
 sleep 5
-tap text Focus; sleep 2; shot 06_focus_after_return; alive "return to Focus" focusreturn
+tap id nav_focus; sleep 2; shot 06_focus_after_return; alive "return to Focus" focusreturn
 note "NUDGES   count='$(text_of tv_nudge_count)' drifts='$(text_of tv_drift_count)' away='$(text_of tv_away_time)'"
 tap id btn_focus_stop; sleep 2; alive "end focus" focusend
 
 # --- Coach
-tap text Coach; shot 07_coach; alive "open Coach" coach
+tap id nav_coach; shot 07_coach; alive "open Coach" coach
 tap id et_coach_input; adb shell input text "What%sshould%sI%sdo%snext"; sleep 1
 tap id btn_coach_send; sleep 14
 shot 08_coach_reply; alive "send coach message" coachsend
@@ -80,7 +82,7 @@ except Exception as e:
 PY
 
 # --- Reflect
-tap text Reflect; shot 09_reflect; alive "open Reflect" reflect
+tap id nav_reflect; shot 09_reflect; alive "open Reflect" reflect
 tap id et_reflection; adb shell input text "Stayed%son%stask%sbut%sstarted%slate"; sleep 1
 tap id btn_submit_reflection; sleep 14
 shot 10_reflect_saved; alive "save reflection" reflectsave
@@ -88,8 +90,8 @@ if has id tv_ref_text; then note "PASS     the reflection appears under past ent
 if has id tv_ref_ai_response; then note "PASS     the reflection has a coach insight"; else note "INFO     no coach insight on the reflection"; fi
 
 # --- Rank, Plan
-tap text Rank; shot 11_rank; alive "open Rank" rank
-tap text Today; sleep 1
+tap id nav_progress; shot 11_rank; alive "open Rank" rank
+tap id nav_today; sleep 1
 adb shell input swipe 500 1800 500 500 300; sleep 1; shot 12_today_lower
 tap id card_plan_link && { shot 13_plan; alive "open Plan" plan; adb shell input keyevent KEYCODE_BACK; sleep 1; }
 
@@ -98,15 +100,15 @@ adb shell am broadcast -n $PKG/.widget.TodayPlanWidget -a com.forge.app.widget.T
 sleep 4
 adb shell run-as $PKG cat shared_prefs/forge_widget_prefs.xml > "$OUT/widget_prefs.xml" 2>/dev/null
 alive "widget tick broadcast" widget
-tap text Today; sleep 1; adb shell input swipe 500 600 500 1800 300; sleep 1; shot 14_today_after_widget_tick
+tap id nav_today; sleep 1; adb shell input swipe 500 600 500 1800 300; sleep 1; shot 14_today_after_widget_tick
 note "LABORS   count after widget tick='$(text_of tv_labor_count)'"
 
 # --- Landscape
 adb shell settings put system accelerometer_rotation 0
 adb shell settings put system user_rotation 1; sleep 4
 shot 15_today_landscape; alive "rotate to landscape" landscape
-tap text Focus; shot 16_focus_landscape; alive "Focus in landscape" focusland
-tap text Rank; shot 17_rank_landscape
+tap id nav_focus; shot 16_focus_landscape; alive "Focus in landscape" focusland
+tap id nav_progress; shot 17_rank_landscape
 adb shell settings put system user_rotation 0; sleep 3
 
 adb logcat -d -b crash > "$OUT/crash_all.txt"
