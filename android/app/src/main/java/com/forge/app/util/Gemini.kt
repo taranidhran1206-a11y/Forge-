@@ -23,16 +23,24 @@ object Gemini {
     private const val PREF_KEY = "gemini_key"
     private const val DEFAULT_KEY_ENCODED = "QVEuQWI4Uk42SUlxcW9KcWd4SHNQUzdPUWVCSWxJS2JrdWpteVdFVHFlLXVnUXFYTVRqNWc="
 
-    // Same model as the web app first, then older ones in case it is unavailable
-    private val MODELS = listOf("gemini-3.8-flash", "gemini-2.5-flash")
+    // Same model as the web app first. When it is overloaded (it answers 503 at busy
+    // times) fall through to other current Flash models rather than fail the reply.
+    private val MODELS = listOf(
+        "gemini-3.8-flash",
+        "gemini-flash-latest",
+        "gemini-3.7-flash",
+        "gemini-3.5-flash",
+        "gemini-flash-lite-latest"
+    )
 
     class Failure(message: String) : Exception(message)
 
     data class Turn(val fromUser: Boolean, val text: String)
 
     private val client = OkHttpClient.Builder()
-        .connectTimeout(20, TimeUnit.SECONDS)
-        .readTimeout(45, TimeUnit.SECONDS)
+        .connectTimeout(10, TimeUnit.SECONDS)
+        .readTimeout(25, TimeUnit.SECONDS)
+        .callTimeout(25, TimeUnit.SECONDS)
         .build()
 
     fun savedKey(context: Context): String =
