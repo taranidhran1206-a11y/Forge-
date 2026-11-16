@@ -112,6 +112,11 @@ class TodayPlanWidget : AppWidgetProvider() {
     }
 
     private fun updateWidget(context: Context, manager: AppWidgetManager, widgetId: Int) {
+        manager.updateAppWidget(widgetId, buildViews(context))
+    }
+
+    /** Builds exactly what the launcher draws. Public so a device test can inflate it. */
+    fun buildViews(context: Context): RemoteViews {
         val views = RemoteViews(context.packageName, R.layout.widget_today_plan)
         val prefs = context.getSharedPreferences("forge_widget_prefs", Context.MODE_PRIVATE)
 
@@ -196,6 +201,6 @@ class TodayPlanWidget : AppWidgetProvider() {
             }
         }
 
-        manager.updateAppWidget(widgetId, views)
+        return views
     }
 }

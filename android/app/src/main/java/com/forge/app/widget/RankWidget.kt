@@ -32,6 +32,11 @@ class RankWidget : AppWidgetProvider() {
     }
 
     private fun updateWidget(context: Context, manager: AppWidgetManager, widgetId: Int) {
+        manager.updateAppWidget(widgetId, buildViews(context))
+    }
+
+    /** Builds exactly what the launcher draws. Public so a device test can inflate it. */
+    fun buildViews(context: Context): RemoteViews {
         val views = RemoteViews(context.packageName, R.layout.widget_rank)
         val prefs = context.getSharedPreferences("forge_widget_prefs", Context.MODE_PRIVATE)
 
@@ -76,6 +81,6 @@ class RankWidget : AppWidgetProvider() {
         )
         views.setOnClickPendingIntent(R.id.widget_rank_root, pendingIntent)
 
-        manager.updateAppWidget(widgetId, views)
+        return views
     }
 }

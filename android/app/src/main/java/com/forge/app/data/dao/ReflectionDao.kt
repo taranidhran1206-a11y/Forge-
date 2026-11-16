@@ -16,6 +16,9 @@ interface ReflectionDao {
     @Insert
     suspend fun insert(reflection: Reflection): Long
 
+    @Query("UPDATE reflections SET aiResponse = :response WHERE id = :id")
+    suspend fun setAiResponse(id: Long, response: String)
+
     @Query("SELECT COUNT(*) FROM reflections")
     fun getCount(): Flow<Int>
 }

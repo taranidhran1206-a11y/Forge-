@@ -1,6 +1,8 @@
 package com.forge.app.ui.reflect
 
+import android.content.Context
 import androidx.lifecycle.*
+import com.forge.app.util.Gemini
 import com.forge.app.data.ForgeRepository
 import com.forge.app.data.model.DailyStats
 import com.forge.app.data.model.Reflection
@@ -8,7 +10,10 @@ import com.forge.app.data.model.XpEvent
 import kotlinx.coroutines.launch
 import java.util.*
 
-class ReflectViewModel(private val repository: ForgeRepository) : ViewModel() {
+class ReflectViewModel(
+    private val repository: ForgeRepository,
+    private val appContext: Context
+) : ViewModel() {
 
     private val today = repository.getTodayDate()
 
@@ -59,6 +64,7 @@ class ReflectViewModel(private val repository: ForgeRepository) : ViewModel() {
 
         viewModelScope.launch {
             val prompt = todayPrompt.value ?: prompts[0]
+            if (repository.getReflectionForDate(today) != null) return@launch
 
             val reflection = Reflection(
                 text = text.trim(),
@@ -67,8 +73,8 @@ class ReflectViewModel(private val repository: ForgeRepository) : ViewModel() {
                 date = today,
                 timestamp = System.currentTimeMillis()
             )
-            repository.insertReflection(reflection)
-            _todayReflection.value = reflection
+            val id = repository.insertReflection(reflection)
+            _todayReflection.value = reflection.copy(id = id)
 
             // Award XP for reflection
             val xpAmount = 15
@@ -85,6 +91,19 @@ class ReflectViewModel(private val repository: ForgeRepository) : ViewModel() {
             // Update daily stats
             val stats = repository.getStats(today) ?: DailyStats(date = today)
             repository.upsertStats(stats.copy(reflectionDone = true))
+
+            // Coach insight on the entry; the reflection is already saved if this fails
+            try {
+                val insight = Gemini.generate(
+                    appContext,
+                    "You are the coach in the Forge discipline app. Reply to the user's evening reflection with one honest observation and one concrete step for tomorrow. Two or three sentences, no preamble.",
+                    listOf(Gemini.Turn(true, "Prompt: $prompt\nMy reflection: ${text.trim()}")),
+                    maxTokens = 220
+                )
+                repository.setReflectionInsight(id, insight)
+                _todayReflection.value = reflection.copy(id = id, aiResponse = insight)
+            } catch (_: Exception) {
+            }
         }
     }
 

@@ -21,8 +21,8 @@ class ForgeViewModelFactory(private val application: Application) : ViewModelPro
             modelClass.isAssignableFrom(TodayViewModel::class.java) -> TodayViewModel(repository) as T
             modelClass.isAssignableFrom(PlanViewModel::class.java) -> PlanViewModel(repository) as T
             modelClass.isAssignableFrom(ProgressViewModel::class.java) -> ProgressViewModel(repository) as T
-            modelClass.isAssignableFrom(ReflectViewModel::class.java) -> ReflectViewModel(repository) as T
-            modelClass.isAssignableFrom(CoachViewModel::class.java) -> CoachViewModel(repository) as T
+            modelClass.isAssignableFrom(ReflectViewModel::class.java) -> ReflectViewModel(repository, application) as T
+            modelClass.isAssignableFrom(CoachViewModel::class.java) -> CoachViewModel(repository, application) as T
             else -> throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
         }
     }

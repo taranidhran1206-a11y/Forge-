@@ -41,6 +41,7 @@ class CoachFragment : Fragment() {
         setupInput()
         setupChips()
         setupClearChat()
+        setupKeyButton()
         observeViewModel()
     }
 
@@ -81,8 +82,7 @@ class CoachFragment : Fragment() {
             chips.forEach { chipText ->
                 val chip = layoutInflater.inflate(R.layout.item_chip, binding.llChips, false) as TextView
                 chip.text = chipText
-                chip.setBackgroundResource(R.drawable.bg_chip_coach)
-                chip.setOnClickListener {
+                                chip.setOnClickListener {
                     viewModel.sendMessage(chipText)
                 }
                 binding.llChips.addView(chip)
@@ -90,15 +90,43 @@ class CoachFragment : Fragment() {
         }
     }
 
+    private fun setupKeyButton() {
+        binding.btnCoachKey.setOnClickListener {
+            val context = requireContext()
+            val input = android.widget.EditText(context).apply {
+                hint = "Paste your Gemini API key"
+                setText(com.forge.app.util.Gemini.savedKey(context))
+                setTextColor(android.graphics.Color.parseColor("#F5F5F5"))
+                setHintTextColor(android.graphics.Color.parseColor("#9E9E9E"))
+                setBackgroundResource(R.drawable.bg_input)
+                setPadding(36, 28, 36, 28)
+                setSingleLine(true)
+            }
+            val box = android.widget.FrameLayout(context).apply {
+                setPadding(48, 24, 48, 0)
+                addView(input)
+            }
+            AlertDialog.Builder(context, R.style.ForgeDialogTheme)
+                .setTitle("Coach API key")
+                .setMessage("Leave empty to use the built-in key.")
+                .setView(box)
+                .setPositiveButton("Save") { _, _ ->
+                    com.forge.app.util.Gemini.saveKey(context, input.text.toString())
+                }
+                .setNegativeButton("Cancel", null)
+                .show()
+        }
+    }
+
     private fun setupClearChat() {
         binding.btnClearChat.setOnClickListener {
             AlertDialog.Builder(requireContext(), R.style.ForgeDialogTheme)
-                .setTitle("Clear Chat")
+                .setTitle("Clear chat")
                 .setMessage("Delete all messages? This cannot be undone.")
-                .setPositiveButton("CLEAR") { _, _ ->
+                .setPositiveButton("Clear") { _, _ ->
                     viewModel.clearChat()
                 }
-                .setNegativeButton("CANCEL", null)
+                .setNegativeButton("Cancel", null)
                 .show()
         }
     }

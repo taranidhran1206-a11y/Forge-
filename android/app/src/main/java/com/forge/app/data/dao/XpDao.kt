@@ -28,5 +28,5 @@ interface XpDao {
     fun getXpBySource(): Flow<List<XpBySource>>
 
     @Query("SELECT COALESCE(SUM(amount), 0) FROM xp_events")
-    fun getTotalXpSync(): Int
+    suspend fun getTotalXpSync(): Int
 }

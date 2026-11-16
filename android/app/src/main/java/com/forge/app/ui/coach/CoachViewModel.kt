@@ -1,29 +1,21 @@
 package com.forge.app.ui.coach
 
+import android.content.Context
 import androidx.lifecycle.*
+import com.forge.app.util.Gemini
 import com.forge.app.data.ForgeRepository
 import com.forge.app.data.model.CoachMessage
 import com.forge.app.data.model.RankSystem
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.RequestBody.Companion.toRequestBody
-import org.json.JSONArray
-import org.json.JSONObject
 import java.util.*
-import java.util.concurrent.TimeUnit
 
-class CoachViewModel(private val repository: ForgeRepository) : ViewModel() {
+class CoachViewModel(
+    private val repository: ForgeRepository,
+    private val appContext: Context
+) : ViewModel() {
 
     companion object {
-        // Replace with your Gemini API key
-        private const val GEMINI_API_KEY = "YOUR_GEMINI_API_KEY"
-        private const val GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=$GEMINI_API_KEY"
-
-        private const val SYSTEM_PROMPT = """You are Hercules, a tactical performance coach with a military/hacker mindset. You speak in short, direct sentences. You use metaphors of war, code, and systems. You push the user to be their best. Keep responses under 3 sentences unless asked for more. Use terminal-style language. Address the user as "soldier" or "warrior" occasionally. Never be soft — be direct but encouraging."""
+        private const val SYSTEM_PROMPT = """You are Hercules, the performance coach inside the Forge discipline app. Be direct, short and practical. Use the user's real numbers from the context when they help. Keep replies under four sentences unless asked for more. Push the user, but never insult them."""
     }
 
     val messages: LiveData<List<CoachMessage>> = repository.getMessages().asLiveData()
@@ -32,11 +24,6 @@ class CoachViewModel(private val repository: ForgeRepository) : ViewModel() {
 
     private val _suggestionChips = MutableLiveData<List<String>>()
     val suggestionChips: LiveData<List<String>> = _suggestionChips
-
-    private val httpClient = OkHttpClient.Builder()
-        .connectTimeout(30, TimeUnit.SECONDS)
-        .readTimeout(60, TimeUnit.SECONDS)
-        .build()
 
     init {
         updateSuggestionChips()
@@ -53,40 +40,37 @@ class CoachViewModel(private val repository: ForgeRepository) : ViewModel() {
     }
 
     fun sendMessage(text: String) {
-        if (text.isBlank()) return
+        val clean = text.trim()
+        if (clean.isEmpty()) return
 
         viewModelScope.launch {
-            // Save user message
-            val userMsg = CoachMessage(
-                text = text.trim(),
-                isUser = true,
-                timestamp = System.currentTimeMillis()
-            )
-            repository.insertCoachMessage(userMsg)
+            try {
+                val history = messages.value ?: emptyList()
+                repository.insertCoachMessage(
+                    CoachMessage(text = clean, isUser = true, timestamp = System.currentTimeMillis())
+                )
+                isTyping.value = true
 
-            isTyping.value = true
+                val reply = try {
+                    val context = buildContext()
+                    val turns = history.takeLast(10).map { Gemini.Turn(it.isUser, it.text) } +
+                        Gemini.Turn(true, clean)
+                    // The API needs the conversation to start with the user
+                    Gemini.generate(appContext, SYSTEM_PROMPT + "\n\n" + context, turns.dropWhile { !it.fromUser })
+                } catch (e: Exception) {
+                    "Coach is offline (${e.message ?: "unknown error"}). Until it is back: " +
+                        getFallbackResponse(clean)
+                }
 
-            // Build context
-            val context = buildContext()
-
-            // Get AI response
-            val response = try {
-                callGeminiApi(text.trim(), context)
-            } catch (e: Exception) {
-                getFallbackResponse(text.trim())
+                repository.insertCoachMessage(
+                    CoachMessage(text = reply, isUser = false, timestamp = System.currentTimeMillis())
+                )
+            } catch (_: Exception) {
+                // Never let a failed message take the app down
+            } finally {
+                isTyping.value = false
+                updateSuggestionChips()
             }
-
-            isTyping.value = false
-
-            // Save AI message
-            val aiMsg = CoachMessage(
-                text = response,
-                isUser = false,
-                timestamp = System.currentTimeMillis()
-            )
-            repository.insertCoachMessage(aiMsg)
-
-            updateSuggestionChips()
         }
     }
 
@@ -96,55 +80,19 @@ class CoachViewModel(private val repository: ForgeRepository) : ViewModel() {
         val totalXp = repository.getTotalXpSync()
         val rank = RankSystem.getRank(totalXp)
         val streak = repository.calculateStreak()
+        val labors = repository.getLaborsForDateSync(today)
+        val open = labors.filter { !it.done }.joinToString(", ") { it.name }.ifEmpty { "none" }
 
         return """
             User context:
             - Rank: ${rank.title} (${totalXp} XP)
             - Streak: $streak days
             - Today's labors: ${stats?.laborsCompleted ?: 0}/${stats?.laborsTotal ?: 0} complete
+            - Labors still open: $open
             - Focus time today: ${stats?.focusMinutes ?: 0} minutes
             - Reflection done: ${stats?.reflectionDone ?: false}
             - Current time: ${Calendar.getInstance().get(Calendar.HOUR_OF_DAY)}:${String.format("%02d", Calendar.getInstance().get(Calendar.MINUTE))}
         """.trimIndent()
-    }
-
-    private suspend fun callGeminiApi(prompt: String, context: String): String = withContext(Dispatchers.IO) {
-        val requestBody = JSONObject().apply {
-            put("contents", JSONArray().apply {
-                put(JSONObject().apply {
-                    put("role", "user")
-                    put("parts", JSONArray().apply {
-                        put(JSONObject().apply {
-                            put("text", "$SYSTEM_PROMPT\n\n$context\n\nUser: $prompt")
-                        })
-                    })
-                })
-            })
-            put("generationConfig", JSONObject().apply {
-                put("temperature", 0.8)
-                put("maxOutputTokens", 256)
-            })
-        }
-
-        val request = Request.Builder()
-            .url(GEMINI_URL)
-            .post(requestBody.toString().toRequestBody("application/json".toMediaType()))
-            .build()
-
-        val response = httpClient.newCall(request).execute()
-        val body = response.body?.string() ?: throw Exception("Empty response")
-
-        if (!response.isSuccessful) {
-            throw Exception("API error: ${response.code}")
-        }
-
-        val json = JSONObject(body)
-        val candidates = json.getJSONArray("candidates")
-        if (candidates.length() == 0) throw Exception("No candidates")
-
-        val content = candidates.getJSONObject(0).getJSONObject("content")
-        val parts = content.getJSONArray("parts")
-        parts.getJSONObject(0).getString("text")
     }
 
     private fun getFallbackResponse(input: String): String {

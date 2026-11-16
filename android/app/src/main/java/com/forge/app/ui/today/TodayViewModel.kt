@@ -118,8 +118,8 @@ class TodayViewModel(private val repository: ForgeRepository) : ViewModel() {
                 _streakCount.value = repository.calculateStreak()
                 loadWeekActivity()
             } else {
-                val updated = labor.copy(done = false)
-                repository.updateLabor(updated)
+                repository.uncompleteLabor(labor)
+                loadWeekActivity()
             }
         }
     }

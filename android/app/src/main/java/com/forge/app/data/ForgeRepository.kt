@@ -89,7 +89,7 @@ class ForgeRepository(private val database: ForgeDatabase) {
 
     fun getTotalXp(): Flow<Int> = xpDao.getTotalXp()
 
-    fun getTotalXpSync(): Int = xpDao.getTotalXpSync()
+    suspend fun getTotalXpSync(): Int = xpDao.getTotalXpSync()
 
     fun getXpForDate(date: String): Flow<Int> = xpDao.getXpForDate(date)
 
@@ -121,6 +121,8 @@ class ForgeRepository(private val database: ForgeDatabase) {
     suspend fun insertReflection(reflection: Reflection): Long {
         return reflectionDao.insert(reflection)
     }
+
+    suspend fun setReflectionInsight(id: Long, response: String) = reflectionDao.setAiResponse(id, response)
 
     fun getReflectionCount(): Flow<Int> = reflectionDao.getCount()
 
@@ -255,7 +257,7 @@ class ForgeRepository(private val database: ForgeDatabase) {
 
     // ── Sync helpers (for widgets/services, run on IO thread) ──
 
-    fun getLaborsForDateSync(date: String): List<Labor> = laborDao.getLaborsForDateSync(date)
+    suspend fun getLaborsForDateSync(date: String): List<Labor> = laborDao.getLaborsForDateSync(date)
 
     // ── Internal helpers ─────────────────────────────────────────
 
