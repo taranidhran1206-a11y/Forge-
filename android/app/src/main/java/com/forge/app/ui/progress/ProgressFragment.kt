@@ -256,6 +256,11 @@ class ProgressFragment : Fragment() {
         else -> category.replace("_", " ").replaceFirstChar { it.uppercase() }
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.refreshStats()
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

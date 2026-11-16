@@ -32,6 +32,29 @@ except Exception:
 PY
 }
 
+# --- Ask Gemini directly, to separate app faults from key or quota faults (the key is never printed)
+python3 - >> "$REPORT" 2>&1 <<'PY'
+import base64, json, re, urllib.request, urllib.error
+enc = re.search(r'DEFAULT_KEY_ENCODED = "([^"]+)"', open("android/app/src/main/java/com/forge/app/util/Gemini.kt").read()).group(1)
+key = base64.b64decode(enc).decode().strip()
+body = json.dumps({"contents": [{"role": "user", "parts": [{"text": "Reply with the single word ok"}]}]}).encode()
+for model in ["gemini-3.8-flash", "gemini-2.5-flash"]:
+    req = urllib.request.Request(
+        "https://generativelanguage.googleapis.com/v1beta/models/%s:generateContent" % model,
+        data=body, headers={"Content-Type": "application/json", "x-goog-api-key": key})
+    try:
+        with urllib.request.urlopen(req, timeout=40) as r:
+            print("GEMINI   %s -> %s" % (model, r.status))
+    except urllib.error.HTTPError as e:
+        try:
+            msg = json.loads(e.read().decode()).get("error", {}).get("message", "")
+        except Exception:
+            msg = ""
+        print("GEMINI   %s -> %s %s" % (model, e.code, msg[:220].replace(key, "<key>")))
+    except Exception as e:
+        print("GEMINI   %s -> %s" % (model, type(e).__name__))
+PY
+
 adb logcat -c
 adb install -r -g android/app/build/outputs/apk/debug/app-debug.apk | tail -1 | tee -a "$REPORT"
 adb shell pm grant $PKG android.permission.POST_NOTIFICATIONS 2>/dev/null
@@ -68,7 +91,7 @@ tap id btn_focus_stop; sleep 2; alive "end focus" focusend
 # --- Coach
 tap id nav_coach; shot 07_coach; alive "open Coach" coach
 tap id et_coach_input; adb shell input text "What%sshould%sI%sdo%snext"; sleep 1
-tap id btn_coach_send; sleep 14
+tap id btn_coach_send; sleep 45
 shot 08_coach_reply; alive "send coach message" coachsend
 dump; grep -o 'resource-id="com.forge.app:id/tv_ai_text"' "$OUT/ui.xml" | wc -l | xargs -I{} echo "COACH    ai replies on screen: {}" | tee -a "$REPORT"
 python3 - "$OUT/ui.xml" >> "$REPORT" <<'PY'
@@ -84,7 +107,7 @@ PY
 # --- Reflect
 tap id nav_reflect; shot 09_reflect; alive "open Reflect" reflect
 tap id et_reflection; adb shell input text "Stayed%son%stask%sbut%sstarted%slate"; sleep 1
-tap id btn_submit_reflection; sleep 14
+tap id btn_submit_reflection; sleep 40
 shot 10_reflect_saved; alive "save reflection" reflectsave
 if has id tv_ref_text; then note "PASS     the reflection appears under past entries"; else note "FAIL     saved reflection not listed"; fi
 if has id tv_ref_ai_response; then note "PASS     the reflection has a coach insight"; else note "INFO     no coach insight on the reflection"; fi

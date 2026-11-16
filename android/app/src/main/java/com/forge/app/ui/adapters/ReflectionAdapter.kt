@@ -14,7 +14,13 @@ class ReflectionAdapter : ListAdapter<Reflection, ReflectionAdapter.ViewHolder>(
     inner class ViewHolder(private val binding: ItemReflectionBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(reflection: Reflection) {
-            binding.tvRefDate.text = reflection.date
+            binding.tvRefDate.text = try {
+                val parsed = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.US).parse(reflection.date)
+                if (parsed != null) java.text.SimpleDateFormat("EEE, MMM d", java.util.Locale.getDefault()).format(parsed)
+                else reflection.date
+            } catch (_: Exception) {
+                reflection.date
+            }
             binding.tvRefPrompt.text = reflection.promptUsed
             binding.tvRefText.text = reflection.text
 
