@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#0A0A0A">
@@ -10,299 +11,231 @@
         android:layout_height="match_parent"
         android:fillViewport="true">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
+            android:layout_height="wrap_content">
 
-            <!-- RANK LADDER Header -->
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="RANK LADDER"
-                android:textColor="#FFFFFF"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:letterSpacing="0.05"
-                android:gravity="center"
-                android:layout_marginBottom="20dp" />
-
-            <!-- Rank Display Card -->
             <LinearLayout
-                android:id="@+id/card_rank"
-                android:layout_width="match_parent"
+                android:id="@+id/panes"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:background="@drawable/bg_card"
-                android:padding="24dp"
-                android:gravity="center"
-                android:layout_marginBottom="16dp">
+                android:baselineAligned="false"
+                android:paddingHorizontal="@dimen/page_pad"
+                android:paddingTop="8dp"
+                android:paddingBottom="24dp"
+                app:layout_constraintWidth_max="@dimen/content_max_width"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
 
-                <!-- Large Rank Badge -->
-                <TextView
-                    android:id="@+id/tv_rank_badge"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="⚔️"
-                    android:textSize="64sp"
-                    android:layout_marginBottom="12dp" />
-
-                <!-- Level Label -->
-                <TextView
-                    android:id="@+id/tv_rank_level"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="LEVEL 1"
-                    android:textColor="#60FFFFFF"
-                    android:textSize="12sp"
-                    android:letterSpacing="0.1"
-                    android:layout_marginBottom="4dp" />
-
-                <!-- Rank Name -->
-                <TextView
-                    android:id="@+id/tv_rank_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="IRON"
-                    android:textColor="#78909C"
-                    android:textSize="32sp"
-                    android:textStyle="bold"
-                    android:layout_marginBottom="20dp" />
-
-                <!-- Current XP + Global Rank row -->
                 <LinearLayout
+                    android:id="@+id/pane_left"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginBottom="8dp">
+                    android:orientation="vertical">
 
-                    <LinearLayout
-                        android:layout_width="0dp"
+                    <TextView
+                        style="@style/Forge.Label"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="CURRENT XP"
-                            android:textColor="#60FFFFFF"
-                            android:textSize="10sp"
-                            android:letterSpacing="0.05" />
-
-                        <TextView
-                            android:id="@+id/tv_xp_current"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="0"
-                            android:textColor="#FFFFFF"
-                            android:textSize="28sp"
-                            android:textStyle="bold" />
-                    </LinearLayout>
+                        android:gravity="center"
+                        android:text="Rank ladder"
+                        android:layout_marginBottom="12dp" />
 
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:id="@+id/card_rank"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:gravity="end">
+                        android:gravity="center_horizontal"
+                        android:layout_marginBottom="14dp">
+
+                        <FrameLayout
+                            android:layout_width="@dimen/badge_size"
+                            android:layout_height="@dimen/badge_size"
+                            android:layout_marginBottom="8dp">
+                            <ImageView
+                                android:id="@+id/iv_rank_hex"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:src="@drawable/ic_rank_hex"
+                                android:contentDescription="@null" />
+                            <ImageView
+                                android:id="@+id/iv_rank_axe"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:padding="34dp"
+                                android:src="@drawable/forge_axe"
+                                android:contentDescription="Rank badge" />
+                        </FrameLayout>
 
                         <TextView
+                            android:id="@+id/tv_rank_level"
+                            style="@style/Forge.Label"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="GLOBAL RANK"
-                            android:textColor="#60FFFFFF"
-                            android:textSize="10sp"
-                            android:letterSpacing="0.05" />
+                            android:text="Level 1" />
 
                         <TextView
-                            android:id="@+id/tv_global_percent"
+                            android:id="@+id/tv_rank_title"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Top 99%"
-                            android:textColor="#FFFFFF"
-                            android:textSize="28sp"
-                            android:textStyle="bold" />
+                            android:text="IRON"
+                            android:textColor="#78909C"
+                            android:textSize="@dimen/t_rank"
+                            android:textStyle="bold"
+                            android:letterSpacing="0.04" />
                     </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:baselineAligned="false"
+                        android:layout_marginBottom="10dp">
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginEnd="5dp"
+                            android:orientation="vertical"
+                            android:background="@drawable/bg_card"
+                            android:padding="@dimen/card_pad">
+                            <TextView
+                                style="@style/Forge.Label"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Current XP" />
+                            <TextView
+                                android:id="@+id/tv_xp_current"
+                                style="@style/Forge.Num"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="0" />
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginStart="5dp"
+                            android:orientation="vertical"
+                            android:background="@drawable/bg_card"
+                            android:padding="@dimen/card_pad">
+                            <TextView
+                                style="@style/Forge.Label"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Last 7 days" />
+                            <TextView
+                                android:id="@+id/tv_week_xp"
+                                style="@style/Forge.Num"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="#4CAF50"
+                                android:text="+0" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:background="@drawable/bg_card"
+                        android:padding="@dimen/card_pad"
+                        android:layout_marginBottom="10dp">
+                        <TextView
+                            android:id="@+id/tv_xp_next"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="200 XP to BRONZE"
+                            android:textColor="#F5F5F5"
+                            android:textSize="@dimen/t_body"
+                            android:textStyle="bold" />
+                        <ProgressBar
+                            android:id="@+id/pb_rank_xp"
+                            style="@android:style/Widget.ProgressBar.Horizontal"
+                            android:layout_width="match_parent"
+                            android:layout_height="8dp"
+                            android:layout_marginTop="10dp"
+                            android:max="100"
+                            android:progress="0"
+                            android:progressDrawable="@drawable/bg_bar_rank" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/ll_rank_ladder"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:background="@drawable/bg_card"
+                        android:paddingVertical="4dp"
+                        android:layout_marginBottom="18dp" />
                 </LinearLayout>
 
-                <!-- Progress bar to next rank -->
-                <ProgressBar
-                    android:id="@+id/pb_rank_xp"
-                    style="@android:style/Widget.ProgressBar.Horizontal"
+                <LinearLayout
+                    android:id="@+id/pane_right"
                     android:layout_width="match_parent"
-                    android:layout_height="6dp"
-                    android:max="100"
-                    android:progress="0"
-                    android:progressDrawable="@drawable/bg_xp_progress"
-                    android:layout_marginBottom="6dp" />
-
-                <TextView
-                    android:id="@+id/tv_xp_next"
-                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="200 XP to BRONZE"
-                    android:textColor="#60FFFFFF"
-                    android:textSize="12sp" />
-            </LinearLayout>
-
-            <!-- Leaderboard + Friends Cards -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="20dp">
-
-                <!-- Global Leaderboard Card -->
-                <LinearLayout
-                    android:id="@+id/card_leaderboard"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:background="@drawable/bg_card"
-                    android:padding="16dp"
-                    android:gravity="center"
-                    android:layout_marginEnd="8dp">
-
+                    android:orientation="vertical">
                     <TextView
+                        style="@style/Forge.Label"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="🌐"
-                        android:textSize="24sp"
+                        android:text="XP breakdown"
                         android:layout_marginBottom="8dp" />
-
+                    <LinearLayout
+                        android:id="@+id/ll_xp_breakdown"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:background="@drawable/bg_card"
+                        android:paddingHorizontal="@dimen/card_pad"
+                        android:paddingVertical="10dp"
+                        android:minHeight="48dp"
+                        android:layout_marginBottom="18dp" />
                     <TextView
+                        style="@style/Forge.Label"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Global\nLeaderboard"
-                        android:textColor="#FFFFFF"
-                        android:textSize="13sp"
-                        android:textStyle="bold"
-                        android:gravity="center" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="See how you rank\nworldwide"
-                        android:textColor="#60FFFFFF"
-                        android:textSize="11sp"
-                        android:gravity="center"
-                        android:layout_marginTop="4dp" />
-                </LinearLayout>
-
-                <!-- Friends Card -->
-                <LinearLayout
-                    android:id="@+id/card_friends"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:background="@drawable/bg_card"
-                    android:padding="16dp"
-                    android:gravity="center"
-                    android:layout_marginStart="8dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="👥"
-                        android:textSize="24sp"
+                        android:text="Last 7 days"
                         android:layout_marginBottom="8dp" />
-
+                    <LinearLayout
+                        android:id="@+id/ll_weekly_stats"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:background="@drawable/bg_card"
+                        android:paddingHorizontal="@dimen/card_pad"
+                        android:paddingVertical="10dp"
+                        android:minHeight="48dp"
+                        android:layout_marginBottom="18dp" />
                     <TextView
+                        style="@style/Forge.Label"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Friends"
-                        android:textColor="#FFFFFF"
-                        android:textSize="13sp"
-                        android:textStyle="bold"
-                        android:gravity="center" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
+                        android:text="Time today"
+                        android:layout_marginBottom="8dp" />
+                    <LinearLayout
+                        android:id="@+id/ll_time_allocation"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Connect and\ncompete"
-                        android:textColor="#60FFFFFF"
-                        android:textSize="11sp"
-                        android:gravity="center"
-                        android:layout_marginTop="4dp" />
+                        android:orientation="vertical"
+                        android:background="@drawable/bg_card"
+                        android:paddingHorizontal="@dimen/card_pad"
+                        android:paddingVertical="10dp"
+                        android:minHeight="48dp"
+                        android:layout_marginBottom="18dp" />
                 </LinearLayout>
             </LinearLayout>
-
-            <!-- XP BREAKDOWN -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="XP BREAKDOWN"
-                android:textColor="#80FFFFFF"
-                android:textSize="13sp"
-                android:textStyle="bold"
-                android:letterSpacing="0.05"
-                android:layout_marginBottom="8dp" />
-
-            <LinearLayout
-                android:id="@+id/ll_xp_breakdown"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:background="@drawable/bg_card"
-                android:padding="12dp"
-                android:layout_marginBottom="20dp" />
-
-            <!-- WEEKLY STATS -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="WEEKLY STATS"
-                android:textColor="#80FFFFFF"
-                android:textSize="13sp"
-                android:textStyle="bold"
-                android:letterSpacing="0.05"
-                android:layout_marginBottom="8dp" />
-
-            <HorizontalScrollView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:scrollbars="none"
-                android:layout_marginBottom="20dp">
-
-                <LinearLayout
-                    android:id="@+id/ll_weekly_stats"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal" />
-            </HorizontalScrollView>
-
-            <!-- TIME ALLOCATION -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="TIME ALLOCATION"
-                android:textColor="#80FFFFFF"
-                android:textSize="13sp"
-                android:textStyle="bold"
-                android:letterSpacing="0.05"
-                android:layout_marginBottom="8dp" />
-
-            <LinearLayout
-                android:id="@+id/ll_time_allocation"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:background="@drawable/bg_card"
-                android:padding="12dp"
-                android:layout_marginBottom="24dp" />
-
-        </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 
-    <!-- Level-up animation overlay -->
     <FrameLayout
         android:id="@+id/fl_level_up_overlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#CC0A0A0A"
+        android:background="#E60A0A0A"
         android:visibility="gone"
         android:clickable="true"
         android:focusable="true">
@@ -314,22 +247,20 @@
             android:orientation="vertical"
             android:gravity="center">
 
-            <TextView
-                android:id="@+id/tv_level_up_emoji"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="⚔️"
-                android:textSize="64sp"
+            <ImageView
+                android:layout_width="96dp"
+                android:layout_height="96dp"
+                android:src="@drawable/forge_axe"
+                android:contentDescription="@null"
                 android:layout_marginBottom="16dp" />
 
             <TextView
                 android:id="@+id/tv_level_up_title"
+                style="@style/Forge.Label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="RANK UP!"
+                android:text="Rank up"
                 android:textColor="#4CAF50"
-                android:textSize="32sp"
-                android:textStyle="bold"
                 android:layout_marginBottom="8dp" />
 
             <TextView
@@ -338,7 +269,7 @@
                 android:layout_height="wrap_content"
                 android:text="BRONZE"
                 android:textColor="#A1887F"
-                android:textSize="24sp"
+                android:textSize="@dimen/t_rank"
                 android:textStyle="bold" />
         </LinearLayout>
     </FrameLayout>

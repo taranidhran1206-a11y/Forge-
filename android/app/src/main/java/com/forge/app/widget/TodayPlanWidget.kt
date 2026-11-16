@@ -58,7 +58,13 @@ class TodayPlanWidget : AppWidgetProvider() {
         val laborsJson = prefs.getString("labors_json", "[]") ?: "[]"
         try {
             val type = object : TypeToken<List<WidgetLabor>>() {}.type
-            val labors: List<WidgetLabor> = Gson().fromJson(laborsJson, type)
+            val stored: List<WidgetLabor> = Gson().fromJson(laborsJson, type) ?: emptyList()
+            // A new day starts unchecked even before the app is opened
+            val today = SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date())
+            val sameDay = prefs.getString("labors_date", today) == today
+            val fresh = if (sameDay) stored else stored.map { it.copy(done = false) }
+            // Open labors first so the next thing to do is always visible
+            val labors = fresh.filter { !it.done } + fresh.filter { it.done }
 
             val laborViews = listOf(
                 Triple(R.id.ll_labor_1, R.id.iv_check_1, R.id.tv_labor_name_1),
@@ -78,7 +84,7 @@ class TodayPlanWidget : AppWidgetProvider() {
                     )
                     views.setTextViewText(nameId, labors[index].name)
                     // Dim completed items
-                    views.setTextColor(nameId, if (labors[index].done) 0xFF666666.toInt() else 0xFFE8E8E8.toInt())
+                    views.setTextColor(nameId, if (labors[index].done) 0xFF8A8A8A.toInt() else 0xFFF5F5F5.toInt())
                 } else {
                     views.setViewVisibility(rowId, View.GONE)
                 }

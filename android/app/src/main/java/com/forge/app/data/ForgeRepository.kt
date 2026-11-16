@@ -41,6 +41,20 @@ class ForgeRepository(private val database: ForgeDatabase) {
 
     suspend fun getTotalLaborCount(date: String): Int = laborDao.getTotalCount(date)
 
+    /**
+     * Labors are stored per day. On a new day, carry the most recent day's list
+     * forward (unchecked) so the plan and the widgets are never empty.
+     * Returns true when today already had labors or some were carried over.
+     */
+    suspend fun ensureTodayLabors(): Boolean {
+        val today = getTodayDate()
+        if (laborDao.getTotalCount(today) > 0) return true
+        val previous = laborDao.getLatestBefore(today)
+        if (previous.isEmpty()) return false
+        previous.forEach { laborDao.insert(it.copy(id = 0, done = false, date = today)) }
+        return true
+    }
+
     suspend fun completeLabor(labor: Labor) {
         laborDao.toggleDone(labor.id, true)
         addXp(labor.xpReward, "labor", "Completed: ${labor.name}")

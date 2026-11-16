@@ -9,7 +9,7 @@
     <!-- Bottom nav tabs -->
     <string name="tab_today">Today</string>
     <string name="tab_plan">Plan</string>
-    <string name="tab_progress">Progress</string>
+    <string name="tab_progress">Rank</string>
     <string name="tab_reflect">Reflect</string>
     <string name="tab_coach">Coach</string>
 

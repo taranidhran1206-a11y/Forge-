@@ -11,7 +11,8 @@
         android:id="@+id/tv_cat_emoji"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        android:text="🧠"
+        android:text=""
+        android:visibility="gone"
         android:textSize="14sp"
         android:gravity="center" />
 
@@ -23,7 +24,7 @@
         android:text="Deep Work"
         android:textColor="#F5F5F5"
         android:textSize="13sp"
-        android:fontFamily="monospace"
+
         android:layout_marginStart="8dp" />
 
     <ProgressBar
@@ -44,7 +45,7 @@
         android:text="2h 30m"
         android:textColor="#9E9E9E"
         android:textSize="12sp"
-        android:fontFamily="monospace"
+
         android:minWidth="48dp"
         android:gravity="end" />
 

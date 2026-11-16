@@ -25,7 +25,7 @@
         <item name="android:textColorPrimary">@color/fg</item>
         <item name="android:textColorSecondary">@color/fg2</item>
         <item name="android:textColorHint">@color/fg3</item>
-        <item name="android:fontFamily">monospace</item>
+        <item name="android:fontFamily">sans-serif</item>
     </style>
 
     <!-- Splash Theme -->
@@ -39,7 +39,7 @@
 
     <!-- Terminal Text Styles -->
     <style name="TextTerminal">
-        <item name="android:fontFamily">monospace</item>
+        <item name="android:fontFamily">sans-serif</item>
         <item name="android:textColor">@color/fg</item>
     </style>
 
@@ -92,7 +92,7 @@
         <item name="android:background">@drawable/bg_button_primary</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:textSize">@dimen/text_sm</item>
-        <item name="android:fontFamily">monospace</item>
+        <item name="android:fontFamily">sans-serif</item>
         <item name="android:textStyle">bold</item>
         <item name="android:paddingStart">@dimen/space_lg</item>
         <item name="android:paddingEnd">@dimen/space_lg</item>
@@ -113,7 +113,7 @@
         <item name="android:textColor">@color/fg</item>
         <item name="android:textColorHint">@color/fg3</item>
         <item name="android:textSize">@dimen/text_sm</item>
-        <item name="android:fontFamily">monospace</item>
+        <item name="android:fontFamily">sans-serif</item>
         <item name="android:padding">@dimen/space_sm</item>
     </style>
 
@@ -124,8 +124,7 @@
 
     <style name="TextAppearance.Forge.BottomNav" parent="TextAppearance.Material3.LabelSmall">
         <item name="android:textSize">@dimen/text_xs</item>
-        <item name="android:fontFamily">monospace</item>
-        <item name="android:textColor">@color/fg2</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
     </style>
 
     <!-- Chip Style -->
@@ -133,7 +132,7 @@
         <item name="android:background">@drawable/bg_chip</item>
         <item name="android:textColor">@color/fg2</item>
         <item name="android:textSize">@dimen/text_xs</item>
-        <item name="android:fontFamily">monospace</item>
+        <item name="android:fontFamily">sans-serif</item>
         <item name="android:paddingStart">@dimen/space_sm</item>
         <item name="android:paddingEnd">@dimen/space_sm</item>
         <item name="android:paddingTop">@dimen/space_xs</item>
@@ -148,7 +147,7 @@
         <item name="colorOnSurface">@color/fg</item>
         <item name="android:windowBackground">@color/surface1</item>
         <item name="android:textColorPrimary">@color/fg</item>
-        <item name="android:fontFamily">monospace</item>
+        <item name="android:fontFamily">sans-serif</item>
     </style>
 
     <style name="ForgeDialogTheme" parent="Theme.Material3.Dark.Dialog.Alert">
@@ -157,7 +156,7 @@
         <item name="colorOnSurface">@color/fg</item>
         <item name="android:windowBackground">@color/surface1</item>
         <item name="android:textColorPrimary">@color/fg</item>
-        <item name="android:fontFamily">monospace</item>
+        <item name="android:fontFamily">sans-serif</item>
     </style>
 
     <!-- Pill Style -->
@@ -165,11 +164,48 @@
         <item name="android:background">@drawable/bg_pill</item>
         <item name="android:textColor">@color/fg</item>
         <item name="android:textSize">@dimen/text_xs</item>
-        <item name="android:fontFamily">monospace</item>
+        <item name="android:fontFamily">sans-serif</item>
         <item name="android:paddingStart">@dimen/space_sm</item>
         <item name="android:paddingEnd">@dimen/space_sm</item>
         <item name="android:paddingTop">@dimen/space_xxs</item>
         <item name="android:paddingBottom">@dimen/space_xxs</item>
+    </style>
+
+    <!-- Redesign text styles -->
+    <style name="Forge.Label">
+        <item name="android:textSize">@dimen/t_label</item>
+        <item name="android:textColor">#9E9E9E</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:letterSpacing">0.12</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+    <style name="Forge.Title">
+        <item name="android:textSize">@dimen/t_title</item>
+        <item name="android:textColor">#F5F5F5</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
+    <style name="Forge.Body">
+        <item name="android:textSize">@dimen/t_body</item>
+        <item name="android:textColor">#F5F5F5</item>
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
+    <style name="Forge.Sub">
+        <item name="android:textSize">@dimen/t_small</item>
+        <item name="android:textColor">#9E9E9E</item>
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
+    <style name="Forge.Num">
+        <item name="android:textSize">@dimen/t_stat</item>
+        <item name="android:textColor">#F5F5F5</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:fontFamily">monospace</item>
+    </style>
+    <style name="Forge" />
+
+    <style name="Forge.NavIndicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
+        <item name="android:color">#2A1313</item>
     </style>
 
 </resources>

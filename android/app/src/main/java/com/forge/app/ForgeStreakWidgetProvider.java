@@ -28,6 +28,10 @@ public class ForgeStreakWidgetProvider extends AppWidgetProvider {
         int streak = prefs.getInt("streak", 0);
         int todayDone = prefs.getInt("todayDone", 0);
         int todayTotal = prefs.getInt("todayTotal", 0);
+        String today = new java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.US).format(new java.util.Date());
+        if (!today.equals(prefs.getString("labors_date", today))) {
+            todayDone = 0; // new day, nothing checked yet
+        }
 
         for (int appWidgetId : appWidgetIds) {
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_streak);

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Auto-scaling tokens: overridden in values-sw600dp, values-sw720dp and values-land -->
+    <dimen name="page_pad">20dp</dimen>
+    <dimen name="pane_gap">16dp</dimen>
+    <dimen name="content_max_width">640dp</dimen>
+    <dimen name="card_pad">16dp</dimen>
+    <dimen name="card_radius">16dp</dimen>
+    <dimen name="ring_size">220dp</dimen>
+    <dimen name="badge_size">132dp</dimen>
+    <dimen name="logo_size">32dp</dimen>
+    <dimen name="t_label">11sp</dimen>
+    <dimen name="t_small">12sp</dimen>
+    <dimen name="t_body">14sp</dimen>
+    <dimen name="t_row">15sp</dimen>
+    <dimen name="t_title">22sp</dimen>
+    <dimen name="t_stat">22sp</dimen>
+    <dimen name="t_rank">34sp</dimen>
+    <dimen name="t_timer">48sp</dimen>
+    <dimen name="check_size">26dp</dimen>
+    <dimen name="tap_min">48dp</dimen>
+</resources>

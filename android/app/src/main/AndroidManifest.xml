@@ -21,7 +21,7 @@
             android:name=".SplashActivity"
             android:exported="true"
             android:theme="@style/Theme.Forge.Splash"
-            android:screenOrientation="unspecified">
+            android:screenOrientation="fullUser">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -31,9 +31,19 @@
         <activity
             android:name=".MainActivity"
             android:exported="false"
-            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
-            android:screenOrientation="unspecified"
+            android:configChanges="keyboardHidden"
+            android:launchMode="singleTop"
+            android:screenOrientation="fullUser"
             android:windowSoftInputMode="adjustResize" />
+
+        <service
+            android:name=".focus.FocusService"
+            android:exported="false"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Focus timer that keeps counting and nudges the user while they are outside the app" />
+        </service>
 
         <service
             android:name=".service.TimeTrackService"

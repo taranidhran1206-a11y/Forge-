@@ -15,7 +15,7 @@
         android:text="Labors"
         android:textColor="#F5F5F5"
         android:textSize="13sp"
-        android:fontFamily="monospace" />
+ />
 
     <ProgressBar
         android:id="@+id/pb_xp_source_bar"
@@ -33,9 +33,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="120 XP"
-        android:textColor="#00E676"
+        android:textColor="#4CAF50"
         android:textSize="12sp"
-        android:fontFamily="monospace"
+
         android:textStyle="bold"
         android:minWidth="56dp"
         android:gravity="end" />

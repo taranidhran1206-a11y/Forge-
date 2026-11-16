@@ -5,7 +5,6 @@ import android.app.NotificationManager
 import android.os.Build
 import android.os.Bundle
 import android.view.View
-import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
@@ -16,7 +15,9 @@ import com.forge.app.data.ForgeRepository
 import com.forge.app.data.model.Labor
 import com.forge.app.databinding.ActivityMainBinding
 import com.forge.app.data.model.RankSystem
+import com.forge.app.focus.FocusState
 import com.forge.app.util.WidgetHelper
+import com.google.android.material.navigation.NavigationBarView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -42,8 +43,6 @@ class MainActivity : AppCompatActivity() {
             window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE
         }
 
-        // Keep screen on
-        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
         // Initialize database and repository
         val db = ForgeDatabase.getDatabase(applicationContext)
@@ -56,13 +55,25 @@ class MainActivity : AppCompatActivity() {
         val navHostFragment = supportFragmentManager
             .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         val navController = navHostFragment.navController
-        binding.bottomNav.setupWithNavController(navController)
+        // Bottom bar in portrait, side rail in landscape: both are NavigationBarViews
+        (binding.bottomNav as NavigationBarView).setupWithNavController(navController)
 
-        // Seed default labors on first run
+        // Carry yesterday's labors into today; seed defaults only on a truly empty first run
         val prefs = getSharedPreferences("forge_prefs", MODE_PRIVATE)
-        if (!prefs.getBoolean("labors_seeded", false)) {
-            seedDefaultLabors()
-            prefs.edit().putBoolean("labors_seeded", true).apply()
+        lifecycleScope.launch(Dispatchers.IO) {
+            val today = repository.getTodayDate()
+            if (prefs.getString("labors_rolled_day", "") != today) {
+                // Once per day, so labors deleted on purpose today stay deleted
+                val hasLabors = try { repository.ensureTodayLabors() } catch (_: Exception) { true }
+                if (!hasLabors && !prefs.getBoolean("labors_seeded", false)) {
+                    seedDefaultLabors()
+                }
+                prefs.edit()
+                    .putBoolean("labors_seeded", true)
+                    .putString("labors_rolled_day", today)
+                    .apply()
+            }
+            WidgetHelper.updateAllWidgets(this@MainActivity, repository)
         }
 
         // Update app bar XP and rank
@@ -73,6 +84,16 @@ class MainActivity : AppCompatActivity() {
                 binding.tvAppbarRank.text = rank.title
             }
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        FocusState.appInForeground = true
+    }
+
+    override fun onStop() {
+        FocusState.appInForeground = false
+        super.onStop()
     }
 
     override fun onPause() {
@@ -126,7 +147,7 @@ class MainActivity : AppCompatActivity() {
             val defaultLabors = listOf(
                 Labor(
                     name = "Morning Brief",
-                    emoji = "🌅",
+                    emoji = "",
                     description = "Review today's plan",
                     time = "06:00",
                     timeOfDay = "MORNING",
@@ -136,7 +157,7 @@ class MainActivity : AppCompatActivity() {
                 ),
                 Labor(
                     name = "Meditate",
-                    emoji = "🧘",
+                    emoji = "",
                     description = "10 minutes mindfulness",
                     time = "06:30",
                     timeOfDay = "MORNING",
@@ -146,7 +167,7 @@ class MainActivity : AppCompatActivity() {
                 ),
                 Labor(
                     name = "Exercise",
-                    emoji = "💪",
+                    emoji = "",
                     description = "Workout session",
                     time = "07:00",
                     timeOfDay = "MORNING",
@@ -156,7 +177,7 @@ class MainActivity : AppCompatActivity() {
                 ),
                 Labor(
                     name = "Deep Work Block",
-                    emoji = "⚔️",
+                    emoji = "",
                     description = "Main task focus",
                     time = "09:00",
                     timeOfDay = "AFTERNOON",
@@ -166,7 +187,7 @@ class MainActivity : AppCompatActivity() {
                 ),
                 Labor(
                     name = "Learn",
-                    emoji = "📚",
+                    emoji = "",
                     description = "Study or read",
                     time = "14:00",
                     timeOfDay = "AFTERNOON",
@@ -176,7 +197,7 @@ class MainActivity : AppCompatActivity() {
                 ),
                 Labor(
                     name = "Admin",
-                    emoji = "📧",
+                    emoji = "",
                     description = "Emails and comms",
                     time = "16:00",
                     timeOfDay = "AFTERNOON",
@@ -186,7 +207,7 @@ class MainActivity : AppCompatActivity() {
                 ),
                 Labor(
                     name = "Evening Reflection",
-                    emoji = "📝",
+                    emoji = "",
                     description = "Journal and reflect",
                     time = "20:00",
                     timeOfDay = "EVENING",
@@ -196,7 +217,7 @@ class MainActivity : AppCompatActivity() {
                 ),
                 Labor(
                     name = "Shield Wall",
-                    emoji = "🛡️",
+                    emoji = "",
                     description = "Review and plan tomorrow",
                     time = "21:00",
                     timeOfDay = "EVENING",
@@ -206,7 +227,7 @@ class MainActivity : AppCompatActivity() {
                 ),
                 Labor(
                     name = "Wind Down",
-                    emoji = "😴",
+                    emoji = "",
                     description = "Prepare for rest",
                     time = "22:00",
                     timeOfDay = "EVENING",

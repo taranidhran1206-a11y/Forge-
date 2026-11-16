@@ -43,9 +43,13 @@ object WidgetHelper {
     fun writeLaborsJson(context: Context, labors: List<Labor>) {
         val prefs = context.getSharedPreferences("forge_widget_prefs", Context.MODE_PRIVATE)
         val widgetLabors = labors.map {
-            mapOf("name" to "${it.emoji} ${it.name}", "done" to it.done)
+            mapOf("name" to it.name, "done" to it.done)
         }
-        prefs.edit().putString("labors_json", Gson().toJson(widgetLabors)).apply()
+        val today = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.US).format(java.util.Date())
+        prefs.edit()
+            .putString("labors_json", Gson().toJson(widgetLabors))
+            .putString("labors_date", today)
+            .apply()
     }
 
     fun writeRankData(context: Context, rank: String, xp: Int, progress: Float, colorHex: String) {

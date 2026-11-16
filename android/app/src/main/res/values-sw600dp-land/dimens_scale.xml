@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="content_max_width">1280dp</dimen>
+    <dimen name="ring_size">260dp</dimen>
+    <dimen name="badge_size">150dp</dimen>
+    <dimen name="t_timer">56sp</dimen>
+</resources>

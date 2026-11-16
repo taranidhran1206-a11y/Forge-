@@ -24,9 +24,7 @@ class TodayViewModel(private val repository: ForgeRepository) : ViewModel() {
         RankSystem.getProgress(xp)
     }
 
-    val globalRankPercent: LiveData<Int> = totalXp.map { xp ->
-        RankSystem.getGlobalRankPercent(xp)
-    }
+    val todayXp: LiveData<Int> = repository.getXpForDate(today).asLiveData()
 
     private val _streakCount = MutableLiveData(0)
     val streakCount: LiveData<Int> = _streakCount
@@ -36,23 +34,6 @@ class TodayViewModel(private val repository: ForgeRepository) : ViewModel() {
 
     val todayTimeByCategory: LiveData<List<com.forge.app.data.dao.CategoryTime>> =
         repository.getTotalMinutesByCategory(today).asLiveData()
-
-    // Focus timer state
-    private val _focusTimeRemaining = MutableLiveData(25 * 60)
-    private val _focusRunning = MutableLiveData(false)
-    private val _focusTotalSeconds = MutableLiveData(25 * 60)
-
-    val focusTimeRemaining: LiveData<Int> = _focusTimeRemaining
-    val focusRunning: LiveData<Boolean> = _focusRunning
-
-    val focusProgress: LiveData<Float> = MediatorLiveData<Float>().apply {
-        addSource(_focusTimeRemaining) { remaining ->
-            val total = _focusTotalSeconds.value ?: (25 * 60)
-            value = if (total > 0) 1f - (remaining.toFloat() / total.toFloat()) else 0f
-        }
-    }
-
-    private var focusTimer: CountDownTimer? = null
 
     // Day dots - which days of current week have activity
     private val _weekDayActivity = MutableLiveData<List<Boolean>>(listOf(false, false, false, false, false, false, false))
@@ -153,7 +134,7 @@ class TodayViewModel(private val repository: ForgeRepository) : ViewModel() {
         viewModelScope.launch {
             val labor = Labor(
                 name = name,
-                emoji = "⚔️",
+                emoji = "",
                 description = description,
                 time = "12:00",
                 timeOfDay = "AFTERNOON",
@@ -252,70 +233,8 @@ class TodayViewModel(private val repository: ForgeRepository) : ViewModel() {
         }.start()
     }
 
-    // --- Focus timer ---
-
-    fun startFocus() {
-        if (_focusRunning.value == true) return
-        _focusRunning.value = true
-        val remaining = _focusTimeRemaining.value ?: (25 * 60)
-
-        focusTimer = object : CountDownTimer(remaining * 1000L, 1000) {
-            override fun onTick(millisUntilFinished: Long) {
-                _focusTimeRemaining.value = (millisUntilFinished / 1000).toInt()
-            }
-
-            override fun onFinish() {
-                _focusTimeRemaining.value = 0
-                _focusRunning.value = false
-                onFocusComplete()
-            }
-        }.start()
-    }
-
-    fun pauseFocus() {
-        focusTimer?.cancel()
-        focusTimer = null
-        _focusRunning.value = false
-    }
-
-    fun resetFocus() {
-        focusTimer?.cancel()
-        focusTimer = null
-        _focusRunning.value = false
-        _focusTimeRemaining.value = _focusTotalSeconds.value ?: (25 * 60)
-    }
-
-    fun setFocusDuration(minutes: Int) {
-        focusTimer?.cancel()
-        focusTimer = null
-        _focusRunning.value = false
-        _focusTotalSeconds.value = minutes * 60
-        _focusTimeRemaining.value = minutes * 60
-    }
-
-    private fun onFocusComplete() {
-        viewModelScope.launch {
-            val totalMin = (_focusTotalSeconds.value ?: (25 * 60)) / 60
-            val xpAmount = totalMin
-            repository.addXp(xpAmount, "focus", "Focus session - ${totalMin}min")
-
-            _xpToastEvent.value = XpEvent(
-                amount = xpAmount,
-                source = "focus",
-                description = "Focus session complete!",
-                timestamp = System.currentTimeMillis(),
-                date = today
-            )
-
-            // Update daily stats
-            val stats = repository.getStats(today) ?: DailyStats(date = today)
-            repository.upsertStats(stats.copy(focusMinutes = stats.focusMinutes + totalMin))
-        }
-    }
-
     override fun onCleared() {
         super.onCleared()
-        focusTimer?.cancel()
         trackTimer?.cancel()
     }
 }

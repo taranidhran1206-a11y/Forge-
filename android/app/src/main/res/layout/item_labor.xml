@@ -1,80 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/labor_root"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:minHeight="64dp"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
     android:background="@drawable/bg_card"
-    android:padding="14dp"
+    android:paddingHorizontal="14dp"
+    android:paddingVertical="12dp"
     android:layout_marginBottom="8dp">
 
-    <!-- Green/orange circle check -->
     <ImageView
         android:id="@+id/iv_labor_check"
-        android:layout_width="28dp"
-        android:layout_height="28dp"
-        android:src="@drawable/widget_check_pending"
-        android:contentDescription="Status"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:layout_width="@dimen/check_size"
+        android:layout_height="@dimen/check_size"
+        android:src="@drawable/ic_check_pending"
+        android:contentDescription="@null" />
 
-    <!-- Name -->
-    <TextView
-        android:id="@+id/tv_labor_name"
+    <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Morning Workout"
-        android:textColor="#F5F5F5"
-        android:textSize="15sp"
+        android:layout_weight="1"
+        android:layout_marginStart="12dp"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/tv_labor_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Labor"
+            android:textColor="#F5F5F5"
+            android:textSize="@dimen/t_row"
+            android:textStyle="bold" />
+        <TextView
+            android:id="@+id/tv_labor_desc"
+            style="@style/Forge.Sub"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_labor_focus"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:gravity="center"
+        android:text="Focus"
+        android:textColor="#FF8A80"
+        android:textSize="@dimen/t_small"
         android:textStyle="bold"
-        android:layout_marginStart="12dp"
-        android:maxLines="1"
-        android:ellipsize="end"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toEndOf="@id/iv_labor_check"
-        app:layout_constraintEnd_toStartOf="@id/tv_xp_reward" />
+        android:background="@drawable/bg_chip_on"
+        android:paddingHorizontal="14dp"
+        android:layout_marginEnd="10dp"
+        android:visibility="gone" />
 
-    <!-- Description -->
-    <TextView
-        android:id="@+id/tv_labor_desc"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text=""
-        android:textColor="#9E9E9E"
-        android:textSize="12sp"
-        android:maxLines="1"
-        android:ellipsize="end"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="2dp"
-        app:layout_constraintTop_toBottomOf="@id/tv_labor_name"
-        app:layout_constraintStart_toEndOf="@id/iv_labor_check"
-        app:layout_constraintEnd_toStartOf="@id/tv_xp_reward" />
-
-    <!-- XP Reward -->
     <TextView
         android:id="@+id/tv_xp_reward"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="+50 XP"
+        android:text="+10"
         android:textColor="#4CAF50"
-        android:textSize="12sp"
-        android:textStyle="bold"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/iv_chevron" />
+        android:textSize="@dimen/t_small"
+        android:fontFamily="monospace"
+        android:textStyle="bold" />
 
-    <!-- Chevron arrow -->
-    <TextView
+    <ImageView
         android:id="@+id/iv_chevron"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text=">"
-        android:textColor="#555555"
-        android:textSize="16sp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:layout_marginStart="6dp"
+        android:src="@drawable/ic_chevron"
+        android:contentDescription="@null" />
+</LinearLayout>

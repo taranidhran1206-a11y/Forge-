@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#0A0A0A">
+
+    <com.google.android.material.navigationrail.NavigationRailView
+        android:id="@+id/bottom_nav"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:background="#0F0F0F"
+        app:itemTextColor="@color/bottom_nav_color"
+        app:itemIconTint="@color/bottom_nav_color"
+        app:itemActiveIndicatorStyle="@style/Forge.NavIndicator"
+        app:labelVisibilityMode="labeled"
+        app:menuGravity="center"
+        app:menu="@menu/bottom_nav_menu"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/app_bar"
+        android:layout_width="0dp"
+        android:layout_height="52dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="#0A0A0A"
+        android:paddingHorizontal="@dimen/page_pad"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@id/bottom_nav"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageView
+            android:id="@+id/iv_app_logo"
+            android:layout_width="@dimen/logo_size"
+            android:layout_height="@dimen/logo_size"
+            android:src="@drawable/forge_axe"
+            android:contentDescription="Forge" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="10dp"
+            android:text="FORGE"
+            android:textColor="#F5F5F5"
+            android:textSize="@dimen/t_body"
+            android:textStyle="bold"
+            android:letterSpacing="0.2" />
+
+        <TextView
+            android:id="@+id/tv_appbar_xp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0 XP"
+            android:textColor="#F5F5F5"
+            android:textSize="@dimen/t_small"
+            android:fontFamily="monospace"
+            android:textStyle="bold"
+            android:background="@drawable/bg_chip_neutral"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="6dp"
+            android:layout_marginEnd="8dp" />
+
+        <TextView
+            android:id="@+id/tv_appbar_rank"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="IRON"
+            android:textColor="#F5F5F5"
+            android:textSize="@dimen/t_small"
+            android:textStyle="bold"
+            android:letterSpacing="0.08"
+            android:background="@drawable/bg_chip_neutral"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="6dp" />
+    </LinearLayout>
+
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/nav_host_fragment"
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:defaultNavHost="true"
+        app:navGraph="@navigation/nav_graph"
+        app:layout_constraintTop_toBottomOf="@id/app_bar"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/bottom_nav"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <FrameLayout
+        android:id="@+id/xp_toast_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

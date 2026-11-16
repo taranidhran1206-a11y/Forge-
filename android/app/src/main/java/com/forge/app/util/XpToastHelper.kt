@@ -25,7 +25,7 @@ object XpToastHelper {
             val tvSource = toastView.findViewById<TextView>(R.id.tv_xp_toast_source)
 
             tvAmount.text = "+$amount XP"
-            tvSource.text = "Task Completed"
+            tvSource.text = if (source == "focus") "Focus session complete" else if (source == "time_track") "Time tracked" else "Task completed"
 
             // Add to window
             val params = WindowManager.LayoutParams(
