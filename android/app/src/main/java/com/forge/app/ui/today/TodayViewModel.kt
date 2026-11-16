@@ -75,16 +75,17 @@ class TodayViewModel(private val repository: ForgeRepository) : ViewModel() {
         }
     }
 
+    /** Activity for the current week, Monday first. */
     private fun loadWeekActivity() {
         viewModelScope.launch {
             val cal = Calendar.getInstance()
-            cal.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY)
+            while (cal.get(Calendar.DAY_OF_WEEK) != Calendar.MONDAY) {
+                cal.add(Calendar.DAY_OF_YEAR, -1)
+            }
             val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.US)
             val activity = mutableListOf<Boolean>()
-
             for (i in 0..6) {
-                val date = sdf.format(cal.time)
-                val stats = repository.getStats(date)
+                val stats = repository.getStats(sdf.format(cal.time))
                 activity.add(stats != null && stats.laborsCompleted > 0)
                 cal.add(Calendar.DAY_OF_YEAR, 1)
             }
@@ -115,6 +116,7 @@ class TodayViewModel(private val repository: ForgeRepository) : ViewModel() {
                 }
 
                 _streakCount.value = repository.calculateStreak()
+                loadWeekActivity()
             } else {
                 val updated = labor.copy(done = false)
                 repository.updateLabor(updated)

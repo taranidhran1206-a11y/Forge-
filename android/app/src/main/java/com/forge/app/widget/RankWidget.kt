@@ -23,20 +23,6 @@ class RankWidget : AppWidgetProvider() {
             intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
             context.sendBroadcast(intent)
         }
-
-        private fun getRankEmoji(rank: String): String {
-            return when (rank.uppercase()) {
-                "IRON" -> "⚔️"
-                "BRONZE" -> "🥉"
-                "SILVER" -> "🥈"
-                "GOLD" -> "🥇"
-                "PLATINUM" -> "💎"
-                "DIAMOND" -> "✨"
-                "TITAN" -> "🔥"
-                "LEGEND" -> "👑"
-                else -> "⚔️"
-            }
-        }
     }
 
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
@@ -54,8 +40,18 @@ class RankWidget : AppWidgetProvider() {
         val progress = prefs.getFloat("rank_progress", 0f)
         val rankColor = prefs.getString("rank_color", "#78909C") ?: "#78909C"
 
-        // Set rank emoji
-        views.setTextViewText(R.id.tv_widget_rank_emoji, getRankEmoji(rankName))
+        val rank = com.forge.app.data.model.RankSystem.getRank(xp)
+        val color = try { Color.parseColor(rankColor) } catch (_: Exception) { Color.WHITE }
+        views.setTextViewText(R.id.tv_widget_level, "LEVEL ${rank.ordinal + 1}")
+        views.setInt(R.id.iv_widget_hex, "setColorFilter", color)
+        val next = com.forge.app.data.model.RankSystem.getNextRank(rank)
+        views.setTextViewText(
+            R.id.tv_widget_next,
+            if (next != null) {
+                val name = next.title.lowercase().replaceFirstChar { it.uppercase() }
+                "${String.format("%,d", (next.minXp - xp).coerceAtLeast(0))} to $name"
+            } else "Top rank"
+        )
 
         // Set rank name with color
         views.setTextViewText(R.id.tv_widget_rank_name, rankName)
@@ -66,11 +62,7 @@ class RankWidget : AppWidgetProvider() {
         }
 
         // Format XP nicely
-        val xpText = if (xp >= 1000) {
-            String.format("%.1fk XP", xp / 1000.0)
-        } else {
-            "$xp XP"
-        }
+        val xpText = String.format("%,d XP", xp)
         views.setTextViewText(R.id.tv_widget_xp, xpText)
         views.setProgressBar(R.id.pb_widget_rank, 100, (progress * 100).toInt(), false)
 

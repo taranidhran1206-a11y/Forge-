@@ -56,7 +56,9 @@ class MainActivity : AppCompatActivity() {
             .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         val navController = navHostFragment.navController
         // Bottom bar in portrait, side rail in landscape: both are NavigationBarViews
-        (binding.bottomNav as NavigationBarView).setupWithNavController(navController)
+        val navView = binding.bottomNav as NavigationBarView
+        navView.setupWithNavController(navController)
+        navView.isItemActiveIndicatorEnabled = false
 
         // Carry yesterday's labors into today; seed defaults only on a truly empty first run
         val prefs = getSharedPreferences("forge_prefs", MODE_PRIVATE)
@@ -74,15 +76,6 @@ class MainActivity : AppCompatActivity() {
                     .apply()
             }
             WidgetHelper.updateAllWidgets(this@MainActivity, repository)
-        }
-
-        // Update app bar XP and rank
-        lifecycleScope.launch {
-            repository.getTotalXp().collectLatest { xp ->
-                val rank = RankSystem.getRank(xp)
-                binding.tvAppbarXp.text = "$xp XP"
-                binding.tvAppbarRank.text = rank.title
-            }
         }
     }
 

@@ -13,7 +13,7 @@ class PlanEntryAdapter : ListAdapter<PlanEntry, PlanEntryAdapter.ViewHolder>(Pla
     inner class ViewHolder(private val binding: ItemPlanEntryBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(entry: PlanEntry) {
-            binding.tvPlanInput.text = "> ${entry.input}"
+            binding.tvPlanInput.text = entry.input
             binding.tvPlanOutput.text = entry.output
         }
     }

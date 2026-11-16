@@ -1,36 +1,27 @@
 package com.forge.app.ui.today
 
-import android.Manifest
 import android.app.AlertDialog
-import android.content.Context
-import android.content.pm.PackageManager
 import android.graphics.Color
-import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.LinearLayout
-import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.forge.app.R
 import com.forge.app.data.model.Labor
 import com.forge.app.databinding.FragmentTodayBinding
-import com.forge.app.focus.FocusService
 import com.forge.app.focus.FocusState
-import com.forge.app.focus.NudgeStore
 import com.forge.app.ui.ForgeViewModelFactory
 import com.forge.app.ui.adapters.LaborAdapter
 import com.forge.app.util.WidgetHelper
 import com.forge.app.util.XpToastHelper
+import com.google.android.material.navigation.NavigationBarView
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -41,24 +32,6 @@ class TodayFragment : Fragment() {
 
     private lateinit var viewModel: TodayViewModel
     private lateinit var laborAdapter: LaborAdapter
-
-    private val handler = Handler(Looper.getMainLooper())
-    private var timeTrackRunnable: Runnable? = null
-    private var trackStartTime: Long = 0L
-
-    private var selectedMinutes = 25
-    private var pendingLabel = ""
-
-    private val notificationPermission =
-        registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
-            if (!granted && context != null) {
-                Toast.makeText(
-                    requireContext(),
-                    "Notifications are off, so nudges will only show inside Forge.",
-                    Toast.LENGTH_LONG
-                ).show()
-            }
-        }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -75,13 +48,20 @@ class TodayFragment : Fragment() {
         viewModel = ViewModelProvider(this, factory)[TodayViewModel::class.java]
 
         applyPanes()
-        setupDate()
-        setupDayDots()
+        binding.tvDate.text = SimpleDateFormat("EEEE, MMM d", Locale.getDefault()).format(Date())
+        renderWeek(emptyList())
         setupLaborsRecycler()
-        setupAddLaborButton()
-        setupTimeTracker()
-        setupFocus()
         setupShieldWall()
+
+        binding.btnAddLabor.setOnClickListener { showLaborDialog(null) }
+        binding.cardFocusMini.setOnClickListener { openFocusTab() }
+        binding.cardPlanLink.setOnClickListener {
+            try {
+                findNavController().navigate(R.id.nav_plan)
+            } catch (_: Exception) {
+            }
+        }
+
         observeViewModel()
     }
 
@@ -105,26 +85,49 @@ class TodayFragment : Fragment() {
         }
     }
 
-    private fun setupDate() {
-        val dateFormat = SimpleDateFormat("EEEE, MMM d", Locale.getDefault())
-        binding.tvDate.text = dateFormat.format(Date())
+    private fun openFocusTab() {
+        activity?.findViewById<NavigationBarView>(R.id.bottom_nav)?.selectedItemId = R.id.nav_focus
     }
 
-    private fun dayDots() = listOf(
-        binding.dotSun, binding.dotMon, binding.dotTue,
-        binding.dotWed, binding.dotThu, binding.dotFri, binding.dotSat
-    )
+    /** Hand the labor over to the Focus screen, which starts the session. */
+    private fun startFocusFor(label: String) {
+        if (FocusState.live.value?.active == true) {
+            Toast.makeText(requireContext(), "A focus session is already running.", Toast.LENGTH_SHORT).show()
+        } else {
+            FocusState.pendingLabel = label
+        }
+        openFocusTab()
+    }
 
-    private fun setupDayDots() {
-        val todayDow = Calendar.getInstance().get(Calendar.DAY_OF_WEEK) // 1 = Sunday
-        dayDots().forEachIndexed { index, dot ->
-            if (index + 1 == todayDow) {
-                dot.setBackgroundResource(R.drawable.bg_day_dot_today)
-                dot.setTextColor(Color.WHITE)
-            } else {
-                dot.setBackgroundResource(R.drawable.bg_day_dot)
-                dot.setTextColor(Color.parseColor("#9E9E9E"))
-            }
+    /** Week strip, Monday first. [days] marks which days had a labor completed. */
+    private fun renderWeek(days: List<Boolean>) {
+        val cells = listOf(
+            binding.dayCell0, binding.dayCell1, binding.dayCell2, binding.dayCell3,
+            binding.dayCell4, binding.dayCell5, binding.dayCell6
+        )
+        val letters = listOf(
+            binding.dayLetter0, binding.dayLetter1, binding.dayLetter2, binding.dayLetter3,
+            binding.dayLetter4, binding.dayLetter5, binding.dayLetter6
+        )
+        val rings = listOf(
+            binding.dayRing0, binding.dayRing1, binding.dayRing2, binding.dayRing3,
+            binding.dayRing4, binding.dayRing5, binding.dayRing6
+        )
+        // Calendar: Sunday = 1 ... Saturday = 7; strip index: Monday = 0 ... Sunday = 6
+        val todayIndex = (Calendar.getInstance().get(Calendar.DAY_OF_WEEK) + 5) % 7
+        for (i in 0..6) {
+            val isToday = i == todayIndex
+            val active = days.getOrNull(i) == true
+            if (isToday) cells[i].setBackgroundResource(R.drawable.bg_day_today_cell)
+            else cells[i].background = null
+            letters[i].setTextColor(Color.parseColor(if (isToday) "#F5F5F5" else "#9E9E9E"))
+            rings[i].setImageResource(
+                when {
+                    active && !isToday -> R.drawable.ic_check_done
+                    isToday -> R.drawable.bg_day_dot_today
+                    else -> R.drawable.bg_day_dot
+                }
+            )
         }
     }
 
@@ -141,23 +144,20 @@ class TodayFragment : Fragment() {
         }
     }
 
-    private fun setupAddLaborButton() {
-        binding.btnAddLabor.setOnClickListener { showLaborDialog(null) }
-    }
-
-    private fun dialogInput(hintText: String, value: String, topMargin: Int): EditText {
-        val context = requireContext()
-        return EditText(context).apply {
+    private fun dialogInput(hintText: String, value: String, marginTop: Int): EditText {
+        return EditText(requireContext()).apply {
             hint = hintText
             setText(value)
             setTextColor(Color.parseColor("#F5F5F5"))
             setHintTextColor(Color.parseColor("#9E9E9E"))
             setBackgroundResource(R.drawable.bg_input)
             setPadding(36, 28, 36, 28)
-            layoutParams = LinearLayout.LayoutParams(
+            val params = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
-            ).apply { this.topMargin = topMargin }
+            )
+            params.topMargin = marginTop
+            layoutParams = params
         }
     }
 
@@ -190,7 +190,6 @@ class TodayFragment : Fragment() {
 
     private fun showLaborOptionsDialog(labor: Labor) {
         val options = arrayOf("Start focus session", "Edit", "Delete")
-
         AlertDialog.Builder(requireContext(), R.style.TerminalDialogTheme)
             .setTitle(labor.name)
             .setItems(options) { _, which ->
@@ -206,179 +205,6 @@ class TodayFragment : Fragment() {
                 }
             }
             .show()
-    }
-
-    // --- Time tracker ---
-
-    private fun setupTimeTracker() {
-        binding.btnTrackToggle.setOnClickListener {
-            if (viewModel.activeTimeTrack.value != null) {
-                viewModel.stopTimeTrack()
-            } else {
-                binding.tvTrackCategory.text = "Starting…"
-                viewModel.startTimeTrack("general")
-            }
-        }
-    }
-
-    private fun startTimeTrackUpdater(startTime: Long) {
-        stopTimeTrackUpdater(resetText = false)
-        trackStartTime = startTime
-        timeTrackRunnable = object : Runnable {
-            override fun run() {
-                if (_binding == null) return
-                val totalSeconds = ((System.currentTimeMillis() - trackStartTime) / 1000).toInt()
-                binding.tvTrackDuration.text = String.format(
-                    "%02d:%02d:%02d", totalSeconds / 3600, (totalSeconds % 3600) / 60, totalSeconds % 60
-                )
-                handler.postDelayed(this, 1000)
-            }
-        }
-        handler.post(timeTrackRunnable!!)
-    }
-
-    private fun stopTimeTrackUpdater(resetText: Boolean = true) {
-        timeTrackRunnable?.let { handler.removeCallbacks(it) }
-        timeTrackRunnable = null
-        if (resetText && _binding != null) {
-            binding.tvTrackDuration.text = "00:00:00"
-        }
-    }
-
-    // --- Focus session and nudge tracker ---
-
-    private fun focusPrefs() =
-        requireContext().getSharedPreferences("forge_prefs", Context.MODE_PRIVATE)
-
-    private fun setupFocus() {
-        selectedMinutes = focusPrefs().getInt("focus_minutes", 25)
-        FocusState.setIdleDuration(selectedMinutes)
-
-        val chips = listOf(binding.chip25 to 25, binding.chip45 to 45, binding.chip90 to 90)
-        chips.forEach { (chip, minutes) ->
-            chip.setOnClickListener {
-                if (FocusState.live.value?.active == true) return@setOnClickListener
-                selectedMinutes = minutes
-                focusPrefs().edit().putInt("focus_minutes", minutes).apply()
-                FocusState.setIdleDuration(minutes)
-            }
-        }
-
-        binding.btnFocusStart.setOnClickListener {
-            val state = FocusState.live.value ?: FocusState.Snapshot()
-            when {
-                !state.active -> startFocusFor(pendingLabel)
-                state.running -> FocusService.send(requireContext(), FocusService.ACTION_PAUSE)
-                else -> FocusService.send(requireContext(), FocusService.ACTION_RESUME)
-            }
-        }
-
-        binding.btnFocusStop.setOnClickListener {
-            FocusService.send(requireContext(), FocusService.ACTION_STOP)
-        }
-
-        binding.btnFocusPlus.setOnClickListener {
-            val state = FocusState.live.value ?: FocusState.Snapshot()
-            if (state.active) {
-                FocusService.send(requireContext(), FocusService.ACTION_ADD_FIVE)
-            } else {
-                selectedMinutes = (selectedMinutes + 5).coerceAtMost(240)
-                focusPrefs().edit().putInt("focus_minutes", selectedMinutes).apply()
-                FocusState.setIdleDuration(selectedMinutes)
-            }
-        }
-    }
-
-    private fun startFocusFor(label: String) {
-        val context = requireContext()
-        val state = FocusState.live.value
-        if (state != null && state.active) {
-            Toast.makeText(context, "A focus session is already running.", Toast.LENGTH_SHORT).show()
-            return
-        }
-        if (Build.VERSION.SDK_INT >= 33 &&
-            ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) !=
-            PackageManager.PERMISSION_GRANTED
-        ) {
-            notificationPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
-        }
-        pendingLabel = label
-        FocusService.start(context, selectedMinutes, label)
-    }
-
-    private fun renderFocus(state: FocusState.Snapshot) {
-        val remaining = state.remainingSeconds.coerceAtLeast(0)
-        binding.tvFocusTime.text = String.format("%02d:%02d", remaining / 60, remaining % 60)
-        binding.tvFocusOf.text = "of ${state.totalSeconds / 60} minutes"
-        val total = state.totalSeconds.coerceAtLeast(1)
-        binding.pbFocusRing.progress =
-            if (state.active) ((total - remaining) * 1000L / total).toInt() else 0
-
-        binding.tvFocusLabel.text = when {
-            !state.active -> "Ready"
-            state.running -> "Remaining"
-            else -> "Paused"
-        }
-        binding.tvFocusTitle.text = when {
-            state.active && state.label.isNotBlank() -> state.label
-            state.active -> "Focus session"
-            else -> "Deep work block"
-        }
-        binding.btnFocusStart.setImageResource(
-            if (state.active && state.running) R.drawable.ic_pause else R.drawable.ic_play
-        )
-        binding.btnFocusStop.alpha = if (state.active) 1f else 0.4f
-        binding.llDurationChips.visibility = if (state.active) View.GONE else View.VISIBLE
-
-        if (!state.active) {
-            val minutes = state.totalSeconds / 60
-            listOf(binding.chip25 to 25, binding.chip45 to 45, binding.chip90 to 90).forEach { (chip, m) ->
-                chip.setBackgroundResource(
-                    if (m == minutes) R.drawable.bg_chip_on else R.drawable.bg_chip_neutral
-                )
-            }
-        }
-        renderNudges(state)
-    }
-
-    private fun renderNudges(state: FocusState.Snapshot) {
-        val day = NudgeStore.today(requireContext())
-        val away = day.awaySeconds + state.currentAwaySeconds
-        val focus = day.focusSeconds + if (state.active) state.elapsedSeconds else 0
-
-        binding.tvNudgeCount.text = day.nudges.toString()
-        binding.tvDriftCount.text = day.drifts.toString()
-        binding.tvAwayTime.text = NudgeStore.formatDuration(away)
-        binding.tvFocusScore.text =
-            if (focus > 0) "${(100 - away * 100 / focus).coerceIn(0, 100)}%" else "–"
-
-        if (state.active && state.running) {
-            binding.tvNudgeStatus.text = "Shield wall is up"
-            binding.tvNudgeSub.text = "Leave Forge for 15 seconds and you get a nudge"
-            binding.ivNudgeShield.setColorFilter(Color.parseColor("#4CAF50"))
-        } else {
-            binding.tvNudgeStatus.text = "Nudge tracker"
-            binding.tvNudgeSub.text =
-                if (day.sessions > 0) "${day.sessions} session${if (day.sessions == 1) "" else "s"} today"
-                else "Starts with your focus session"
-            binding.ivNudgeShield.setColorFilter(Color.parseColor("#9E9E9E"))
-        }
-
-        // Rebuild the log only when it changed
-        val signature = day.log.joinToString("|")
-        if (binding.llNudgeLog.tag != signature) {
-            binding.llNudgeLog.tag = signature
-            binding.llNudgeLog.removeAllViews()
-            day.log.take(5).forEach { line ->
-                val row = TextView(requireContext()).apply {
-                    text = line
-                    setTextColor(Color.parseColor("#C4C4C4"))
-                    textSize = 12f
-                    setPadding(0, 6, 0, 6)
-                }
-                binding.llNudgeLog.addView(row)
-            }
-        }
     }
 
     private fun setupShieldWall() {
@@ -431,20 +257,13 @@ class TodayFragment : Fragment() {
         viewModel.todayXp.observe(viewLifecycleOwner) { renderLaborSummary() }
 
         viewModel.totalXp.observe(viewLifecycleOwner) { xp ->
-            binding.tvXpAmount.text = "$xp XP"
-        }
-
-        viewModel.currentRank.observe(viewLifecycleOwner) { rank ->
-            binding.tvRankName.text = rank.title
-            try {
-                binding.tvRankName.setTextColor(Color.parseColor(rank.colorHex))
-            } catch (_: Exception) {
-                binding.tvRankName.setTextColor(Color.WHITE)
-            }
-        }
-
-        viewModel.rankProgress.observe(viewLifecycleOwner) { progress ->
-            binding.pbXp.progress = (progress * 100).toInt()
+            // Keep the rank widget current as XP changes
+            val ctx = requireContext().applicationContext
+            val rank = com.forge.app.data.model.RankSystem.getRank(xp)
+            WidgetHelper.writeRankData(
+                ctx, rank.title, xp, com.forge.app.data.model.RankSystem.getProgress(xp), rank.colorHex
+            )
+            com.forge.app.widget.RankWidget.triggerUpdate(ctx)
         }
 
         viewModel.streakCount.observe(viewLifecycleOwner) { streak ->
@@ -455,35 +274,15 @@ class TodayFragment : Fragment() {
             com.forge.app.ForgeStreakWidgetProvider.triggerUpdate(ctx)
         }
 
-        viewModel.activeTimeTrack.observe(viewLifecycleOwner) { track ->
-            if (track != null) {
-                binding.tvTrackCategory.text = "Tracking"
-                binding.tvTrackStatus.text = "Active"
-                binding.tvTrackStatus.setTextColor(Color.parseColor("#4CAF50"))
-                binding.trackIndicator.setBackgroundResource(R.drawable.bg_status_dot_green)
-                binding.btnTrackToggle.text = "Stop tracking"
-                binding.btnTrackToggle.setBackgroundResource(R.drawable.bg_chip_on)
-                startTimeTrackUpdater(track.startTime)
-            } else {
-                binding.tvTrackCategory.text = "Not tracking"
-                binding.tvTrackStatus.text = "Tap to start"
-                binding.tvTrackStatus.setTextColor(Color.parseColor("#9E9E9E"))
-                binding.trackIndicator.setBackgroundResource(R.drawable.bg_status_dot_idle)
-                binding.btnTrackToggle.text = "Start tracking"
-                binding.btnTrackToggle.setBackgroundResource(R.drawable.bg_chip_neutral)
-                stopTimeTrackUpdater()
-            }
-        }
-
-        FocusState.live.observe(viewLifecycleOwner) { state ->
-            renderFocus(state ?: FocusState.Snapshot())
-        }
-
-        FocusState.completedXp.observe(viewLifecycleOwner) { xp ->
-            if (xp != null) {
-                activity?.let { XpToastHelper.showXpToast(it, xp, "focus") }
-                FocusState.completedXp.value = null
-                pendingLabel = ""
+        FocusState.live.observe(viewLifecycleOwner) { snapshot ->
+            val state = snapshot ?: FocusState.Snapshot()
+            val remaining = state.remainingSeconds.coerceAtLeast(0)
+            binding.tvMiniTime.text = String.format("%02d:%02d", remaining / 60, remaining % 60)
+            binding.tvMiniState.text = when {
+                !state.active -> "Ready when you are"
+                state.running && state.label.isNotBlank() -> state.label
+                state.running -> "Session running"
+                else -> "Paused"
             }
         }
 
@@ -502,23 +301,12 @@ class TodayFragment : Fragment() {
         }
 
         viewModel.weekDayActivity.observe(viewLifecycleOwner) { days ->
-            val dots = dayDots()
-            val todayDow = Calendar.getInstance().get(Calendar.DAY_OF_WEEK)
-            days.forEachIndexed { index, active ->
-                if (index >= dots.size) return@forEachIndexed
-                if (index + 1 == todayDow) {
-                    dots[index].setBackgroundResource(R.drawable.bg_day_dot_today)
-                } else if (active) {
-                    dots[index].setBackgroundResource(R.drawable.bg_day_dot_active)
-                    dots[index].setTextColor(Color.parseColor("#0A0A0A"))
-                }
-            }
+            renderWeek(days ?: emptyList())
         }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        stopTimeTrackUpdater()
         _binding = null
     }
 }

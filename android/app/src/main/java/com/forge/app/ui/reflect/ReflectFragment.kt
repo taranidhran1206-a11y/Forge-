@@ -54,14 +54,14 @@ class ReflectFragment : Fragment() {
             if (text.isNotEmpty()) {
                 viewModel.submitReflection(text)
                 binding.etReflection.text?.clear()
-                Toast.makeText(requireContext(), "+15 XP — Reflection logged", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "+15 XP · Reflection logged", Toast.LENGTH_SHORT).show()
             }
         }
     }
 
     private fun observeViewModel() {
         viewModel.todayPrompt.observe(viewLifecycleOwner) { prompt ->
-            binding.tvReflectPrompt.text = "// $prompt"
+            binding.tvReflectPrompt.text = prompt
         }
 
         viewModel.reflections.observe(viewLifecycleOwner) { reflections ->
@@ -71,14 +71,14 @@ class ReflectFragment : Fragment() {
         viewModel.todayReflection.observe(viewLifecycleOwner) { reflection ->
             if (reflection != null) {
                 binding.etReflection.setText(reflection.text)
-                binding.btnSubmitReflection.text = "UPDATE"
+                binding.btnSubmitReflection.text = "Saved"
                 binding.etReflection.isEnabled = false
                 binding.btnSubmitReflection.isEnabled = false
                 binding.tvAlreadyDone.visibility = View.VISIBLE
-                binding.tvAlreadyDone.text = "✓ Reflection logged for today"
+                binding.tvAlreadyDone.text = "Reflection logged for today"
             } else {
                 binding.etReflection.text?.clear()
-                binding.btnSubmitReflection.text = "SUBMIT"
+                binding.btnSubmitReflection.text = "Save reflection"
                 binding.etReflection.isEnabled = true
                 binding.btnSubmitReflection.isEnabled = true
                 binding.tvAlreadyDone.visibility = View.GONE

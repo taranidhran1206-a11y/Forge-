@@ -19,4 +19,5 @@
     <dimen name="t_timer">48sp</dimen>
     <dimen name="check_size">26dp</dimen>
     <dimen name="tap_min">48dp</dimen>
+    <dimen name="badge_pad">32dp</dimen>
 </resources>

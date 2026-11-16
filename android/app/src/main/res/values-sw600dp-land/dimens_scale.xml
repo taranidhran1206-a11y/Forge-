@@ -4,4 +4,5 @@
     <dimen name="ring_size">260dp</dimen>
     <dimen name="badge_size">150dp</dimen>
     <dimen name="t_timer">56sp</dimen>
+    <dimen name="badge_pad">38dp</dimen>
 </resources>

@@ -205,7 +205,7 @@
     <style name="Forge" />
 
     <style name="Forge.NavIndicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
-        <item name="android:color">#2A1313</item>
+        <item name="android:color">@android:color/transparent</item>
     </style>
 
 </resources>

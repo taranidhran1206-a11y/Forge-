@@ -3,50 +3,46 @@
     android:id="@+id/widget_streak_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/widget_bg"
     android:orientation="vertical"
-    android:padding="16dp"
-    android:gravity="center">
+    android:background="@drawable/widget_bg"
+    android:padding="16dp">
 
-    <!-- Fire emoji -->
-    <TextView
+    <ImageView
         android:id="@+id/streak_fire"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="🔥"
-        android:textSize="28sp"
-        android:layout_marginBottom="4dp"/>
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:src="@drawable/ic_flame"
+        android:contentDescription="@null" />
 
-    <!-- Large streak number -->
-    <TextView
-        android:id="@+id/streak_count"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="0"
-        android:textColor="#FFFFFF"
-        android:textSize="36sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="2dp"/>
-
-    <!-- DAY STREAK label -->
-    <TextView
-        android:id="@+id/streak_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="DAY STREAK"
-        android:textColor="#B0FFFFFF"
-        android:textSize="12sp"
-        android:textStyle="bold"
-        android:letterSpacing="0.08"
-        android:layout_marginBottom="6dp"/>
-
-    <!-- X/Y today subtitle -->
-    <TextView
-        android:id="@+id/streak_today"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="0/4 today"
-        android:textColor="#60FFFFFF"
-        android:textSize="11sp"/>
-
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="bottom">
+        <TextView
+            android:id="@+id/streak_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0"
+            android:textColor="#F5F5F5"
+            android:textSize="44sp"
+            android:fontFamily="monospace"
+            android:textStyle="bold" />
+        <TextView
+            android:id="@+id/streak_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="DAY STREAK"
+            android:textColor="#C4C4C4"
+            android:textSize="@dimen/t_label"
+            android:textStyle="bold" />
+        <TextView
+            android:id="@+id/streak_today"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0/0 today"
+            android:textColor="#9E9E9E"
+            android:textSize="@dimen/t_small" />
+    </LinearLayout>
 </LinearLayout>

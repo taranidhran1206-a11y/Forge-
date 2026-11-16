@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="@dimen/tap_min"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:paddingHorizontal="@dimen/card_pad">
+    <ImageView
+        android:id="@+id/iv_rank_dot"
+        android:layout_width="14dp"
+        android:layout_height="14dp"
+        android:rotation="45"
+        android:contentDescription="@null" />
+    <TextView
+        android:id="@+id/tv_rank_row_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginStart="14dp"
+        android:text="Gold"
+        android:textColor="#F5F5F5"
+        android:textSize="@dimen/t_row"
+        android:textStyle="bold" />
+    <TextView
+        android:id="@+id/tv_rank_row_right"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="2,000 XP"
+        android:textColor="#9E9E9E"
+        android:textSize="@dimen/t_small"
+        android:fontFamily="monospace" />
+</LinearLayout>

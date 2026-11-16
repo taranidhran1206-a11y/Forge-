@@ -6,48 +6,46 @@
     android:orientation="vertical"
     android:background="#0A0A0A"
     android:paddingHorizontal="@dimen/page_pad"
-    android:paddingVertical="16dp">
+    android:paddingTop="20dp"
+    android:paddingBottom="12dp">
 
-    <!-- Terminal Header -->
     <TextView
+        style="@style/Forge.Label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="REFLECT"
-        android:textColor="#E53935"
-        android:textSize="14sp"
+        android:text="Reflect" />
 
+    <TextView
+        style="@style/Forge.Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Evening reflection"
         android:layout_marginBottom="16dp" />
 
-    <!-- Today's Prompt -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:background="@drawable/bg_terminal"
-        android:padding="14dp"
+        android:background="@drawable/bg_card"
+        android:padding="@dimen/card_pad"
         android:layout_marginBottom="12dp">
-
         <TextView
+            style="@style/Forge.Label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="PROMPT"
-            android:textColor="#E53935"
-            android:textSize="11sp"
-
-            android:layout_marginBottom="4dp" />
-
+            android:text="Today's prompt"
+            android:layout_marginBottom="6dp" />
         <TextView
             android:id="@+id/tv_reflect_prompt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="What did you fight for today?"
             android:textColor="#F5F5F5"
-            android:textSize="15sp"
-
+            android:textSize="@dimen/t_row"
+            android:textStyle="bold"
             android:lineSpacingMultiplier="1.3" />
     </LinearLayout>
 
-    <!-- Reflection Input -->
     <EditText
         android:id="@+id/et_reflection"
         android:layout_width="match_parent"
@@ -55,27 +53,24 @@
         android:minHeight="120dp"
         android:background="@drawable/bg_input"
         android:textColor="#F5F5F5"
-        android:textColorHint="#555555"
-        android:hint="Type your reflection..."
-        android:textSize="14sp"
-
-        android:padding="14dp"
+        android:textColorHint="#9E9E9E"
+        android:hint="Write a few honest lines"
+        android:textSize="@dimen/t_row"
+        android:padding="18dp"
         android:gravity="top|start"
-        android:inputType="textMultiLine"
+        android:inputType="textMultiLine|textCapSentences"
         android:layout_marginBottom="12dp" />
 
     <TextView
         android:id="@+id/btn_submit_reflection"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="SUBMIT"
-        android:textColor="#F5F5F5"
-        android:textSize="14sp"
-
+        android:layout_height="@dimen/tap_min"
+        android:text="Save reflection"
+        android:textColor="#FFFFFF"
+        android:textSize="@dimen/t_body"
         android:textStyle="bold"
         android:gravity="center"
         android:background="@drawable/bg_button_primary"
-        android:paddingVertical="14dp"
         android:layout_marginBottom="8dp" />
 
     <TextView
@@ -84,20 +79,17 @@
         android:layout_height="wrap_content"
         android:text="Reflection logged for today"
         android:textColor="#4CAF50"
-        android:textSize="12sp"
-
+        android:textSize="@dimen/t_small"
         android:gravity="center"
         android:visibility="gone"
-        android:layout_marginBottom="12dp" />
+        android:layout_marginBottom="8dp" />
 
-    <!-- Past Entries -->
     <TextView
+        style="@style/Forge.Label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="PAST ENTRIES"
-        android:textColor="#9E9E9E"
-        android:textSize="12sp"
-
+        android:text="Past entries"
+        android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp" />
 
     <androidx.recyclerview.widget.RecyclerView
@@ -107,5 +99,4 @@
         android:layout_weight="1"
         android:clipToPadding="false"
         android:paddingBottom="8dp" />
-
 </LinearLayout>

@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:paddingHorizontal="@dimen/page_pad"
-            android:paddingTop="8dp"
+            android:paddingTop="20dp"
             android:paddingBottom="24dp"
             app:layout_constraintWidth_max="@dimen/content_max_width"
             app:layout_constraintTop_toTopOf="parent"
@@ -29,15 +29,19 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:layout_marginBottom="14dp">
-
+                android:layout_marginBottom="16dp">
+                <ImageView
+                    android:layout_width="@dimen/logo_size"
+                    android:layout_height="@dimen/logo_size"
+                    android:src="@drawable/forge_axe"
+                    android:contentDescription="Forge" />
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:layout_marginStart="12dp"
                     android:orientation="vertical">
                     <TextView
-                        android:id="@+id/tv_terminal_prompt"
                         style="@style/Forge.Label"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -49,19 +53,18 @@
                         android:layout_height="wrap_content"
                         android:text="Monday, Nov 16" />
                 </LinearLayout>
-
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
                     android:background="@drawable/bg_chip_neutral"
-                    android:paddingHorizontal="12dp"
-                    android:paddingVertical="8dp">
+                    android:paddingHorizontal="14dp"
+                    android:paddingVertical="9dp">
                     <ImageView
                         android:layout_width="18dp"
                         android:layout_height="18dp"
-                        android:src="@drawable/ic_streak_flame"
+                        android:src="@drawable/ic_flame"
                         android:contentDescription="Day streak" />
                     <TextView
                         android:id="@+id/tv_streak_count"
@@ -82,118 +85,181 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:layout_marginBottom="14dp">
-                <FrameLayout
+                <LinearLayout
+                    android:id="@+id/day_cell_0"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1">
+                    android:layout_weight="1"
+                    android:layout_marginHorizontal="2dp"
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal"
+                    android:paddingVertical="8dp">
                     <TextView
-                        android:id="@+id/dot_sun"
-                        android:layout_width="36dp"
-                        android:layout_height="36dp"
-                        android:layout_gravity="center"
-                        android:gravity="center"
-                        android:text="S"
-                        android:textColor="#9E9E9E"
-                        android:textSize="@dimen/t_small"
-                        android:textStyle="bold"
-                        android:background="@drawable/bg_day_dot" />
-                </FrameLayout>
-                <FrameLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1">
-                    <TextView
-                        android:id="@+id/dot_mon"
-                        android:layout_width="36dp"
-                        android:layout_height="36dp"
-                        android:layout_gravity="center"
-                        android:gravity="center"
+                        android:id="@+id/day_letter_0"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:text="M"
                         android:textColor="#9E9E9E"
-                        android:textSize="@dimen/t_small"
-                        android:textStyle="bold"
-                        android:background="@drawable/bg_day_dot" />
-                </FrameLayout>
-                <FrameLayout
+                        android:textSize="@dimen/t_label"
+                        android:textStyle="bold" />
+                    <ImageView
+                        android:id="@+id/day_ring_0"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_marginTop="6dp"
+                        android:src="@drawable/bg_day_dot"
+                        android:contentDescription="@null" />
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/day_cell_1"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1">
+                    android:layout_weight="1"
+                    android:layout_marginHorizontal="2dp"
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal"
+                    android:paddingVertical="8dp">
                     <TextView
-                        android:id="@+id/dot_tue"
-                        android:layout_width="36dp"
-                        android:layout_height="36dp"
-                        android:layout_gravity="center"
-                        android:gravity="center"
+                        android:id="@+id/day_letter_1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:text="T"
                         android:textColor="#9E9E9E"
-                        android:textSize="@dimen/t_small"
-                        android:textStyle="bold"
-                        android:background="@drawable/bg_day_dot" />
-                </FrameLayout>
-                <FrameLayout
+                        android:textSize="@dimen/t_label"
+                        android:textStyle="bold" />
+                    <ImageView
+                        android:id="@+id/day_ring_1"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_marginTop="6dp"
+                        android:src="@drawable/bg_day_dot"
+                        android:contentDescription="@null" />
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/day_cell_2"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1">
+                    android:layout_weight="1"
+                    android:layout_marginHorizontal="2dp"
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal"
+                    android:paddingVertical="8dp">
                     <TextView
-                        android:id="@+id/dot_wed"
-                        android:layout_width="36dp"
-                        android:layout_height="36dp"
-                        android:layout_gravity="center"
-                        android:gravity="center"
+                        android:id="@+id/day_letter_2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:text="W"
                         android:textColor="#9E9E9E"
-                        android:textSize="@dimen/t_small"
-                        android:textStyle="bold"
-                        android:background="@drawable/bg_day_dot" />
-                </FrameLayout>
-                <FrameLayout
+                        android:textSize="@dimen/t_label"
+                        android:textStyle="bold" />
+                    <ImageView
+                        android:id="@+id/day_ring_2"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_marginTop="6dp"
+                        android:src="@drawable/bg_day_dot"
+                        android:contentDescription="@null" />
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/day_cell_3"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1">
+                    android:layout_weight="1"
+                    android:layout_marginHorizontal="2dp"
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal"
+                    android:paddingVertical="8dp">
                     <TextView
-                        android:id="@+id/dot_thu"
-                        android:layout_width="36dp"
-                        android:layout_height="36dp"
-                        android:layout_gravity="center"
-                        android:gravity="center"
+                        android:id="@+id/day_letter_3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:text="T"
                         android:textColor="#9E9E9E"
-                        android:textSize="@dimen/t_small"
-                        android:textStyle="bold"
-                        android:background="@drawable/bg_day_dot" />
-                </FrameLayout>
-                <FrameLayout
+                        android:textSize="@dimen/t_label"
+                        android:textStyle="bold" />
+                    <ImageView
+                        android:id="@+id/day_ring_3"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_marginTop="6dp"
+                        android:src="@drawable/bg_day_dot"
+                        android:contentDescription="@null" />
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/day_cell_4"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1">
+                    android:layout_weight="1"
+                    android:layout_marginHorizontal="2dp"
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal"
+                    android:paddingVertical="8dp">
                     <TextView
-                        android:id="@+id/dot_fri"
-                        android:layout_width="36dp"
-                        android:layout_height="36dp"
-                        android:layout_gravity="center"
-                        android:gravity="center"
+                        android:id="@+id/day_letter_4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:text="F"
                         android:textColor="#9E9E9E"
-                        android:textSize="@dimen/t_small"
-                        android:textStyle="bold"
-                        android:background="@drawable/bg_day_dot" />
-                </FrameLayout>
-                <FrameLayout
+                        android:textSize="@dimen/t_label"
+                        android:textStyle="bold" />
+                    <ImageView
+                        android:id="@+id/day_ring_4"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_marginTop="6dp"
+                        android:src="@drawable/bg_day_dot"
+                        android:contentDescription="@null" />
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/day_cell_5"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1">
+                    android:layout_weight="1"
+                    android:layout_marginHorizontal="2dp"
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal"
+                    android:paddingVertical="8dp">
                     <TextView
-                        android:id="@+id/dot_sat"
-                        android:layout_width="36dp"
-                        android:layout_height="36dp"
-                        android:layout_gravity="center"
-                        android:gravity="center"
+                        android:id="@+id/day_letter_5"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:text="S"
                         android:textColor="#9E9E9E"
-                        android:textSize="@dimen/t_small"
-                        android:textStyle="bold"
-                        android:background="@drawable/bg_day_dot" />
-                </FrameLayout>
+                        android:textSize="@dimen/t_label"
+                        android:textStyle="bold" />
+                    <ImageView
+                        android:id="@+id/day_ring_5"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_marginTop="6dp"
+                        android:src="@drawable/bg_day_dot"
+                        android:contentDescription="@null" />
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/day_cell_6"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginHorizontal="2dp"
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal"
+                    android:paddingVertical="8dp">
+                    <TextView
+                        android:id="@+id/day_letter_6"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="S"
+                        android:textColor="#9E9E9E"
+                        android:textSize="@dimen/t_label"
+                        android:textStyle="bold" />
+                    <ImageView
+                        android:id="@+id/day_ring_6"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_marginTop="6dp"
+                        android:src="@drawable/bg_day_dot"
+                        android:contentDescription="@null" />
+                </LinearLayout>
             </LinearLayout>
 
             <LinearLayout
@@ -202,7 +268,7 @@
                 android:orientation="vertical"
                 android:background="@drawable/bg_card"
                 android:padding="@dimen/card_pad"
-                android:layout_marginBottom="12dp">
+                android:layout_marginBottom="18dp">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -214,7 +280,7 @@
                         android:layout_weight="1"
                         android:text="Labors"
                         android:textColor="#F5F5F5"
-                        android:textSize="@dimen/t_body"
+                        android:textSize="@dimen/t_row"
                         android:textStyle="bold" />
                     <TextView
                         android:id="@+id/tv_labor_count"
@@ -222,7 +288,7 @@
                         android:layout_height="wrap_content"
                         android:text="0/0"
                         android:textColor="#4CAF50"
-                        android:textSize="18sp"
+                        android:textSize="@dimen/t_stat"
                         android:fontFamily="monospace"
                         android:textStyle="bold" />
                 </LinearLayout>
@@ -245,46 +311,6 @@
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:background="@drawable/bg_card"
-                android:paddingHorizontal="@dimen/card_pad"
-                android:paddingVertical="12dp"
-                android:layout_marginBottom="18dp">
-                <TextView
-                    android:id="@+id/tv_rank_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="IRON"
-                    android:textColor="#78909C"
-                    android:textSize="@dimen/t_small"
-                    android:textStyle="bold"
-                    android:letterSpacing="0.08" />
-                <ProgressBar
-                    android:id="@+id/pb_xp"
-                    style="@android:style/Widget.ProgressBar.Horizontal"
-                    android:layout_width="0dp"
-                    android:layout_height="6dp"
-                    android:layout_weight="1"
-                    android:layout_marginHorizontal="12dp"
-                    android:max="100"
-                    android:progress="0"
-                    android:progressDrawable="@drawable/bg_xp_progress" />
-                <TextView
-                    android:id="@+id/tv_xp_amount"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="0 XP"
-                    android:textColor="#F5F5F5"
-                    android:textSize="@dimen/t_small"
-                    android:fontFamily="monospace"
-                    android:textStyle="bold" />
-            </LinearLayout>
-
-            <!-- Two panes in landscape and on tablets, stacked on phones in portrait -->
-            <LinearLayout
                 android:id="@+id/panes"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -296,13 +322,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
-
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rv_labors"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:nestedScrollingEnabled="false" />
-
                     <TextView
                         android:id="@+id/btn_add_labor"
                         android:layout_width="match_parent"
@@ -323,348 +347,82 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <TextView
-                        style="@style/Forge.Label"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Focus"
-                        android:layout_marginBottom="8dp" />
-
                     <LinearLayout
-                        android:id="@+id/card_focus"
+                        android:id="@+id/card_focus_mini"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:gravity="center_horizontal"
+                        android:minHeight="@dimen/tap_min"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
                         android:background="@drawable/bg_card"
                         android:padding="@dimen/card_pad"
                         android:layout_marginBottom="12dp">
-
-                        <TextView
-                            android:id="@+id/tv_focus_title"
-                            android:layout_width="wrap_content"
+                        <LinearLayout
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:text="Deep work block"
-                            android:textColor="#F5F5F5"
-                            android:textSize="@dimen/t_row"
-                            android:textStyle="bold"
-                            android:layout_marginBottom="12dp" />
-
-                        <FrameLayout
-                            android:layout_width="@dimen/ring_size"
-                            android:layout_height="@dimen/ring_size"
-                            android:layout_marginBottom="14dp">
-                            <ProgressBar
-                                android:id="@+id/pb_focus_ring"
-                                style="@android:style/Widget.ProgressBar.Horizontal"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:max="1000"
-                                android:progress="0"
-                                android:indeterminate="false"
-                                android:progressDrawable="@drawable/bg_focus_ring" />
-                            <LinearLayout
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+                            <TextView
+                                style="@style/Forge.Label"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:orientation="vertical"
-                                android:gravity="center_horizontal">
-                                <TextView
-                                    android:id="@+id/tv_focus_label"
-                                    style="@style/Forge.Label"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Ready" />
-                                <TextView
-                                    android:id="@+id/tv_focus_time"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="25:00"
-                                    android:textColor="#F5F5F5"
-                                    android:textSize="@dimen/t_timer"
-                                    android:fontFamily="monospace"
-                                    android:textStyle="bold" />
-                                <TextView
-                                    android:id="@+id/tv_focus_of"
-                                    style="@style/Forge.Sub"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="of 25 minutes" />
-                            </LinearLayout>
-                        </FrameLayout>
-
-                        <LinearLayout
-                            android:id="@+id/ll_duration_chips"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:layout_marginBottom="14dp">
-                        <TextView
-                            android:id="@+id/chip_25"
-                            android:layout_width="0dp"
-                            android:layout_height="@dimen/tap_min"
-                            android:layout_weight="1"
-                            android:layout_marginHorizontal="4dp"
-                            android:gravity="center"
-                            android:text="25 min"
-                            android:textColor="#F5F5F5"
-                            android:textSize="@dimen/t_small"
-                            android:textStyle="bold"
-                            android:background="@drawable/bg_chip_neutral" />
-                        <TextView
-                            android:id="@+id/chip_45"
-                            android:layout_width="0dp"
-                            android:layout_height="@dimen/tap_min"
-                            android:layout_weight="1"
-                            android:layout_marginHorizontal="4dp"
-                            android:gravity="center"
-                            android:text="45 min"
-                            android:textColor="#F5F5F5"
-                            android:textSize="@dimen/t_small"
-                            android:textStyle="bold"
-                            android:background="@drawable/bg_chip_neutral" />
-                        <TextView
-                            android:id="@+id/chip_90"
-                            android:layout_width="0dp"
-                            android:layout_height="@dimen/tap_min"
-                            android:layout_weight="1"
-                            android:layout_marginHorizontal="4dp"
-                            android:gravity="center"
-                            android:text="90 min"
-                            android:textColor="#F5F5F5"
-                            android:textSize="@dimen/t_small"
-                            android:textStyle="bold"
-                            android:background="@drawable/bg_chip_neutral" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:gravity="center_vertical">
-                            <ImageView
-                                android:id="@+id/btn_focus_stop"
-                                android:layout_width="56dp"
-                                android:layout_height="56dp"
-                                android:src="@drawable/ic_stop"
-                                android:background="@drawable/bg_round_dark"
-                                android:padding="17dp"
-                                android:contentDescription="End session" />
-                            <ImageView
-                                android:id="@+id/btn_focus_start"
-                                android:layout_width="72dp"
-                                android:layout_height="72dp"
-                                android:layout_marginHorizontal="16dp"
-                                android:src="@drawable/ic_play"
-                                android:background="@drawable/bg_round_red"
-                                android:padding="22dp"
-                                android:contentDescription="Start or pause focus" />
+                                android:text="Focus" />
                             <TextView
-                                android:id="@+id/btn_focus_plus"
-                                android:layout_width="56dp"
-                                android:layout_height="56dp"
-                                android:gravity="center"
-                                android:text="+5"
+                                android:id="@+id/tv_mini_state"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Ready when you are"
                                 android:textColor="#F5F5F5"
-                                android:textSize="@dimen/t_body"
-                                android:fontFamily="monospace"
-                                android:textStyle="bold"
-                                android:background="@drawable/bg_round_dark"
-                                android:contentDescription="Add five minutes" />
-                        </LinearLayout>
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/card_nudges"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:background="@drawable/bg_card"
-                        android:padding="@dimen/card_pad"
-                        android:layout_marginBottom="22dp">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:gravity="center_vertical"
-                            android:layout_marginBottom="14dp">
-                            <ImageView
-                                android:id="@+id/iv_nudge_shield"
-                                android:layout_width="24dp"
-                                android:layout_height="24dp"
-                                android:src="@drawable/ic_shield_check"
-                                android:contentDescription="@null" />
-                            <LinearLayout
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:layout_marginStart="12dp"
-                                android:orientation="vertical">
-                                <TextView
-                                    android:id="@+id/tv_nudge_status"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Nudge tracker"
-                                    android:textColor="#F5F5F5"
-                                    android:textSize="@dimen/t_body"
-                                    android:textStyle="bold" />
-                                <TextView
-                                    android:id="@+id/tv_nudge_sub"
-                                    style="@style/Forge.Sub"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Starts with your focus session" />
-                            </LinearLayout>
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:baselineAligned="false">
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-                            <TextView
-                                android:id="@+id/tv_nudge_count"
-                                style="@style/Forge.Num"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="0" />
-                            <TextView
-                                style="@style/Forge.Label"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Nudges" />
-                        </LinearLayout>
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-                            <TextView
-                                android:id="@+id/tv_drift_count"
-                                style="@style/Forge.Num"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="0" />
-                            <TextView
-                                style="@style/Forge.Label"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Drifts" />
-                        </LinearLayout>
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-                            <TextView
-                                android:id="@+id/tv_away_time"
-                                style="@style/Forge.Num"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="0s" />
-                            <TextView
-                                style="@style/Forge.Label"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Away" />
-                        </LinearLayout>
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-                            <TextView
-                                android:id="@+id/tv_focus_score"
-                                style="@style/Forge.Num"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="–" />
-                            <TextView
-                                style="@style/Forge.Label"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Focused" />
-                        </LinearLayout>
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:id="@+id/ll_nudge_log"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:layout_marginTop="12dp" />
-                    </LinearLayout>
-
-                    <TextView
-                        style="@style/Forge.Label"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Time tracker"
-                        android:layout_marginBottom="8dp" />
-
-                    <LinearLayout
-                        android:id="@+id/card_time_tracker"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:background="@drawable/bg_card"
-                        android:padding="@dimen/card_pad"
-                        android:layout_marginBottom="22dp">
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:gravity="center_vertical"
-                            android:layout_marginBottom="12dp">
-                            <View
-                                android:id="@+id/track_indicator"
-                                android:layout_width="10dp"
-                                android:layout_height="10dp"
-                                android:background="@drawable/bg_status_dot_idle"
-                                android:layout_marginEnd="10dp" />
-                            <LinearLayout
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:orientation="vertical">
-                                <TextView
-                                    android:id="@+id/tv_track_category"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Not tracking"
-                                    android:textColor="#F5F5F5"
-                                    android:textSize="@dimen/t_body"
-                                    android:textStyle="bold" />
-                                <TextView
-                                    android:id="@+id/tv_track_status"
-                                    style="@style/Forge.Sub"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Tap to start" />
-                            </LinearLayout>
-                            <TextView
-                                android:id="@+id/tv_track_duration"
-                                style="@style/Forge.Num"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="00:00:00" />
+                                android:textSize="@dimen/t_row"
+                                android:textStyle="bold" />
                         </LinearLayout>
                         <TextView
-                            android:id="@+id/btn_track_toggle"
-                            android:layout_width="match_parent"
-                            android:layout_height="@dimen/tap_min"
-                            android:gravity="center"
-                            android:text="Start tracking"
-                            android:textColor="#F5F5F5"
-                            android:textSize="@dimen/t_body"
-                            android:textStyle="bold"
-                            android:background="@drawable/bg_chip_neutral" />
+                            android:id="@+id/tv_mini_time"
+                            style="@style/Forge.Num"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="25:00" />
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginStart="8dp"
+                            android:src="@drawable/ic_chevron"
+                            android:contentDescription="@null" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/card_plan_link"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:minHeight="@dimen/tap_min"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:background="@drawable/bg_card"
+                        android:padding="@dimen/card_pad"
+                        android:layout_marginBottom="12dp">
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+                            <TextView
+                                style="@style/Forge.Label"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Plan" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Battle plan and weekly rules"
+                                android:textColor="#F5F5F5"
+                                android:textSize="@dimen/t_row"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_chevron"
+                            android:contentDescription="@null" />
                     </LinearLayout>
 
                     <LinearLayout

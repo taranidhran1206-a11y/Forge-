@@ -1,0 +1,450 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#0A0A0A"
+    android:fillViewport="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:id="@+id/content"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="@dimen/page_pad"
+            android:paddingTop="20dp"
+            android:paddingBottom="24dp"
+            app:layout_constraintWidth_max="@dimen/content_max_width"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="18dp">
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+                    <TextView
+                        style="@style/Forge.Label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Focus" />
+                    <TextView
+                        android:id="@+id/tv_focus_title"
+                        style="@style/Forge.Title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Deep work block" />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:background="@drawable/bg_chip_neutral"
+                    android:paddingHorizontal="14dp"
+                    android:paddingVertical="9dp">
+                    <ImageView
+                        android:id="@+id/iv_focus_dot"
+                        android:layout_width="8dp"
+                        android:layout_height="8dp"
+                        android:src="@drawable/bg_status_dot_idle"
+                        android:contentDescription="@null" />
+                    <TextView
+                        android:id="@+id/tv_focus_chip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="Ready"
+                        android:textColor="#F5F5F5"
+                        android:textSize="@dimen/t_small"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/panes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:baselineAligned="false">
+
+                <LinearLayout
+                    android:id="@+id/pane_left"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal"
+                    android:paddingBottom="18dp">
+
+                    <FrameLayout
+                        android:layout_width="@dimen/ring_size"
+                        android:layout_height="@dimen/ring_size"
+                        android:layout_marginBottom="18dp">
+                        <ProgressBar
+                            android:id="@+id/pb_focus_ring"
+                            style="@android:style/Widget.ProgressBar.Horizontal"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:max="1000"
+                            android:progress="0"
+                            android:indeterminate="false"
+                            android:progressDrawable="@drawable/bg_focus_ring" />
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:orientation="vertical"
+                            android:gravity="center_horizontal">
+                            <TextView
+                                android:id="@+id/tv_focus_label"
+                                style="@style/Forge.Label"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Ready" />
+                            <TextView
+                                android:id="@+id/tv_focus_time"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="25:00"
+                                android:textColor="#F5F5F5"
+                                android:textSize="@dimen/t_timer"
+                                android:fontFamily="monospace"
+                                android:textStyle="bold" />
+                            <TextView
+                                android:id="@+id/tv_focus_of"
+                                style="@style/Forge.Sub"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="of 25 minutes" />
+                        </LinearLayout>
+                    </FrameLayout>
+
+                    <LinearLayout
+                        android:id="@+id/ll_duration_chips"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="16dp">
+                            <TextView
+                                android:id="@+id/chip_25"
+                                android:layout_width="0dp"
+                                android:layout_height="@dimen/tap_min"
+                                android:layout_weight="1"
+                                android:layout_marginHorizontal="4dp"
+                                android:gravity="center"
+                                android:text="25 min"
+                                android:textColor="#F5F5F5"
+                                android:textSize="@dimen/t_small"
+                                android:textStyle="bold"
+                                android:background="@drawable/bg_chip_neutral" />
+                            <TextView
+                                android:id="@+id/chip_45"
+                                android:layout_width="0dp"
+                                android:layout_height="@dimen/tap_min"
+                                android:layout_weight="1"
+                                android:layout_marginHorizontal="4dp"
+                                android:gravity="center"
+                                android:text="45 min"
+                                android:textColor="#F5F5F5"
+                                android:textSize="@dimen/t_small"
+                                android:textStyle="bold"
+                                android:background="@drawable/bg_chip_neutral" />
+                            <TextView
+                                android:id="@+id/chip_90"
+                                android:layout_width="0dp"
+                                android:layout_height="@dimen/tap_min"
+                                android:layout_weight="1"
+                                android:layout_marginHorizontal="4dp"
+                                android:gravity="center"
+                                android:text="90 min"
+                                android:textColor="#F5F5F5"
+                                android:textSize="@dimen/t_small"
+                                android:textStyle="bold"
+                                android:background="@drawable/bg_chip_neutral" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+                        <ImageView
+                            android:id="@+id/btn_focus_stop"
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            android:src="@drawable/ic_stop"
+                            android:background="@drawable/bg_round_dark"
+                            android:padding="17dp"
+                            android:contentDescription="End session" />
+                        <ImageView
+                            android:id="@+id/btn_focus_start"
+                            android:layout_width="72dp"
+                            android:layout_height="72dp"
+                            android:layout_marginHorizontal="16dp"
+                            android:src="@drawable/ic_play"
+                            android:background="@drawable/bg_round_red"
+                            android:padding="22dp"
+                            android:contentDescription="Start or pause focus" />
+                        <TextView
+                            android:id="@+id/btn_focus_plus"
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            android:gravity="center"
+                            android:text="+5"
+                            android:textColor="#F5F5F5"
+                            android:textSize="@dimen/t_body"
+                            android:fontFamily="monospace"
+                            android:textStyle="bold"
+                            android:background="@drawable/bg_round_dark"
+                            android:contentDescription="Add five minutes" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/pane_right"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:id="@+id/card_nudges"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:background="@drawable/bg_card"
+                        android:padding="@dimen/card_pad"
+                        android:layout_marginBottom="12dp">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:layout_marginBottom="14dp">
+                            <ImageView
+                                android:id="@+id/iv_nudge_shield"
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:src="@drawable/ic_shield_check"
+                                android:contentDescription="@null" />
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_marginStart="12dp"
+                                android:orientation="vertical">
+                                <TextView
+                                    android:id="@+id/tv_nudge_status"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Nudge tracker"
+                                    android:textColor="#F5F5F5"
+                                    android:textSize="@dimen/t_row"
+                                    android:textStyle="bold" />
+                                <TextView
+                                    android:id="@+id/tv_nudge_sub"
+                                    style="@style/Forge.Sub"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Starts with your focus session" />
+                            </LinearLayout>
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:baselineAligned="false">
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+                                <TextView
+                                    android:id="@+id/tv_nudge_count"
+                                    style="@style/Forge.Num"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="0" />
+                                <TextView
+                                    style="@style/Forge.Label"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Nudges" />
+                            </LinearLayout>
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+                                <TextView
+                                    android:id="@+id/tv_drift_count"
+                                    style="@style/Forge.Num"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="0" />
+                                <TextView
+                                    style="@style/Forge.Label"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Drifts" />
+                            </LinearLayout>
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+                                <TextView
+                                    android:id="@+id/tv_away_time"
+                                    style="@style/Forge.Num"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="0s" />
+                                <TextView
+                                    style="@style/Forge.Label"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Away" />
+                            </LinearLayout>
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+                                <TextView
+                                    android:id="@+id/tv_focus_score"
+                                    style="@style/Forge.Num"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="–" />
+                                <TextView
+                                    style="@style/Forge.Label"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Focused" />
+                            </LinearLayout>
+                        </LinearLayout>
+                        <LinearLayout
+                            android:id="@+id/ll_nudge_log"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_marginTop="10dp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:background="@drawable/bg_card"
+                        android:padding="@dimen/card_pad"
+                        android:layout_marginBottom="12dp">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:layout_marginBottom="6dp">
+                            <TextView
+                                style="@style/Forge.Label"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Today by category" />
+                            <TextView
+                                android:id="@+id/tv_cat_total"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="0m"
+                                android:textColor="#F5F5F5"
+                                android:textSize="@dimen/t_body"
+                                android:fontFamily="monospace"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+                        <LinearLayout
+                            android:id="@+id/ll_categories"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical" />
+                        <TextView
+                            android:id="@+id/tv_cat_empty"
+                            style="@style/Forge.Sub"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingVertical="6dp"
+                            android:text="Nothing tracked yet today" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/card_time_tracker"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:background="@drawable/bg_card"
+                        android:padding="@dimen/card_pad">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:layout_marginBottom="12dp">
+                            <ImageView
+                                android:id="@+id/track_indicator"
+                                android:layout_width="10dp"
+                                android:layout_height="10dp"
+                                android:src="@drawable/bg_status_dot_idle"
+                                android:layout_marginEnd="10dp"
+                                android:contentDescription="@null" />
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+                                <TextView
+                                    android:id="@+id/tv_track_category"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Time tracker"
+                                    android:textColor="#F5F5F5"
+                                    android:textSize="@dimen/t_row"
+                                    android:textStyle="bold" />
+                                <TextView
+                                    android:id="@+id/tv_track_status"
+                                    style="@style/Forge.Sub"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Not running" />
+                            </LinearLayout>
+                            <TextView
+                                android:id="@+id/tv_track_duration"
+                                style="@style/Forge.Num"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="00:00:00" />
+                        </LinearLayout>
+                        <TextView
+                            android:id="@+id/btn_track_toggle"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/tap_min"
+                            android:gravity="center"
+                            android:text="Start tracking"
+                            android:textColor="#F5F5F5"
+                            android:textSize="@dimen/t_body"
+                            android:textStyle="bold"
+                            android:background="@drawable/bg_chip_neutral" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>

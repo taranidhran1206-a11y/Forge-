@@ -8,9 +8,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.forge.app.R
@@ -35,10 +37,8 @@ class ProgressFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         val factory = ForgeViewModelFactory(requireActivity().application)
         viewModel = ViewModelProvider(this, factory)[ProgressViewModel::class.java]
-
         applyPanes()
         observeViewModel()
     }
@@ -63,142 +63,138 @@ class ProgressFragment : Fragment() {
         }
     }
 
-    /** The full ladder with real thresholds; the current rank is marked. */
+    private fun pretty(rank: RankSystem.Rank): String =
+        rank.title.lowercase().replaceFirstChar { it.uppercase() }
+
+    private fun colorOf(rank: RankSystem.Rank): Int =
+        try { Color.parseColor(rank.colorHex) } catch (_: Exception) { Color.WHITE }
+
+    /** Current rank, the next three, then one line for the rest. Thresholds are the real ones. */
     private fun renderLadder(current: RankSystem.Rank) {
+        val ranks = RankSystem.Rank.values()
+        val shown = ranks.filter { it.ordinal >= current.ordinal }.take(4)
+        val rest = ranks.filter { it.ordinal > (shown.lastOrNull()?.ordinal ?: current.ordinal) }
         binding.llRankLadder.removeAllViews()
-        val density = resources.displayMetrics.density
-        fun dp(v: Int) = (v * density).toInt()
-        RankSystem.Rank.values().forEach { rank ->
-            val row = LinearLayout(requireContext()).apply {
-                orientation = LinearLayout.HORIZONTAL
-                gravity = android.view.Gravity.CENTER_VERTICAL
-                setPadding(dp(16), dp(11), dp(16), dp(11))
-                if (rank == current) setBackgroundColor(Color.parseColor("#1A1A1A"))
+
+        shown.forEach { rank ->
+            val row = layoutInflater.inflate(R.layout.item_rank_row, binding.llRankLadder, false)
+            row.findViewById<ImageView>(R.id.iv_rank_dot).setBackgroundColor(colorOf(rank))
+            row.findViewById<TextView>(R.id.tv_rank_row_name).text = pretty(rank)
+            val right = row.findViewById<TextView>(R.id.tv_rank_row_right)
+            if (rank == current) {
+                row.setBackgroundColor(Color.parseColor("#1A1A1A"))
+                right.text = "YOU ARE HERE"
+                right.typeface = android.graphics.Typeface.DEFAULT_BOLD
+                right.letterSpacing = 0.08f
+                right.setTextColor(colorOf(rank))
+            } else {
+                right.text = String.format("%,d XP", rank.minXp)
             }
-            val dot = View(requireContext()).apply {
-                layoutParams = LinearLayout.LayoutParams(dp(12), dp(12))
-                rotation = 45f
-                try { setBackgroundColor(Color.parseColor(rank.colorHex)) } catch (_: Exception) {}
-            }
-            val name = TextView(requireContext()).apply {
-                layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
-                    .apply { marginStart = dp(14) }
-                text = rank.title.lowercase().replaceFirstChar { it.uppercase() }
-                textSize = 14f
-                setTextColor(Color.parseColor(if (rank.ordinal < current.ordinal) "#8A8A8A" else "#F5F5F5"))
-                if (rank == current) setTypeface(typeface, android.graphics.Typeface.BOLD)
-            }
-            val right = TextView(requireContext()).apply {
-                textSize = 12f
-                if (rank == current) {
-                    text = "YOU ARE HERE"
-                    letterSpacing = 0.08f
-                    setTypeface(typeface, android.graphics.Typeface.BOLD)
-                    try { setTextColor(Color.parseColor(rank.colorHex)) } catch (_: Exception) {}
-                } else {
-                    text = String.format("%,d XP", rank.minXp)
-                    typeface = android.graphics.Typeface.MONOSPACE
-                    setTextColor(Color.parseColor("#9E9E9E"))
-                }
-            }
-            row.addView(dot)
-            row.addView(name)
-            row.addView(right)
             binding.llRankLadder.addView(row)
         }
+
+        if (rest.isNotEmpty()) {
+            val names = rest.map { pretty(it) }
+            val list = if (names.size == 1) names[0]
+            else names.dropLast(1).joinToString(", ") + " and " + names.last()
+            val footer = TextView(requireContext()).apply {
+                text = "Then $list at ${String.format("%,d", rest.last().minXp)} XP"
+                setTextColor(Color.parseColor("#9E9E9E"))
+                setTextSize(android.util.TypedValue.COMPLEX_UNIT_PX, resources.getDimension(R.dimen.t_small))
+                val pad = resources.getDimensionPixelSize(R.dimen.card_pad)
+                setPadding(pad, pad * 3 / 4, pad, pad * 3 / 4)
+            }
+            binding.llRankLadder.addView(footer)
+        }
+    }
+
+    private fun barRow(parent: LinearLayout, name: String, value: String, progress: Int, max: Int, bar: Int) {
+        val row = layoutInflater.inflate(R.layout.item_bar_row, parent, false)
+        row.findViewById<TextView>(R.id.tv_bar_name).text = name
+        row.findViewById<TextView>(R.id.tv_bar_value).text = value
+        row.findViewById<ProgressBar>(R.id.pb_bar).apply {
+            progressDrawable = ContextCompat.getDrawable(requireContext(), bar)
+            this.max = max.coerceAtLeast(1)
+            this.progress = progress
+        }
+        parent.addView(row)
+    }
+
+    private fun emptyRow(parent: LinearLayout, message: String) {
+        parent.addView(TextView(requireContext()).apply {
+            text = message
+            setTextColor(Color.parseColor("#9E9E9E"))
+            setTextSize(android.util.TypedValue.COMPLEX_UNIT_PX, resources.getDimension(R.dimen.t_small))
+            setPadding(0, 16, 0, 16)
+        })
     }
 
     private fun observeViewModel() {
         viewModel.totalXp.observe(viewLifecycleOwner) { xp ->
-            // Format XP nicely like video: 15,700 or 15.7k
             binding.tvXpCurrent.text = formatXp(xp)
-        }
 
-        viewModel.currentRank.observe(viewLifecycleOwner) { rank ->
+            val rank = RankSystem.getRank(xp)
+            val color = colorOf(rank)
             binding.tvRankTitle.text = rank.title
-            binding.tvRankLevel.text = "LEVEL ${getRankLevel(rank.title)}"
-            val color = try { Color.parseColor(rank.colorHex) } catch (_: Exception) { Color.WHITE }
             binding.tvRankTitle.setTextColor(color)
+            binding.tvRankLevel.text = "LEVEL ${rank.ordinal + 1}"
             binding.ivRankHex.setColorFilter(color)
+
+            val pct = (RankSystem.getProgress(xp) * 100).toInt()
+            binding.pbRankXp.progress = pct
+            binding.tvRankPct.text = "$pct%"
+            binding.tvRankPct.setTextColor(color)
+            binding.pbRankXp.progressTintList = android.content.res.ColorStateList.valueOf(color)
+            val next = RankSystem.getNextRank(rank)
+            binding.tvXpNext.text =
+                if (next != null) "${String.format("%,d", RankSystem.getXpToNext(xp))} XP to ${pretty(next)}"
+                else "Top rank reached"
             renderLadder(rank)
-        }
-
-        viewModel.rankProgress.observe(viewLifecycleOwner) { progress ->
-            binding.pbRankXp.progress = (progress * 100).toInt()
-        }
-
-        viewModel.xpToNextRank.observe(viewLifecycleOwner) { xpNeeded ->
-            val nextRank = viewModel.nextRankName.value ?: "next rank"
-            binding.tvXpNext.text = "${formatXp(xpNeeded)} to $nextRank"
         }
 
         viewModel.weeklyStats.observe(viewLifecycleOwner) { stats ->
             binding.llWeeklyStats.removeAllViews()
             binding.tvWeekXp.text = "+${formatXp(stats.sumOf { it.totalXp })}"
             val dayNames = listOf("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
-
-            stats.forEachIndexed { index, stat ->
-                val dayView = layoutInflater.inflate(R.layout.item_xp_source, binding.llWeeklyStats, false)
-                val tvName = dayView.findViewById<TextView>(R.id.tv_xp_source_name)
-                val tvAmount = dayView.findViewById<TextView>(R.id.tv_xp_source_amount)
-                val progressBar = dayView.findViewById<ProgressBar>(R.id.pb_xp_source_bar)
-
+            val maxXp = stats.maxOfOrNull { it.totalXp } ?: 0
+            stats.forEach { stat ->
                 // Rows are the last seven dates, so label each from its own date
-                val dayLabel = try {
+                val label = try {
                     val parsed = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.US).parse(stat.date)
                     val cal = java.util.Calendar.getInstance()
                     if (parsed != null) cal.time = parsed
                     dayNames[cal.get(java.util.Calendar.DAY_OF_WEEK) - 1]
                 } catch (_: Exception) {
-                    if (index < dayNames.size) dayNames[index] else "Day"
+                    stat.date
                 }
-                tvName.text = dayLabel
-                tvAmount.text = "${stat.totalXp} XP"
-                val maxXp = stats.maxOfOrNull { it.totalXp } ?: 1
-                progressBar.max = if (maxXp > 0) maxXp else 1
-                progressBar.progress = stat.totalXp
-
-                binding.llWeeklyStats.addView(dayView)
+                barRow(binding.llWeeklyStats, label, "${stat.totalXp} XP", stat.totalXp, maxXp, R.drawable.bg_bar_green)
             }
         }
 
         viewModel.xpBySource.observe(viewLifecycleOwner) { sources ->
             binding.llXpBreakdown.removeAllViews()
-            val totalXp = sources.sumOf { it.total }
-
+            val total = sources.sumOf { it.total }
+            if (sources.isEmpty()) emptyRow(binding.llXpBreakdown, "No XP yet. Complete a labor to start.")
             sources.forEach { source ->
-                val itemView = layoutInflater.inflate(R.layout.item_xp_source, binding.llXpBreakdown, false)
-                val tvName = itemView.findViewById<TextView>(R.id.tv_xp_source_name)
-                val tvAmount = itemView.findViewById<TextView>(R.id.tv_xp_source_amount)
-                val progressBar = itemView.findViewById<ProgressBar>(R.id.pb_xp_source_bar)
-
-                tvName.text = source.source.replaceFirstChar { it.uppercase() }
-                tvAmount.text = "${source.total} XP"
-                progressBar.max = if (totalXp > 0) totalXp else 1
-                progressBar.progress = source.total
-
-                binding.llXpBreakdown.addView(itemView)
+                barRow(
+                    binding.llXpBreakdown,
+                    formatSourceName(source.source), "${source.total} XP",
+                    source.total, total, R.drawable.bg_xp_progress
+                )
             }
         }
 
         viewModel.todayTimeByCategory.observe(viewLifecycleOwner) { categories ->
             binding.llTimeAllocation.removeAllViews()
-            val totalMinutes = categories.sumOf { it.minutes }
-
+            val total = categories.sumOf { it.minutes }
+            if (categories.isEmpty()) emptyRow(binding.llTimeAllocation, "Nothing tracked yet today.")
             categories.forEach { cat ->
-                val itemView = layoutInflater.inflate(R.layout.item_time_category, binding.llTimeAllocation, false)
-                val tvCategory = itemView.findViewById<TextView>(R.id.tv_cat_name)
-                val tvDuration = itemView.findViewById<TextView>(R.id.tv_cat_duration)
-                val progressBar = itemView.findViewById<ProgressBar>(R.id.pb_cat_bar)
-
-                tvCategory.text = formatCategoryName(cat.category)
-                val hours = cat.minutes / 60
-                val mins = cat.minutes % 60
-                tvDuration.text = if (hours > 0) "${hours}h ${mins}m" else "${mins}m"
-                progressBar.max = if (totalMinutes > 0) totalMinutes else 1
-                progressBar.progress = cat.minutes
-
-                binding.llTimeAllocation.addView(itemView)
+                val text = if (cat.minutes >= 60) "${cat.minutes / 60}h ${cat.minutes % 60}m" else "${cat.minutes}m"
+                barRow(
+                    binding.llTimeAllocation,
+                    formatCategoryName(cat.category), text,
+                    cat.minutes, total, R.drawable.bg_bar_rank
+                )
             }
         }
 
@@ -213,70 +209,51 @@ class ProgressFragment : Fragment() {
     private fun showLevelUpAnimation(rank: RankSystem.Rank) {
         binding.flLevelUpOverlay.visibility = View.VISIBLE
         binding.tvLevelUpRank.text = rank.title
-        try {
-            binding.tvLevelUpRank.setTextColor(Color.parseColor(rank.colorHex))
-        } catch (_: Exception) {}
+        binding.tvLevelUpRank.setTextColor(colorOf(rank))
 
         val scaleX = ObjectAnimator.ofFloat(binding.tvLevelUpRank, View.SCALE_X, 0.3f, 1.2f, 1f)
         val scaleY = ObjectAnimator.ofFloat(binding.tvLevelUpRank, View.SCALE_Y, 0.3f, 1.2f, 1f)
         val alpha = ObjectAnimator.ofFloat(binding.flLevelUpOverlay, View.ALPHA, 0f, 1f)
-
-        val animSet = AnimatorSet()
-        animSet.playTogether(scaleX, scaleY, alpha)
-        animSet.duration = 800
-        animSet.interpolator = AccelerateDecelerateInterpolator()
-        animSet.start()
+        AnimatorSet().apply {
+            playTogether(scaleX, scaleY, alpha)
+            duration = 800
+            interpolator = AccelerateDecelerateInterpolator()
+            start()
+        }
 
         binding.flLevelUpOverlay.postDelayed({
-            val fadeOut = ObjectAnimator.ofFloat(binding.flLevelUpOverlay, View.ALPHA, 1f, 0f)
+            val overlay = _binding?.flLevelUpOverlay ?: return@postDelayed
+            val fadeOut = ObjectAnimator.ofFloat(overlay, View.ALPHA, 1f, 0f)
             fadeOut.duration = 500
-            fadeOut.start()
             fadeOut.addListener(object : android.animation.AnimatorListenerAdapter() {
                 override fun onAnimationEnd(animation: android.animation.Animator) {
-                    binding.flLevelUpOverlay.visibility = View.GONE
+                    _binding?.flLevelUpOverlay?.visibility = View.GONE
                 }
             })
+            fadeOut.start()
         }, 2500)
     }
 
-    private fun formatXp(xp: Int): String {
-        return when {
-            xp >= 1000000 -> String.format("%.1fM", xp / 1000000.0)
-            xp >= 10000 -> String.format("%.1fk", xp / 1000.0)
-            xp >= 1000 -> String.format("%,d", xp)
-            else -> "$xp"
-        }
+    private fun formatXp(xp: Int): String = when {
+        xp >= 1000000 -> String.format("%.1fM", xp / 1000000.0)
+        xp >= 100000 -> String.format("%.1fk", xp / 1000.0)
+        else -> String.format("%,d", xp)
     }
 
-    private fun getRankLevel(rankTitle: String): Int {
-        return when (rankTitle.uppercase()) {
-            "IRON" -> 1
-            "BRONZE" -> 2
-            "SILVER" -> 3
-            "GOLD" -> 4
-            "PLATINUM" -> 5
-            "DIAMOND" -> 6
-            "TITAN" -> 7
-            "MYTHIC" -> 8
-            "APEX" -> 9
-            "LEGEND" -> 10
-            else -> 1
-        }
+    private fun formatSourceName(source: String): String = when (source) {
+        "labor" -> "Labors"
+        "focus" -> "Focus sessions"
+        "time_track" -> "Time tracking"
+        "reflection" -> "Reflections"
+        else -> source.replace("_", " ").replaceFirstChar { it.uppercase() }
     }
 
-    private fun formatCategoryName(category: String): String {
-        return when (category) {
-            "deep_work" -> "Deep Work"
-            "admin" -> "Admin"
-            "social_media" -> "Social Media"
-            "youtube" -> "YouTube"
-            "exercise" -> "Exercise"
-            "rest" -> "Rest"
-            "learning" -> "Learning"
-            "other" -> "Other"
-            "general" -> "General"
-            else -> category.replace("_", " ").replaceFirstChar { it.uppercase() }
-        }
+    private fun formatCategoryName(category: String): String = when (category) {
+        "general" -> "Tracked time"
+        "deep_work" -> "Deep work"
+        "social_media" -> "Social media"
+        "youtube" -> "YouTube"
+        else -> category.replace("_", " ").replaceFirstChar { it.uppercase() }
     }
 
     override fun onDestroyView() {

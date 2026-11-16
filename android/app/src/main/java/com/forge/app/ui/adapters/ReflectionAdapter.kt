@@ -15,7 +15,7 @@ class ReflectionAdapter : ListAdapter<Reflection, ReflectionAdapter.ViewHolder>(
 
         fun bind(reflection: Reflection) {
             binding.tvRefDate.text = reflection.date
-            binding.tvRefPrompt.text = "// ${reflection.promptUsed}"
+            binding.tvRefPrompt.text = reflection.promptUsed
             binding.tvRefText.text = reflection.text
 
             if (reflection.aiResponse != null) {

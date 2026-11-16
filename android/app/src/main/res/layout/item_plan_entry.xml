@@ -4,41 +4,22 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
+    android:background="@drawable/bg_card"
+    android:padding="@dimen/card_pad"
     android:layout_marginBottom="8dp">
-
-    <!-- Input line -->
-    <LinearLayout
+    <TextView
+        android:id="@+id/tv_plan_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="• "
-            android:textColor="#00E676"
-            android:textSize="14sp"
- />
-
-        <TextView
-            android:id="@+id/tv_plan_input"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="#00E676"
-            android:textSize="14sp"
- />
-    </LinearLayout>
-
-    <!-- Output -->
+        android:textColor="#F5F5F5"
+        android:textSize="@dimen/t_row"
+        android:textStyle="bold" />
     <TextView
         android:id="@+id/tv_plan_output"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="#F5F5F5"
-        android:textSize="13sp"
-
-        android:lineSpacingMultiplier="1.3"
-        android:layout_marginTop="4dp"
-        android:paddingStart="16dp" />
-
+        android:textColor="#C4C4C4"
+        android:textSize="@dimen/t_body"
+        android:lineSpacingMultiplier="1.35"
+        android:layout_marginTop="4dp" />
 </LinearLayout>

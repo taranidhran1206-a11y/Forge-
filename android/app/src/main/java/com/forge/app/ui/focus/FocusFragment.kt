@@ -1,0 +1,359 @@
+package com.forge.app.ui.focus
+
+import android.Manifest
+import android.content.Context
+import android.content.pm.PackageManager
+import android.graphics.Color
+import android.os.Build
+import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.LinearLayout
+import android.widget.ProgressBar
+import android.widget.TextView
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import com.forge.app.R
+import com.forge.app.data.dao.CategoryTime
+import com.forge.app.databinding.FragmentFocusBinding
+import com.forge.app.focus.FocusService
+import com.forge.app.focus.FocusState
+import com.forge.app.focus.NudgeStore
+import com.forge.app.ui.ForgeViewModelFactory
+import com.forge.app.ui.today.TodayViewModel
+import com.forge.app.util.XpToastHelper
+
+/** Focus timer, nudge tracker and today's time by category. */
+class FocusFragment : Fragment() {
+
+    private var _binding: FragmentFocusBinding? = null
+    private val binding get() = _binding!!
+
+    private lateinit var viewModel: TodayViewModel
+
+    private val handler = Handler(Looper.getMainLooper())
+    private var trackRunnable: Runnable? = null
+    private var selectedMinutes = 25
+    private var categories: List<CategoryTime> = emptyList()
+    private var categorySignature = ""
+
+    private val notificationPermission =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+            if (!granted && context != null) {
+                Toast.makeText(
+                    requireContext(),
+                    "Notifications are off, so nudges will only show inside Forge.",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+        }
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentFocusBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val factory = ForgeViewModelFactory(requireActivity().application)
+        viewModel = ViewModelProvider(this, factory)[TodayViewModel::class.java]
+
+        applyPanes()
+        setupControls()
+        observe()
+
+        // A labor's Focus button on the Today screen hands its name over here
+        FocusState.pendingLabel?.let { label ->
+            FocusState.pendingLabel = null
+            startSession(label)
+        }
+    }
+
+    /** Side by side in landscape and on tablets, stacked on a phone in portrait. */
+    private fun applyPanes() {
+        val twoPane = resources.getBoolean(R.bool.two_pane)
+        val gap = resources.getDimensionPixelSize(R.dimen.pane_gap)
+        binding.panes.orientation = if (twoPane) LinearLayout.HORIZONTAL else LinearLayout.VERTICAL
+        listOf(binding.paneLeft, binding.paneRight).forEachIndexed { index, pane ->
+            val params = pane.layoutParams as LinearLayout.LayoutParams
+            if (twoPane) {
+                params.width = 0
+                params.weight = 1f
+                params.marginStart = if (index == 1) gap else 0
+            } else {
+                params.width = LinearLayout.LayoutParams.MATCH_PARENT
+                params.weight = 0f
+                params.marginStart = 0
+            }
+            pane.layoutParams = params
+        }
+    }
+
+    private fun prefs() = requireContext().getSharedPreferences("forge_prefs", Context.MODE_PRIVATE)
+
+    private fun chips() = listOf(binding.chip25 to 25, binding.chip45 to 45, binding.chip90 to 90)
+
+    private fun setupControls() {
+        selectedMinutes = prefs().getInt("focus_minutes", 25)
+        FocusState.setIdleDuration(selectedMinutes)
+
+        chips().forEach { (chip, minutes) ->
+            chip.setOnClickListener {
+                if (FocusState.live.value?.active == true) return@setOnClickListener
+                setIdleMinutes(minutes)
+            }
+        }
+
+        binding.btnFocusStart.setOnClickListener {
+            val state = FocusState.live.value ?: FocusState.Snapshot()
+            when {
+                !state.active -> startSession("")
+                state.running -> FocusService.send(requireContext(), FocusService.ACTION_PAUSE)
+                else -> FocusService.send(requireContext(), FocusService.ACTION_RESUME)
+            }
+        }
+
+        binding.btnFocusStop.setOnClickListener {
+            FocusService.send(requireContext(), FocusService.ACTION_STOP)
+        }
+
+        binding.btnFocusPlus.setOnClickListener {
+            val state = FocusState.live.value ?: FocusState.Snapshot()
+            if (state.active) {
+                FocusService.send(requireContext(), FocusService.ACTION_ADD_FIVE)
+            } else {
+                setIdleMinutes((selectedMinutes + 5).coerceAtMost(240))
+            }
+        }
+
+        binding.btnTrackToggle.setOnClickListener {
+            if (viewModel.activeTimeTrack.value != null) {
+                viewModel.stopTimeTrack()
+            } else {
+                binding.tvTrackStatus.text = "Starting…"
+                viewModel.startTimeTrack("general")
+            }
+        }
+    }
+
+    private fun setIdleMinutes(minutes: Int) {
+        selectedMinutes = minutes
+        prefs().edit().putInt("focus_minutes", minutes).apply()
+        FocusState.setIdleDuration(minutes)
+    }
+
+    private fun startSession(label: String) {
+        val context = requireContext()
+        val state = FocusState.live.value
+        if (state != null && state.active) {
+            Toast.makeText(context, "A focus session is already running.", Toast.LENGTH_SHORT).show()
+            return
+        }
+        if (Build.VERSION.SDK_INT >= 33 &&
+            ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) !=
+            PackageManager.PERMISSION_GRANTED
+        ) {
+            notificationPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
+        }
+        FocusService.start(context, selectedMinutes, label)
+    }
+
+    private fun observe() {
+        FocusState.live.observe(viewLifecycleOwner) { state ->
+            render(state ?: FocusState.Snapshot())
+        }
+
+        FocusState.completedXp.observe(viewLifecycleOwner) { xp ->
+            if (xp != null) {
+                activity?.let { XpToastHelper.showXpToast(it, xp, "focus") }
+                FocusState.completedXp.value = null
+            }
+        }
+
+        viewModel.todayTimeByCategory.observe(viewLifecycleOwner) { list ->
+            categories = list ?: emptyList()
+            renderCategories(FocusState.live.value ?: FocusState.Snapshot())
+        }
+
+        viewModel.xpToastEvent.observe(viewLifecycleOwner) { event ->
+            if (event != null) {
+                activity?.let { XpToastHelper.showXpToast(it, event.amount, event.source) }
+                viewModel.clearXpToast()
+            }
+        }
+
+        viewModel.activeTimeTrack.observe(viewLifecycleOwner) { track ->
+            if (track != null) {
+                binding.tvTrackStatus.text = "Running"
+                binding.tvTrackStatus.setTextColor(Color.parseColor("#4CAF50"))
+                binding.trackIndicator.setImageResource(R.drawable.bg_status_dot_green)
+                binding.btnTrackToggle.text = "Stop tracking"
+                binding.btnTrackToggle.setBackgroundResource(R.drawable.bg_chip_on)
+                startTrackTicker(track.startTime)
+            } else {
+                binding.tvTrackStatus.text = "Not running"
+                binding.tvTrackStatus.setTextColor(Color.parseColor("#9E9E9E"))
+                binding.trackIndicator.setImageResource(R.drawable.bg_status_dot_idle)
+                binding.btnTrackToggle.text = "Start tracking"
+                binding.btnTrackToggle.setBackgroundResource(R.drawable.bg_chip_neutral)
+                stopTrackTicker()
+            }
+        }
+    }
+
+    private fun render(state: FocusState.Snapshot) {
+        val remaining = state.remainingSeconds.coerceAtLeast(0)
+        val total = state.totalSeconds.coerceAtLeast(1)
+        binding.tvFocusTime.text = String.format("%02d:%02d", remaining / 60, remaining % 60)
+        binding.tvFocusOf.text = "of ${state.totalSeconds / 60} minutes"
+        binding.pbFocusRing.progress =
+            if (state.active) ((total - remaining) * 1000L / total).toInt() else 0
+
+        val status = when {
+            !state.active -> "Ready"
+            state.running -> "Running"
+            else -> "Paused"
+        }
+        binding.tvFocusLabel.text = if (state.active && state.running) "Remaining" else status
+        binding.tvFocusChip.text = status
+        binding.ivFocusDot.setImageResource(
+            if (state.active && state.running) R.drawable.bg_status_dot_green else R.drawable.bg_status_dot_idle
+        )
+        binding.tvFocusTitle.text = when {
+            state.active && state.label.isNotBlank() -> state.label
+            state.active -> "Focus session"
+            else -> "Deep work block"
+        }
+        binding.btnFocusStart.setImageResource(
+            if (state.active && state.running) R.drawable.ic_pause else R.drawable.ic_play
+        )
+        binding.btnFocusStop.alpha = if (state.active) 1f else 0.4f
+        binding.llDurationChips.visibility = if (state.active) View.GONE else View.VISIBLE
+
+        if (!state.active) {
+            val minutes = state.totalSeconds / 60
+            chips().forEach { (chip, m) ->
+                chip.setBackgroundResource(
+                    if (m == minutes) R.drawable.bg_chip_on else R.drawable.bg_chip_neutral
+                )
+            }
+        }
+        renderNudges(state)
+        renderCategories(state)
+    }
+
+    private fun renderNudges(state: FocusState.Snapshot) {
+        val day = NudgeStore.today(requireContext())
+        val away = day.awaySeconds + state.currentAwaySeconds
+        val focus = day.focusSeconds + if (state.active) state.elapsedSeconds else 0
+
+        binding.tvNudgeCount.text = day.nudges.toString()
+        binding.tvDriftCount.text = day.drifts.toString()
+        binding.tvAwayTime.text = NudgeStore.formatDuration(away)
+        binding.tvFocusScore.text =
+            if (focus > 0) "${(100 - away * 100 / focus).coerceIn(0, 100)}%" else "–"
+
+        if (state.active && state.running) {
+            binding.tvNudgeStatus.text = "Shield wall is up"
+            binding.tvNudgeSub.text = "Leave Forge for 15 seconds and you get a nudge"
+            binding.ivNudgeShield.setColorFilter(Color.parseColor("#4CAF50"))
+        } else {
+            binding.tvNudgeStatus.text = "Nudge tracker"
+            binding.tvNudgeSub.text =
+                if (day.sessions > 0) "${day.sessions} session${if (day.sessions == 1) "" else "s"} today"
+                else "Starts with your focus session"
+            binding.ivNudgeShield.setColorFilter(Color.parseColor("#9E9E9E"))
+        }
+
+        val signature = day.log.joinToString("|")
+        if (binding.llNudgeLog.tag != signature) {
+            binding.llNudgeLog.tag = signature
+            binding.llNudgeLog.removeAllViews()
+            val size = resources.getDimension(R.dimen.t_small)
+            day.log.take(5).forEach { line ->
+                binding.llNudgeLog.addView(TextView(requireContext()).apply {
+                    text = line
+                    setTextColor(Color.parseColor("#C4C4C4"))
+                    setTextSize(android.util.TypedValue.COMPLEX_UNIT_PX, size)
+                    setPadding(0, 6, 0, 6)
+                })
+            }
+        }
+    }
+
+    private fun categoryName(key: String): String = when (key) {
+        "general" -> "Tracked time"
+        "deep_work" -> "Deep work"
+        "social_media" -> "Social media"
+        "youtube" -> "YouTube"
+        else -> key.replace("_", " ").replaceFirstChar { it.uppercase() }
+    }
+
+    private fun minutesText(minutes: Int): String =
+        if (minutes >= 60) "${minutes / 60}h ${String.format("%02d", minutes % 60)}m" else "${minutes}m"
+
+    private fun renderCategories(state: FocusState.Snapshot) {
+        val day = NudgeStore.today(requireContext())
+        val focusMinutes = (day.focusSeconds + if (state.active) state.elapsedSeconds else 0) / 60
+        val rows = mutableListOf<Pair<String, Int>>()
+        if (focusMinutes > 0) rows.add("Focus sessions" to focusMinutes)
+        categories.filter { it.minutes > 0 }.forEach { rows.add(categoryName(it.category) to it.minutes) }
+
+        val signature = rows.joinToString("|") { "${it.first}:${it.second}" }
+        if (signature == categorySignature && binding.llCategories.childCount == rows.size) return
+        categorySignature = signature
+
+        val totalMinutes = rows.sumOf { it.second }
+        val longest = rows.maxOfOrNull { it.second } ?: 1
+        binding.tvCatTotal.text = minutesText(totalMinutes)
+        binding.tvCatEmpty.visibility = if (rows.isEmpty()) View.VISIBLE else View.GONE
+        binding.llCategories.removeAllViews()
+        val bars = listOf(R.drawable.bg_xp_progress, R.drawable.bg_bar_rank, R.drawable.bg_bar_green)
+        rows.sortedByDescending { it.second }.forEachIndexed { index, (name, minutes) ->
+            val row = layoutInflater.inflate(R.layout.item_bar_row, binding.llCategories, false)
+            row.findViewById<TextView>(R.id.tv_bar_name).text = name
+            row.findViewById<TextView>(R.id.tv_bar_value).text = minutesText(minutes)
+            row.findViewById<ProgressBar>(R.id.pb_bar).apply {
+                progressDrawable = ContextCompat.getDrawable(requireContext(), bars[index % bars.size])
+                max = longest
+                progress = minutes
+            }
+            binding.llCategories.addView(row)
+        }
+    }
+
+    private fun startTrackTicker(startTime: Long) {
+        stopTrackTicker(resetText = false)
+        trackRunnable = object : Runnable {
+            override fun run() {
+                if (_binding == null) return
+                val seconds = ((System.currentTimeMillis() - startTime) / 1000).toInt()
+                binding.tvTrackDuration.text =
+                    String.format("%02d:%02d:%02d", seconds / 3600, (seconds % 3600) / 60, seconds % 60)
+                handler.postDelayed(this, 1000)
+            }
+        }
+        handler.post(trackRunnable!!)
+    }
+
+    private fun stopTrackTicker(resetText: Boolean = true) {
+        trackRunnable?.let { handler.removeCallbacks(it) }
+        trackRunnable = null
+        if (resetText && _binding != null) binding.tvTrackDuration.text = "00:00:00"
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        stopTrackTicker()
+        _binding = null
+    }
+}
