@@ -38,12 +38,12 @@ import base64, json, re, urllib.request, urllib.error
 enc = re.search(r'DEFAULT_KEY_ENCODED = "([^"]+)"', open("android/app/src/main/java/com/forge/app/util/Gemini.kt").read()).group(1)
 key = base64.b64decode(enc).decode().strip()
 body = json.dumps({"contents": [{"role": "user", "parts": [{"text": "Reply with the single word ok"}]}]}).encode()
-for model in ["gemini-3.8-flash", "gemini-flash-latest", "gemini-3.7-flash", "gemini-3.5-flash", "gemini-flash-lite-latest"]:
+for model in ["gemini-3.8-flash", "gemini-3.5-flash", "gemini-flash-lite-latest"]:
     req = urllib.request.Request(
         "https://generativelanguage.googleapis.com/v1beta/models/%s:generateContent" % model,
         data=body, headers={"Content-Type": "application/json", "x-goog-api-key": key})
     try:
-        with urllib.request.urlopen(req, timeout=25) as r:
+        with urllib.request.urlopen(req, timeout=12) as r:
             print("GEMINI   %s -> %s" % (model, r.status))
     except urllib.error.HTTPError as e:
         try:

@@ -23,15 +23,15 @@ object Gemini {
     private const val PREF_KEY = "gemini_key"
     private const val DEFAULT_KEY_ENCODED = "QVEuQWI4Uk42SUlxcW9KcWd4SHNQUzdPUWVCSWxJS2JrdWpteVdFVHFlLXVnUXFYTVRqNWc="
 
-    // Same model as the web app first. When it is overloaded (it answers 503 at busy
-    // times) fall through to other current Flash models rather than fail the reply.
-    private val MODELS = listOf(
-        "gemini-3.8-flash",
-        "gemini-flash-latest",
-        "gemini-3.7-flash",
-        "gemini-3.5-flash",
-        "gemini-flash-lite-latest"
-    )
+    // Same model as the web app first. At busy times it stalls or answers 503, so it
+    // gets a short wait before falling through to Flash models that were answering
+    // when this was tested. Whichever model answers is tried first next time.
+    private val MODELS = listOf("gemini-3.8-flash", "gemini-3.5-flash", "gemini-flash-lite-latest")
+    private const val FIRST_TRY_SECONDS = 12L
+    private const val LATER_TRY_SECONDS = 25L
+
+    @Volatile
+    private var lastWorkingModel: String? = null
 
     class Failure(message: String) : Exception(message)
 
@@ -40,7 +40,6 @@ object Gemini {
     private val client = OkHttpClient.Builder()
         .connectTimeout(10, TimeUnit.SECONDS)
         .readTimeout(25, TimeUnit.SECONDS)
-        .callTimeout(25, TimeUnit.SECONDS)
         .build()
 
     fun savedKey(context: Context): String =
@@ -91,18 +90,25 @@ object Gemini {
 
         var lastError = "no response"
         val errors = mutableListOf<String>()
-        for (model in MODELS) {
+        val order = listOfNotNull(lastWorkingModel) + MODELS.filter { it != lastWorkingModel }
+        order.forEachIndexed { attempt, model ->
+            val call = client.newBuilder()
+                .callTimeout(if (attempt == 0) FIRST_TRY_SECONDS else LATER_TRY_SECONDS, TimeUnit.SECONDS)
+                .build()
             val request = Request.Builder()
                 .url("https://generativelanguage.googleapis.com/v1beta/models/$model:generateContent")
                 .header("x-goog-api-key", key)
                 .post(body.toRequestBody("application/json".toMediaType()))
                 .build()
             try {
-                client.newCall(request).execute().use { response ->
+                call.newCall(request).execute().use { response ->
                     val text = response.body?.string() ?: ""
                     if (response.isSuccessful) {
                         val reply = parseReply(text)
-                        if (reply.isNotBlank()) return@withContext reply
+                        if (reply.isNotBlank()) {
+                            lastWorkingModel = model
+                            return@withContext reply
+                        }
                         lastError = "the model returned an empty reply"
                     } else {
                         val message = try {
@@ -121,7 +127,7 @@ object Gemini {
             } catch (failure: Failure) {
                 throw failure
             } catch (e: Exception) {
-                lastError = "no connection (${e.javaClass.simpleName})"
+                lastError = if (e is java.io.InterruptedIOException) "$model timed out" else "no connection"
                 errors.add(lastError)
             }
         }
