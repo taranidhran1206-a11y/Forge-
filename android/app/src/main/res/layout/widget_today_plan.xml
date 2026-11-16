@@ -68,11 +68,11 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:paddingVertical="4dp">
+            android:paddingVertical="7dp">
             <ImageView
                 android:id="@+id/iv_check_1"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
                 android:src="@drawable/widget_check_pending"
                 android:contentDescription="@null" />
             <TextView
@@ -104,11 +104,11 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:paddingVertical="4dp">
+            android:paddingVertical="7dp">
             <ImageView
                 android:id="@+id/iv_check_2"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
                 android:src="@drawable/widget_check_pending"
                 android:contentDescription="@null" />
             <TextView
@@ -140,11 +140,11 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:paddingVertical="4dp">
+            android:paddingVertical="7dp">
             <ImageView
                 android:id="@+id/iv_check_3"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
                 android:src="@drawable/widget_check_pending"
                 android:contentDescription="@null" />
             <TextView
@@ -176,11 +176,11 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:paddingVertical="4dp">
+            android:paddingVertical="7dp">
             <ImageView
                 android:id="@+id/iv_check_4"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
                 android:src="@drawable/widget_check_pending"
                 android:contentDescription="@null" />
             <TextView
@@ -212,11 +212,11 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:paddingVertical="4dp">
+            android:paddingVertical="7dp">
             <ImageView
                 android:id="@+id/iv_check_5"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
                 android:src="@drawable/widget_check_pending"
                 android:contentDescription="@null" />
             <TextView
@@ -248,11 +248,11 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:paddingVertical="4dp">
+            android:paddingVertical="7dp">
             <ImageView
                 android:id="@+id/iv_check_6"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
                 android:src="@drawable/widget_check_pending"
                 android:contentDescription="@null" />
             <TextView

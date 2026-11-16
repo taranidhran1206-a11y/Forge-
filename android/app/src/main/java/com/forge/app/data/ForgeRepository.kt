@@ -61,6 +61,30 @@ class ForgeRepository(private val database: ForgeDatabase) {
         updateDailyLaborStats()
     }
 
+    /** Untick a labor. XP already earned stays, as it does inside the app. */
+    suspend fun uncompleteLabor(labor: Labor) {
+        laborDao.toggleDone(labor.id, false)
+        updateDailyLaborStats()
+    }
+
+    /**
+     * Tick or untick a labor from outside the app (home screen widget).
+     * If the widget is still showing an older day's list, the tap is applied to
+     * today's labor with the same name.
+     */
+    suspend fun toggleLaborFromWidget(id: Long): Boolean {
+        val tapped = laborDao.getById(id) ?: return false
+        val today = getTodayDate()
+        val labor = if (tapped.date == today) {
+            tapped
+        } else {
+            ensureTodayLabors()
+            laborDao.getLaborsForDateSync(today).firstOrNull { it.name == tapped.name } ?: return false
+        }
+        if (labor.done) uncompleteLabor(labor) else completeLabor(labor)
+        return true
+    }
+
     // ── XP ───────────────────────────────────────────────────────
 
     fun getTotalXp(): Flow<Int> = xpDao.getTotalXp()

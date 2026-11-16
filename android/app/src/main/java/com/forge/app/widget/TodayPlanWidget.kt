@@ -11,6 +11,12 @@ import android.view.View
 import android.widget.RemoteViews
 import com.forge.app.R
 import com.forge.app.SplashActivity
+import com.forge.app.data.ForgeDatabase
+import com.forge.app.data.ForgeRepository
+import com.forge.app.util.WidgetHelper
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.text.SimpleDateFormat
@@ -21,6 +27,8 @@ class TodayPlanWidget : AppWidgetProvider() {
 
     companion object {
         private const val MAX_ROWS = 6
+        const val ACTION_TOGGLE = "com.forge.app.widget.TOGGLE_LABOR"
+        const val EXTRA_LABOR_ID = "labor_id"
 
         fun triggerUpdate(context: Context) {
             val manager = AppWidgetManager.getInstance(context)
@@ -34,7 +42,50 @@ class TodayPlanWidget : AppWidgetProvider() {
         }
     }
 
-    data class WidgetLabor(val name: String = "", val done: Boolean = false)
+    data class WidgetLabor(val id: Long = 0, val name: String = "", val done: Boolean = false)
+
+    override fun onReceive(context: Context, intent: Intent) {
+        if (intent.action != ACTION_TOGGLE) {
+            super.onReceive(context, intent)
+            return
+        }
+        val laborId = intent.getLongExtra(EXTRA_LABOR_ID, -1L)
+        if (laborId <= 0L) return
+
+        // Show the tick straight away, then make it real in the database
+        flipInPrefs(context, laborId)
+        triggerUpdate(context)
+
+        val pending = goAsync()
+        val appContext = context.applicationContext
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val repository = ForgeRepository(ForgeDatabase.getDatabase(appContext))
+                repository.toggleLaborFromWidget(laborId)
+                // Rewrites labors, streak and rank from the database and redraws every widget
+                WidgetHelper.updateAllWidgets(appContext, repository)
+            } catch (_: Exception) {
+                triggerUpdate(appContext)
+            } finally {
+                pending.finish()
+            }
+        }
+    }
+
+    private fun flipInPrefs(context: Context, laborId: Long) {
+        try {
+            val prefs = context.getSharedPreferences("forge_widget_prefs", Context.MODE_PRIVATE)
+            val today = SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date())
+            val flipped = readLabors(context).map {
+                mapOf("id" to it.id, "name" to it.name, "done" to (if (it.id == laborId) !it.done else it.done))
+            }
+            prefs.edit()
+                .putString("labors_json", Gson().toJson(flipped))
+                .putString("labors_date", today)
+                .apply()
+        } catch (_: Exception) {
+        }
+    }
 
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
         for (appWidgetId in appWidgetIds) {
@@ -127,6 +178,22 @@ class TodayPlanWidget : AppWidgetProvider() {
                 if (labor.done) Paint.ANTI_ALIAS_FLAG or Paint.STRIKE_THRU_TEXT_FLAG else Paint.ANTI_ALIAS_FLAG
             )
             views.setViewVisibility(ids[3], if (start + index == firstOpen) View.VISIBLE else View.GONE)
+
+            // Tapping a row ticks or unticks that labor without opening the app
+            if (labor.id > 0L) {
+                val toggle = Intent(context, TodayPlanWidget::class.java).apply {
+                    action = ACTION_TOGGLE
+                    data = android.net.Uri.parse("forge://labor/${labor.id}")
+                    putExtra(EXTRA_LABOR_ID, labor.id)
+                }
+                views.setOnClickPendingIntent(
+                    ids[0],
+                    PendingIntent.getBroadcast(
+                        context, index + 1, toggle,
+                        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                    )
+                )
+            }
         }
 
         manager.updateAppWidget(widgetId, views)

@@ -43,7 +43,7 @@ object WidgetHelper {
     fun writeLaborsJson(context: Context, labors: List<Labor>) {
         val prefs = context.getSharedPreferences("forge_widget_prefs", Context.MODE_PRIVATE)
         val widgetLabors = labors.map {
-            mapOf("name" to it.name, "done" to it.done)
+            mapOf("id" to it.id, "name" to it.name, "done" to it.done)
         }
         val today = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.US).format(java.util.Date())
         prefs.edit()

@@ -31,6 +31,9 @@ interface LaborDao {
     @Query("SELECT * FROM labors WHERE date = :date ORDER BY sortOrder ASC, time ASC")
     fun getLaborsForDateSync(date: String): List<Labor>
 
+    @Query("SELECT * FROM labors WHERE id = :id LIMIT 1")
+    suspend fun getById(id: Long): Labor?
+
     @Query("SELECT * FROM labors WHERE date = (SELECT MAX(date) FROM labors WHERE date < :date) ORDER BY sortOrder ASC, time ASC")
     suspend fun getLatestBefore(date: String): List<Labor>
 }
