@@ -98,7 +98,7 @@ class ReflectViewModel(
                     appContext,
                     "You are the coach in the Forge discipline app. Reply to the user's evening reflection with one honest observation and one concrete step for tomorrow. Two or three sentences, no preamble.",
                     listOf(Gemini.Turn(true, "Prompt: $prompt\nMy reflection: ${text.trim()}")),
-                    maxTokens = 220
+                    maxTokens = 1200
                 )
                 repository.setReflectionInsight(id, insight)
                 _todayReflection.value = reflection.copy(id = id, aiResponse = insight)

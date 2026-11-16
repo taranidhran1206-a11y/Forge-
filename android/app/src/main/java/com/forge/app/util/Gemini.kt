@@ -66,7 +66,7 @@ object Gemini {
         context: Context,
         system: String,
         turns: List<Turn>,
-        maxTokens: Int = 500
+        maxTokens: Int = 2000
     ): String = withContext(Dispatchers.IO) {
         val key = activeKey(context)
         if (key.isEmpty()) throw Failure("no API key is set")
