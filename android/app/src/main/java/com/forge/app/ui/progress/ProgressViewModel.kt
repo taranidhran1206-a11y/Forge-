@@ -28,9 +28,6 @@ class ProgressViewModel(private val repository: ForgeRepository) : ViewModel() {
         RankSystem.getXpToNext(xp)
     }
 
-    val globalRankPercent: LiveData<Int> = totalXp.map { xp ->
-        RankSystem.getGlobalRankPercent(xp)
-    }
 
     val nextRankName: LiveData<String> = totalXp.map { xp ->
         RankSystem.getNextRankName(xp)

@@ -219,6 +219,301 @@
                     android:orientation="vertical">
 
                     <LinearLayout
+                        android:id="@+id/card_distraction"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:background="@drawable/bg_card"
+                        android:padding="@dimen/card_pad"
+                        android:layout_marginBottom="12dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical">
+                            <ImageView
+                                android:id="@+id/iv_distraction_eye"
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:src="@drawable/ic_shield_check"
+                                android:contentDescription="@null" />
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_marginStart="12dp"
+                                android:orientation="vertical">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Distraction watch"
+                                    android:textColor="#F5F5F5"
+                                    android:textSize="@dimen/t_row"
+                                    android:textStyle="bold" />
+                                <TextView
+                                    android:id="@+id/tv_distraction_status"
+                                    style="@style/Forge.Sub"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Off" />
+                            </LinearLayout>
+                            <TextView
+                                android:id="@+id/btn_distraction_toggle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="40dp"
+                                android:minWidth="64dp"
+                                android:gravity="center"
+                                android:text="Turn on"
+                                android:textColor="#F5F5F5"
+                                android:textSize="@dimen/t_small"
+                                android:textStyle="bold"
+                                android:paddingHorizontal="14dp"
+                                android:background="@drawable/bg_chip_neutral" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/row_setup_usage"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:minHeight="@dimen/tap_min"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:background="@drawable/bg_card_elevated"
+                            android:paddingHorizontal="14dp"
+                            android:paddingVertical="10dp"
+                            android:layout_marginTop="8dp"
+                            android:visibility="gone">
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Allow usage access"
+                                    android:textColor="#F5F5F5"
+                                    android:textSize="@dimen/t_body"
+                                    android:textStyle="bold" />
+                                <TextView
+                                    style="@style/Forge.Sub"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Lets Forge see which app is open" />
+                            </LinearLayout>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Fix"
+                                android:textColor="#FF8A80"
+                                android:textSize="@dimen/t_small"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+                        <LinearLayout
+                            android:id="@+id/row_setup_notifications"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:minHeight="@dimen/tap_min"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:background="@drawable/bg_card_elevated"
+                            android:paddingHorizontal="14dp"
+                            android:paddingVertical="10dp"
+                            android:layout_marginTop="8dp"
+                            android:visibility="gone">
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Allow notifications"
+                                    android:textColor="#F5F5F5"
+                                    android:textSize="@dimen/t_body"
+                                    android:textStyle="bold" />
+                                <TextView
+                                    style="@style/Forge.Sub"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Nudges need notifications" />
+                            </LinearLayout>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Fix"
+                                android:textColor="#FF8A80"
+                                android:textSize="@dimen/t_small"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+                        <LinearLayout
+                            android:id="@+id/row_setup_battery"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:minHeight="@dimen/tap_min"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:background="@drawable/bg_card_elevated"
+                            android:paddingHorizontal="14dp"
+                            android:paddingVertical="10dp"
+                            android:layout_marginTop="8dp"
+                            android:visibility="gone">
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Set battery to Unrestricted"
+                                    android:textColor="#F5F5F5"
+                                    android:textSize="@dimen/t_body"
+                                    android:textStyle="bold" />
+                                <TextView
+                                    style="@style/Forge.Sub"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Stops Samsung closing the watch" />
+                            </LinearLayout>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Fix"
+                                android:textColor="#FF8A80"
+                                android:textSize="@dimen/t_small"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/ll_distraction_body"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_marginTop="14dp">
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:baselineAligned="false">
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical">
+                                    <TextView
+                                        android:id="@+id/tv_distracted_total"
+                                        style="@style/Forge.Num"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="0m" />
+                                    <TextView
+                                        style="@style/Forge.Label"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Distracted today" />
+                                </LinearLayout>
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical">
+                                    <TextView
+                                        android:id="@+id/tv_distraction_nudges"
+                                        style="@style/Forge.Num"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="0" />
+                                    <TextView
+                                        style="@style/Forge.Label"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Nudges" />
+                                </LinearLayout>
+                            </LinearLayout>
+                            <LinearLayout
+                                android:id="@+id/ll_distraction_apps"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:layout_marginTop="8dp" />
+                            <TextView
+                                style="@style/Forge.Label"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Nudge after"
+                                android:layout_marginTop="12dp"
+                                android:layout_marginBottom="6dp" />
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
+                            <TextView
+                                android:id="@+id/chip_nudge_1"
+                                android:layout_width="0dp"
+                                android:layout_height="40dp"
+                                android:layout_weight="1"
+                                android:layout_marginHorizontal="3dp"
+                                android:gravity="center"
+                                android:text="1 min"
+                                android:textColor="#F5F5F5"
+                                android:textSize="@dimen/t_small"
+                                android:textStyle="bold"
+                                android:background="@drawable/bg_chip_neutral" />
+                            <TextView
+                                android:id="@+id/chip_nudge_3"
+                                android:layout_width="0dp"
+                                android:layout_height="40dp"
+                                android:layout_weight="1"
+                                android:layout_marginHorizontal="3dp"
+                                android:gravity="center"
+                                android:text="3 min"
+                                android:textColor="#F5F5F5"
+                                android:textSize="@dimen/t_small"
+                                android:textStyle="bold"
+                                android:background="@drawable/bg_chip_neutral" />
+                            <TextView
+                                android:id="@+id/chip_nudge_5"
+                                android:layout_width="0dp"
+                                android:layout_height="40dp"
+                                android:layout_weight="1"
+                                android:layout_marginHorizontal="3dp"
+                                android:gravity="center"
+                                android:text="5 min"
+                                android:textColor="#F5F5F5"
+                                android:textSize="@dimen/t_small"
+                                android:textStyle="bold"
+                                android:background="@drawable/bg_chip_neutral" />
+                            <TextView
+                                android:id="@+id/chip_nudge_10"
+                                android:layout_width="0dp"
+                                android:layout_height="40dp"
+                                android:layout_weight="1"
+                                android:layout_marginHorizontal="3dp"
+                                android:gravity="center"
+                                android:text="10 min"
+                                android:textColor="#F5F5F5"
+                                android:textSize="@dimen/t_small"
+                                android:textStyle="bold"
+                                android:background="@drawable/bg_chip_neutral" />
+                            </LinearLayout>
+                            <TextView
+                                android:id="@+id/btn_choose_apps"
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/tap_min"
+                                android:layout_marginTop="10dp"
+                                android:gravity="center"
+                                android:text="Choose distracting apps"
+                                android:textColor="#F5F5F5"
+                                android:textSize="@dimen/t_body"
+                                android:textStyle="bold"
+                                android:background="@drawable/bg_chip_neutral" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
                         android:id="@+id/card_nudges"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

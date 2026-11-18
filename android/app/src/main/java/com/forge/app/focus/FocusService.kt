@@ -226,7 +226,6 @@ class FocusService : Service() {
         )
         scope.launch {
             try {
-                repository.addXp(minutes, "focus", "Focus session - ${minutes}min")
                 val today = repository.getTodayDate()
                 val stats = repository.getStats(today) ?: DailyStats(date = today)
                 repository.upsertStats(stats.copy(focusMinutes = stats.focusMinutes + minutes))
@@ -238,7 +237,7 @@ class FocusService : Service() {
         val done = NotificationCompat.Builder(this, CHANNEL_NUDGE)
             .setSmallIcon(R.drawable.ic_timer)
             .setContentTitle("Focus session complete")
-            .setContentText("+$minutes XP · ${day.nudges} nudges today · ${scoreText(day)} focused")
+            .setContentText("$minutes min done · ${day.nudges} nudges today · ${scoreText(day)} focused")
             .setColor(0xFF4CAF50.toInt())
             .setAutoCancel(true)
             .setContentIntent(openAppIntent())
@@ -302,12 +301,15 @@ class FocusService : Service() {
         val minutesLeft = ((remainingMs + 59_999L) / 60_000L).toInt()
         val line = NUDGE_LINES[nudgeIndex % NUDGE_LINES.size]
         nudgeIndex++
-        NudgeStore.add(this, nudges = 1, logLine = "Nudge sent · $minutesLeft min left")
+        NudgeStore.add(this, nudges = 1, logLine = "Nudge sent" + (Distraction.currentAppLabel?.let { " · on $it" } ?: "") + " · $minutesLeft min left")
 
         val nudge = NotificationCompat.Builder(this, CHANNEL_NUDGE)
             .setSmallIcon(R.drawable.ic_timer)
             .setContentTitle(line)
-            .setContentText("$minutesLeft min left in your focus session. Away for ${NudgeStore.formatDuration(awayStreak)}.")
+            .setContentText(
+                (Distraction.currentAppLabel?.let { "On $it. " } ?: "") +
+                    "$minutesLeft min left in your focus session. Away for ${NudgeStore.formatDuration(awayStreak)}."
+            )
             .setColor(0xFFE53935.toInt())
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setCategory(NotificationCompat.CATEGORY_REMINDER)

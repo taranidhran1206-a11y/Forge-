@@ -12,10 +12,12 @@ data class XpBySource(
 @Dao
 interface XpDao {
 
-    @Query("SELECT COALESCE(SUM(amount), 0) FROM xp_events")
+    // Only labors and reflections count towards XP and rank. Older events from other
+    // sources stay in the table but are ignored.
+    @Query("SELECT COALESCE(SUM(amount), 0) FROM xp_events WHERE source IN ('labor', 'reflection')")
     fun getTotalXp(): Flow<Int>
 
-    @Query("SELECT COALESCE(SUM(amount), 0) FROM xp_events WHERE date = :date")
+    @Query("SELECT COALESCE(SUM(amount), 0) FROM xp_events WHERE date = :date AND source IN ('labor', 'reflection')")
     fun getXpForDate(date: String): Flow<Int>
 
     @Insert
@@ -24,9 +26,12 @@ interface XpDao {
     @Query("SELECT * FROM xp_events ORDER BY timestamp DESC LIMIT :limit")
     fun getRecentEvents(limit: Int): Flow<List<XpEvent>>
 
-    @Query("SELECT source, SUM(amount) AS total FROM xp_events GROUP BY source ORDER BY total DESC")
+    @Query("SELECT source, SUM(amount) AS total FROM xp_events WHERE source IN ('labor', 'reflection') GROUP BY source HAVING total > 0 ORDER BY total DESC")
     fun getXpBySource(): Flow<List<XpBySource>>
 
-    @Query("SELECT COALESCE(SUM(amount), 0) FROM xp_events")
+    @Query("SELECT COALESCE(SUM(amount), 0) FROM xp_events WHERE source IN ('labor', 'reflection')")
     suspend fun getTotalXpSync(): Int
+
+    @Query("SELECT COALESCE(SUM(amount), 0) FROM xp_events WHERE date = :date AND source = :source")
+    suspend fun getSourceTotalForDate(date: String, source: String): Int
 }

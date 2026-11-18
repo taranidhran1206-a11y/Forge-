@@ -56,11 +56,24 @@ for model in ["gemini-3.8-flash", "gemini-3.5-flash", "gemini-flash-lite-latest"
 PY
 
 adb logcat -c
+# --- Upgrade from the previous release: data must survive
+if [ -f old-debug.apk ]; then
+  adb install -g old-debug.apk | tail -1 | tee -a "$REPORT"
+  adb shell am start -n $PKG/.SplashActivity >/dev/null; sleep 12
+  tap id iv_labor_check 0; sleep 2
+  old_count=$(text_of tv_labor_count)
+  note "UPGRADE  old version count='$old_count'"
+  adb shell am force-stop $PKG
+fi
 adb install -r -g android/app/build/outputs/apk/debug/app-debug.apk | tail -1 | tee -a "$REPORT"
 adb shell pm grant $PKG android.permission.POST_NOTIFICATIONS 2>/dev/null
 adb shell am start -n $PKG/.SplashActivity >/dev/null
 sleep 12
 shot 01_today; alive "launch" launch
+if [ -n "${old_count:-}" ]; then
+  new_count=$(text_of tv_labor_count)
+  [ "$new_count" = "$old_count" ] && note "PASS     upgrade kept today's labors ($new_count)" || note "FAIL     upgrade lost data: before='$old_count' after='$new_count'"
+fi
 
 # --- Tick a labor
 before=$(text_of tv_labor_count)
@@ -88,6 +101,48 @@ tap id nav_focus; sleep 2; shot 06_focus_after_return; alive "return to Focus" f
 note "NUDGES   count='$(text_of tv_nudge_count)' drifts='$(text_of tv_drift_count)' away='$(text_of tv_away_time)'"
 tap id btn_focus_stop; sleep 2; alive "end focus" focusend
 
+# --- Distraction watch: Settings stands in for a distracting app, with a 15 s threshold
+adb shell appops set $PKG GET_USAGE_STATS allow
+tap id nav_focus; sleep 1
+adb shell input swipe 500 1600 500 700 300; sleep 1
+tap id btn_distraction_toggle; sleep 3
+adb shell am start-foreground-service -n $PKG/.focus.DistractionService --es test_packages com.android.settings --ei test_threshold_sec 15 >/dev/null 2>&1
+sleep 3
+adb shell am start -a android.settings.SETTINGS >/dev/null; sleep 30
+adb shell dumpsys notification --noredact > "$OUT/notifications_distraction.txt" 2>/dev/null
+if grep -q "|$PKG|2101|" "$OUT/notifications_distraction.txt"; then note "PASS     distraction nudge posted while in a distracting app"; else note "FAIL     no distraction nudge after 30 s in Settings"; fi
+if grep -q "|$PKG|2100|" "$OUT/notifications_distraction.txt"; then note "PASS     distraction watch is running"; else note "FAIL     distraction watch notification missing"; fi
+adb shell cmd statusbar expand-notifications; sleep 2; shot 18_distraction_nudge
+adb shell cmd statusbar collapse; sleep 1
+adb shell monkey -p $PKG -c android.intent.category.LAUNCHER 1 >/dev/null 2>&1; sleep 7
+tap id nav_focus; sleep 2
+adb shell input swipe 500 1600 500 700 300; sleep 2
+shot 19_focus_distraction_card
+note "DISTRACT total='$(text_of tv_distracted_total)' nudges='$(text_of tv_distraction_nudges)'"
+
+# --- Gym log
+tap id nav_today; sleep 2
+adb shell input swipe 500 1800 500 400 300; sleep 1
+adb shell input swipe 500 1800 500 400 300; sleep 1
+before_gym=$(text_of tv_labor_count)
+tap id card_gym_link && {
+  sleep 2; tap id btn_start_workout; sleep 2
+  tap id btn_add_exercise; sleep 2
+  tap text "Search exercises, e.g. bench or chest"; adb shell input text "barbell%sbench"; sleep 2
+  shot 20_gym_picker
+  tap text "Barbell Bench Press"; sleep 2
+  tap text "Weight (kg)"; adb shell input text "60"
+  tap text "Reps"; adb shell input text "8"
+  tap text "Log set" || tap text "LOG SET"; sleep 2
+  shot 21_gym_active; alive "log a set" gymset
+  tap id btn_finish_workout; sleep 3
+  shot 22_gym_finished; alive "finish workout" gymfinish
+  dump; grep -q "Barbell Bench Press" "$OUT/ui.xml" && note "PASS     the workout is saved with its best lift" || note "FAIL     finished workout not shown"
+  adb shell input keyevent KEYCODE_BACK; sleep 2
+}
+tap id nav_today; sleep 2
+note "GYM      labors before='$before_gym' after='$(text_of tv_labor_count)' (Exercise labor should tick)"
+
 # --- Coach
 tap id nav_coach; shot 07_coach; alive "open Coach" coach
 tap id et_coach_input; adb shell input text "What%sshould%sI%sdo%snext"; sleep 1
@@ -113,7 +168,8 @@ if has id tv_ref_text; then note "PASS     the reflection appears under past ent
 if has id tv_ref_ai_response; then note "PASS     the reflection has a coach insight"; else note "INFO     no coach insight on the reflection"; fi
 
 # --- Rank, Plan
-tap id nav_progress; shot 11_rank; alive "open Rank" rank
+tap id nav_progress; sleep 1; shot 11_rank; alive "open Rank" rank
+note "RANK     $(text_of tv_rank_title) · $(text_of tv_xp_current) XP · $(text_of tv_xp_next)"
 tap id nav_today; sleep 1
 adb shell input swipe 500 1800 500 500 300; sleep 1; shot 12_today_lower
 tap id card_plan_link && { shot 13_plan; alive "open Plan" plan; adb shell input keyevent KEYCODE_BACK; sleep 1; }
@@ -125,6 +181,14 @@ adb shell run-as $PKG cat shared_prefs/forge_widget_prefs.xml > "$OUT/widget_pre
 alive "widget tick broadcast" widget
 tap id nav_today; sleep 1; adb shell input swipe 500 600 500 1800 300; sleep 1; shot 14_today_after_widget_tick
 note "LABORS   count after widget tick='$(text_of tv_labor_count)'"
+
+# --- Widgets refresh with the app closed: tick through the widget, then read what it shows
+adb shell am force-stop $PKG
+adb shell am broadcast -n $PKG/.widget.TodayPlanWidget -a com.forge.app.widget.TOGGLE_LABOR --el labor_id 4 >/dev/null
+sleep 5
+adb shell run-as $PKG cat shared_prefs/forge_widget_prefs.xml > "$OUT/widget_prefs_closed.xml" 2>/dev/null
+grep -o 'todayDone" value="[0-9]*"' "$OUT/widget_prefs_closed.xml" | tee -a "$REPORT"
+adb shell am start -n $PKG/.SplashActivity >/dev/null; sleep 8
 
 # --- Landscape
 adb shell settings put system accelerometer_rotation 0

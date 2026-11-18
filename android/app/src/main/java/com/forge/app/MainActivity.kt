@@ -79,6 +79,12 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        // Keeps the watch running after the system or the user stopped it
+        com.forge.app.focus.DistractionService.start(this)
+    }
+
     override fun onStart() {
         super.onStart()
         FocusState.appInForeground = true

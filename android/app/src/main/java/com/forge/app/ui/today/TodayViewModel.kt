@@ -99,9 +99,9 @@ class TodayViewModel(private val repository: ForgeRepository) : ViewModel() {
                 val oldXp = repository.getTotalXpSync()
                 val oldRank = RankSystem.getRank(oldXp)
 
-                repository.completeLabor(labor)
-                _xpToastEvent.value = XpEvent(
-                    amount = labor.xpReward,
+                val gained = repository.completeLabor(labor)
+                if (gained > 0) _xpToastEvent.value = XpEvent(
+                    amount = gained,
                     source = "labor",
                     description = labor.name,
                     timestamp = System.currentTimeMillis(),
@@ -207,18 +207,7 @@ class TodayViewModel(private val repository: ForgeRepository) : ViewModel() {
                 val durationMin = ((now - active.startTime) / 60000).toInt()
                 repository.stopTrack(active.id, now, durationMin)
 
-                // Award XP for time tracked
-                if (durationMin >= 1) {
-                    val xpAmount = (durationMin / 5).coerceAtLeast(1) * 2
-                    repository.addXp(xpAmount, "time_track", "${active.category} - ${durationMin}min")
-                    _xpToastEvent.value = XpEvent(
-                        amount = xpAmount,
-                        source = "time_track",
-                        description = "${active.category} - ${durationMin}min",
-                        timestamp = System.currentTimeMillis(),
-                        date = today
-                    )
-                }
+                // Tracked time no longer gives XP; only labors and reflections do
             } catch (_: Exception) {
                 // DB error — UI already reset above
             }

@@ -11,6 +11,7 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.asLiveData
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.forge.app.R
@@ -55,6 +56,16 @@ class TodayFragment : Fragment() {
 
         binding.btnAddLabor.setOnClickListener { showLaborDialog(null) }
         binding.cardFocusMini.setOnClickListener { openFocusTab() }
+        binding.cardGymLink.setOnClickListener {
+            try {
+                findNavController().navigate(R.id.nav_gym)
+            } catch (_: Exception) {
+            }
+        }
+        com.forge.app.gym.GymDatabase.get(requireContext()).gymDao().activeWorkout().asLiveData()
+            .observe(viewLifecycleOwner) { workout ->
+                binding.tvGymLink.text = if (workout != null) "Workout in progress" else "Log today's workout"
+            }
         binding.cardPlanLink.setOnClickListener {
             try {
                 findNavController().navigate(R.id.nav_plan)

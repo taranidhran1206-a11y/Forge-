@@ -9,6 +9,12 @@ import java.util.*
 
 class ForgeRepository(private val database: ForgeDatabase) {
 
+    companion object {
+        /** The most labor XP one day can give, however many labors there are. */
+        const val DAILY_LABOR_XP_CAP = 150
+    }
+
+
     // DAOs
     private val laborDao = database.laborDao()
     private val xpDao = database.xpDao()
@@ -33,7 +39,11 @@ class ForgeRepository(private val database: ForgeDatabase) {
 
     suspend fun updateLabor(labor: Labor) = laborDao.update(labor)
 
-    suspend fun deleteLabor(labor: Labor) = laborDao.delete(labor)
+    suspend fun deleteLabor(labor: Labor) {
+        laborDao.delete(labor)
+        // A deleted ticked labor takes its XP with it
+        if (labor.done && labor.date == getTodayDate()) syncLaborXp()
+    }
 
     suspend fun toggleLaborDone(id: Long, done: Boolean) = laborDao.toggleDone(id, done)
 
@@ -55,16 +65,35 @@ class ForgeRepository(private val database: ForgeDatabase) {
         return true
     }
 
-    suspend fun completeLabor(labor: Labor) {
+    /** Returns the XP this tick actually added (0 once today's labor cap is reached). */
+    suspend fun completeLabor(labor: Labor): Int {
         laborDao.toggleDone(labor.id, true)
-        addXp(labor.xpReward, "labor", "Completed: ${labor.name}")
+        val delta = syncLaborXp()
+        updateDailyLaborStats()
+        return delta
+    }
+
+    /** Untick a labor. Its XP is taken back, so ticking again cannot farm XP. */
+    suspend fun uncompleteLabor(labor: Labor) {
+        laborDao.toggleDone(labor.id, false)
+        syncLaborXp()
         updateDailyLaborStats()
     }
 
-    /** Untick a labor. XP already earned stays, as it does inside the app. */
-    suspend fun uncompleteLabor(labor: Labor) {
-        laborDao.toggleDone(labor.id, false)
-        updateDailyLaborStats()
+    /**
+     * Today's labor XP always equals the rewards of the labors that are ticked,
+     * capped at [DAILY_LABOR_XP_CAP]. Adding more labors cannot raise the cap.
+     */
+    private suspend fun syncLaborXp(): Int {
+        val today = getTodayDate()
+        val earned = laborDao.getLaborsForDateSync(today).filter { it.done }.sumOf { it.xpReward }
+        val target = earned.coerceAtMost(DAILY_LABOR_XP_CAP)
+        val current = xpDao.getSourceTotalForDate(today, "labor")
+        val delta = target - current
+        if (delta != 0) {
+            addXp(delta, "labor", if (delta > 0) "Labors completed" else "Labor unticked")
+        }
+        return delta
     }
 
     /**
@@ -203,14 +232,12 @@ class ForgeRepository(private val database: ForgeDatabase) {
         val today = getTodayDate()
         val stats = dailyStatsDao.getStats(today) ?: DailyStats(date = today)
         dailyStatsDao.upsert(stats.copy(briefDone = true))
-        addXp(5, "audit", "Daily briefing completed")
     }
 
     suspend fun markAuditDone() {
         val today = getTodayDate()
         val stats = dailyStatsDao.getStats(today) ?: DailyStats(date = today)
         dailyStatsDao.upsert(stats.copy(auditDone = true))
-        addXp(10, "audit", "Daily audit completed")
     }
 
     // ── Streak ───────────────────────────────────────────────────

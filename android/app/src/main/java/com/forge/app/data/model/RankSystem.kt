@@ -2,17 +2,19 @@ package com.forge.app.data.model
 
 object RankSystem {
 
+    // Paced for about 150 XP on a full day (labors are capped at 150, a reflection
+    // adds 15): roughly two weeks to Gold and six months to Legend.
     enum class Rank(val title: String, val minXp: Int, val colorHex: String) {
         IRON("IRON", 0, "#78909C"),
-        BRONZE("BRONZE", 200, "#A1887F"),
-        SILVER("SILVER", 500, "#B0BEC5"),
-        GOLD("GOLD", 1000, "#FFD54F"),
-        PLATINUM("PLATINUM", 2000, "#80DEEA"),
-        DIAMOND("DIAMOND", 4000, "#CE93D8"),
-        TITAN("TITAN", 7500, "#448AFF"),
-        MYTHIC("MYTHIC", 15000, "#FF5252"),
-        APEX("APEX", 25000, "#FFD700"),
-        LEGEND("LEGEND", 50000, "#E53935")
+        BRONZE("BRONZE", 300, "#A1887F"),
+        SILVER("SILVER", 900, "#B0BEC5"),
+        GOLD("GOLD", 2000, "#FFD54F"),
+        PLATINUM("PLATINUM", 4000, "#80DEEA"),
+        DIAMOND("DIAMOND", 7000, "#CE93D8"),
+        TITAN("TITAN", 11000, "#448AFF"),
+        MYTHIC("MYTHIC", 16000, "#FF5252"),
+        APEX("APEX", 21000, "#FFD700"),
+        LEGEND("LEGEND", 27000, "#E53935")
     }
 
     private val ranksDescending = Rank.values().sortedByDescending { it.minXp }
@@ -45,22 +47,5 @@ object RankSystem {
         val current = getRank(totalXp)
         val next = getNextRank(current)
         return next?.title ?: "MAX"
-    }
-
-    fun getGlobalRankPercent(totalXp: Int): Int {
-        // Simulated global rank percentage based on XP thresholds
-        return when {
-            totalXp >= 50000 -> 99
-            totalXp >= 25000 -> 98
-            totalXp >= 15000 -> 94
-            totalXp >= 7500 -> 88
-            totalXp >= 4000 -> 80
-            totalXp >= 2000 -> 70
-            totalXp >= 1000 -> 55
-            totalXp >= 500 -> 40
-            totalXp >= 200 -> 25
-            totalXp >= 50 -> 10
-            else -> 5
-        }
     }
 }

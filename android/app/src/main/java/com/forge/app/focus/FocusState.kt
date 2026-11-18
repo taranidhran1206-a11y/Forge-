@@ -20,7 +20,7 @@ object FocusState {
 
     val live = MutableLiveData(Snapshot())
 
-    /** XP awarded by a session that just finished; cleared by the screen that shows it. */
+    /** Minutes of a session that just finished; cleared by the screen that shows it. */
     val completedXp = MutableLiveData<Int?>(null)
 
     /** Set when another screen asks for a session; the Focus screen starts it and clears this. */

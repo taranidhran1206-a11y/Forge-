@@ -31,14 +31,7 @@ class TodayPlanWidget : AppWidgetProvider() {
         const val EXTRA_LABOR_ID = "labor_id"
 
         fun triggerUpdate(context: Context) {
-            val manager = AppWidgetManager.getInstance(context)
-            val ids = manager.getAppWidgetIds(ComponentName(context, TodayPlanWidget::class.java))
-            if (ids.isEmpty()) return
-            val intent = Intent(context, TodayPlanWidget::class.java).apply {
-                action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
-                putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
-            }
-            context.sendBroadcast(intent)
+            WidgetHelper.pushAll(context)
         }
     }
 
@@ -65,7 +58,7 @@ class TodayPlanWidget : AppWidgetProvider() {
                 // Rewrites labors, streak and rank from the database and redraws every widget
                 WidgetHelper.updateAllWidgets(appContext, repository)
             } catch (_: Exception) {
-                triggerUpdate(appContext)
+                WidgetHelper.pushAll(appContext)
             } finally {
                 pending.finish()
             }
@@ -88,13 +81,12 @@ class TodayPlanWidget : AppWidgetProvider() {
     }
 
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
-        for (appWidgetId in appWidgetIds) {
-            try {
-                updateWidget(context, appWidgetManager, appWidgetId)
-            } catch (_: Exception) {
-                // Never let one bad update take the widget down
-            }
+        try {
+            appWidgetManager.updateAppWidget(appWidgetIds, buildViews(context))
+        } catch (_: Exception) {
+            // Never let one bad update take the widget down
         }
+        WidgetSyncOnUpdate.refresh(this, context)
     }
 
     private fun readLabors(context: Context): List<WidgetLabor> {

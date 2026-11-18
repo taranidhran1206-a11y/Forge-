@@ -1,7 +1,10 @@
 package com.forge.app.ui.focus
 
 import android.Manifest
+import android.app.AlertDialog
 import android.content.Context
+import android.content.Intent
+import android.provider.Settings
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Build
@@ -23,6 +26,8 @@ import com.forge.app.R
 import com.forge.app.data.dao.CategoryTime
 import com.forge.app.databinding.FragmentFocusBinding
 import com.forge.app.focus.FocusService
+import com.forge.app.focus.Distraction
+import com.forge.app.focus.DistractionService
 import com.forge.app.focus.FocusState
 import com.forge.app.focus.NudgeStore
 import com.forge.app.ui.ForgeViewModelFactory
@@ -69,6 +74,7 @@ class FocusFragment : Fragment() {
 
         applyPanes()
         setupControls()
+        setupDistractionWatch()
         observe()
 
         // A labor's Focus button on the Today screen hands its name over here
@@ -172,9 +178,9 @@ class FocusFragment : Fragment() {
             render(state ?: FocusState.Snapshot())
         }
 
-        FocusState.completedXp.observe(viewLifecycleOwner) { xp ->
-            if (xp != null) {
-                activity?.let { XpToastHelper.showXpToast(it, xp, "focus") }
+        FocusState.completedXp.observe(viewLifecycleOwner) { minutes ->
+            if (minutes != null) {
+                Toast.makeText(requireContext(), "Focus session complete · $minutes min", Toast.LENGTH_LONG).show()
                 FocusState.completedXp.value = null
             }
         }
@@ -349,6 +355,170 @@ class FocusFragment : Fragment() {
         trackRunnable?.let { handler.removeCallbacks(it) }
         trackRunnable = null
         if (resetText && _binding != null) binding.tvTrackDuration.text = "00:00:00"
+    }
+
+    // --- Distraction watch ---
+
+    private fun setupDistractionWatch() {
+        val context = requireContext()
+        binding.btnDistractionToggle.setOnClickListener {
+            if (Distraction.isEnabled(context)) {
+                Distraction.setEnabled(context, false)
+                DistractionService.stop(context)
+            } else {
+                Distraction.setEnabled(context, true)
+                if (!Distraction.hasUsageAccess(context)) openUsageAccess()
+                else DistractionService.start(context)
+                askNotificationsIfNeeded()
+            }
+            renderDistraction()
+        }
+        binding.rowSetupUsage.setOnClickListener { openUsageAccess() }
+        binding.rowSetupNotifications.setOnClickListener { openNotificationSettings() }
+        binding.rowSetupBattery.setOnClickListener { askBatteryUnrestricted() }
+        binding.btnChooseApps.setOnClickListener { showAppPicker() }
+        listOf(
+            binding.chipNudge1 to 1, binding.chipNudge3 to 3,
+            binding.chipNudge5 to 5, binding.chipNudge10 to 10
+        ).forEach { (chip, minutes) ->
+            chip.setOnClickListener {
+                Distraction.setThresholdMinutes(context, minutes)
+                renderDistraction()
+            }
+        }
+        Distraction.live.observe(viewLifecycleOwner) { renderDistraction() }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Permissions may have just been granted in Settings
+        val context = requireContext()
+        if (Distraction.isEnabled(context)) DistractionService.start(context)
+        renderDistraction()
+    }
+
+    private fun notificationsAllowed(): Boolean =
+        androidx.core.app.NotificationManagerCompat.from(requireContext()).areNotificationsEnabled()
+
+    private fun askNotificationsIfNeeded() {
+        val context = requireContext()
+        if (Build.VERSION.SDK_INT >= 33 &&
+            ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) !=
+            PackageManager.PERMISSION_GRANTED
+        ) {
+            notificationPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
+        }
+    }
+
+    private fun openUsageAccess() {
+        Toast.makeText(requireContext(), "Find Forge in the list and allow usage access", Toast.LENGTH_LONG).show()
+        val packageUri = android.net.Uri.parse("package:${requireContext().packageName}")
+        try {
+            startActivity(Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS, packageUri))
+        } catch (_: Exception) {
+            try {
+                startActivity(Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS))
+            } catch (_: Exception) {
+            }
+        }
+    }
+
+    private fun openNotificationSettings() {
+        val context = requireContext()
+        if (Build.VERSION.SDK_INT >= 33 &&
+            ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) !=
+            PackageManager.PERMISSION_GRANTED &&
+            shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS)
+        ) {
+            notificationPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
+            return
+        }
+        try {
+            startActivity(Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+                .putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName))
+        } catch (_: Exception) {
+        }
+    }
+
+    @android.annotation.SuppressLint("BatteryLife")
+    private fun askBatteryUnrestricted() {
+        val context = requireContext()
+        try {
+            startActivity(Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS,
+                android.net.Uri.parse("package:${context.packageName}")))
+        } catch (_: Exception) {
+            try {
+                startActivity(Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS))
+            } catch (_: Exception) {
+            }
+        }
+    }
+
+    private fun showAppPicker() {
+        val context = requireContext()
+        val apps = Distraction.launcherApps(context)
+        if (apps.isEmpty()) return
+        val checked = BooleanArray(apps.size) { i -> Distraction.isDistracting(context, apps[i].first) }
+        AlertDialog.Builder(context, R.style.ForgeDialogTheme)
+            .setTitle("Distracting apps")
+            .setMultiChoiceItems(apps.map { it.second }.toTypedArray(), checked) { _, which, isChecked ->
+                checked[which] = isChecked
+            }
+            .setPositiveButton("Save") { _, _ ->
+                Distraction.setChosenApps(context, apps.indices.filter { checked[it] }.map { apps[it].first }.toSet())
+                renderDistraction()
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    private fun renderDistraction() {
+        val b = _binding ?: return
+        val context = requireContext()
+        val enabled = Distraction.isEnabled(context)
+        val usage = Distraction.hasUsageAccess(context)
+        val notify = notificationsAllowed()
+        val battery = Distraction.isBatteryUnrestricted(context)
+        val running = enabled && usage
+
+        b.btnDistractionToggle.text = if (enabled) "On" else "Turn on"
+        b.btnDistractionToggle.setBackgroundResource(if (enabled) R.drawable.bg_chip_on else R.drawable.bg_chip_neutral)
+        b.ivDistractionEye.setColorFilter(Color.parseColor(if (running) "#4CAF50" else "#9E9E9E"))
+        b.rowSetupUsage.visibility = if (enabled && !usage) View.VISIBLE else View.GONE
+        b.rowSetupNotifications.visibility = if (enabled && !notify) View.VISIBLE else View.GONE
+        b.rowSetupBattery.visibility = if (enabled && !battery) View.VISIBLE else View.GONE
+
+        val threshold = Distraction.thresholdMinutes(context)
+        b.tvDistractionStatus.text = when {
+            !enabled -> "Nudges you when you stay in apps like Instagram or YouTube"
+            !usage -> "Needs usage access to see which app is open"
+            else -> "Watching all day · nudges after $threshold min in one app"
+        }
+        listOf(b.chipNudge1 to 1, b.chipNudge3 to 3, b.chipNudge5 to 5, b.chipNudge10 to 10).forEach { (chip, m) ->
+            chip.setBackgroundResource(if (m == threshold) R.drawable.bg_chip_on else R.drawable.bg_chip_neutral)
+        }
+
+        val today = Distraction.today(context)
+        b.tvDistractedTotal.text = Distraction.minutesText(today.totalSeconds)
+        b.tvDistractionNudges.text = today.nudges.toString()
+        val top = today.secondsByApp.entries.sortedByDescending { it.value }.take(4)
+        val signature = top.joinToString("|") { "${it.key}:${it.value / 60}" }
+        if (b.llDistractionApps.tag != signature) {
+            b.llDistractionApps.tag = signature
+            b.llDistractionApps.removeAllViews()
+            val longest = top.firstOrNull()?.value ?: 1
+            top.forEach { (pkg, seconds) ->
+                val row = layoutInflater.inflate(R.layout.item_bar_row, b.llDistractionApps, false)
+                row.findViewById<TextView>(R.id.tv_bar_name).text = Distraction.label(context, pkg)
+                row.findViewById<TextView>(R.id.tv_bar_value).text = Distraction.minutesText(seconds)
+                row.findViewById<ProgressBar>(R.id.pb_bar).apply {
+                    progressDrawable = ContextCompat.getDrawable(context, R.drawable.bg_xp_progress)
+                    max = longest.coerceAtLeast(1)
+                    progress = seconds
+                }
+                b.llDistractionApps.addView(row)
+            }
+        }
     }
 
     override fun onDestroyView() {

@@ -15,6 +15,11 @@
         android:label="@string/tab_focus" />
 
     <fragment
+        android:id="@+id/nav_gym"
+        android:name="com.forge.app.ui.gym.GymFragment"
+        android:label="Gym log" />
+
+    <fragment
         android:id="@+id/nav_plan"
         android:name="com.forge.app.ui.plan.PlanFragment"
         android:label="@string/tab_plan" />

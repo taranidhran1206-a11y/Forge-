@@ -15,20 +15,16 @@ class RankWidget : AppWidgetProvider() {
 
     companion object {
         fun triggerUpdate(context: Context) {
-            val intent = Intent(context, RankWidget::class.java).apply {
-                action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
-            }
-            val manager = AppWidgetManager.getInstance(context)
-            val ids = manager.getAppWidgetIds(ComponentName(context, RankWidget::class.java))
-            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
-            context.sendBroadcast(intent)
+            com.forge.app.util.WidgetHelper.pushAll(context)
         }
     }
 
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
-        for (appWidgetId in appWidgetIds) {
-            updateWidget(context, appWidgetManager, appWidgetId)
+        try {
+            appWidgetManager.updateAppWidget(appWidgetIds, buildViews(context))
+        } catch (_: Exception) {
         }
+        WidgetSyncOnUpdate.refresh(this, context)
     }
 
     private fun updateWidget(context: Context, manager: AppWidgetManager, widgetId: Int) {

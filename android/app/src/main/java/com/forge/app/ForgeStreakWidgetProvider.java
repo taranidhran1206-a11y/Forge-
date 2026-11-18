@@ -12,15 +12,8 @@ import android.widget.RemoteViews;
 public class ForgeStreakWidgetProvider extends AppWidgetProvider {
 
     public static void triggerUpdate(Context context) {
-        Intent intent = new Intent(context, ForgeStreakWidgetProvider.class);
-        intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-        AppWidgetManager manager = AppWidgetManager.getInstance(context);
-        int[] ids = manager.getAppWidgetIds(new ComponentName(context, ForgeStreakWidgetProvider.class));
-        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
-        context.sendBroadcast(intent);
+        com.forge.app.util.WidgetHelper.INSTANCE.pushAll(context);
     }
-
-    private static final String PREFS_NAME = "forge_widget_prefs";
 
     /** Builds exactly what the launcher draws. Public so a device test can inflate it. */
     public static RemoteViews buildViews(Context context) {
@@ -47,8 +40,10 @@ public class ForgeStreakWidgetProvider extends AppWidgetProvider {
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        for (int appWidgetId : appWidgetIds) {
-            appWidgetManager.updateAppWidget(appWidgetId, buildViews(context));
+        try {
+            appWidgetManager.updateAppWidget(appWidgetIds, buildViews(context));
+        } catch (Exception ignored) {
         }
+        com.forge.app.widget.WidgetSyncOnUpdate.INSTANCE.refresh(this, context);
     }
 }
