@@ -11,6 +11,8 @@ import android.widget.RemoteViews;
 
 public class ForgeStreakWidgetProvider extends AppWidgetProvider {
 
+    private static final String PREFS_NAME = "forge_widget_prefs";
+
     public static void triggerUpdate(Context context) {
         com.forge.app.util.WidgetHelper.INSTANCE.pushAll(context);
     }
