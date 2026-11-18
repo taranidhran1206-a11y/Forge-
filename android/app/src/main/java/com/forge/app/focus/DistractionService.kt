@@ -40,8 +40,6 @@ class DistractionService : Service() {
 
         private const val ACTION_SNOOZE = "com.forge.app.distraction.SNOOZE"
         private const val ACTION_STOP = "com.forge.app.distraction.STOP"
-        private const val EXTRA_TEST_PACKAGES = "test_packages"
-        private const val EXTRA_TEST_THRESHOLD_SEC = "test_threshold_sec"
 
         private const val POLL_MS = 3000L
         private const val FLUSH_EVERY_POLLS = 5
@@ -119,14 +117,6 @@ class DistractionService : Service() {
                 notifications.cancel(NOTIF_NUDGE)
             }
         }
-        // Test builds only: let the emulator test pick apps and a short threshold
-        if (BuildConfig.DEBUG && intent != null) {
-            intent.getStringExtra(EXTRA_TEST_PACKAGES)?.let {
-                Distraction.setChosenApps(this, it.split(',').map { p -> p.trim() }.filter { p -> p.isNotEmpty() }.toSet())
-            }
-            val sec = intent.getIntExtra(EXTRA_TEST_THRESHOLD_SEC, -1)
-            if (sec >= 0) Distraction.setThresholdSecondsOverride(this, sec)
-        }
         if (!Distraction.isEnabled(this) || !Distraction.hasUsageAccess(this)) {
             stopSelf()
             return START_NOT_STICKY
@@ -186,11 +176,7 @@ class DistractionService : Service() {
         if (polls % FLUSH_EVERY_POLLS == 0) flush()
     }
 
-    private fun thresholdSeconds(): Int {
-        val override = Distraction.thresholdSecondsOverride(this)
-        if (BuildConfig.DEBUG && override > 0) return override
-        return Distraction.thresholdMinutes(this) * 60
-    }
+    private fun thresholdSeconds(): Int = Distraction.thresholdMinutes(this) * 60
 
     private fun maybeNudge(pkg: String) {
         val focus = FocusState.live.value

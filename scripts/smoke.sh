@@ -10,7 +10,16 @@ REPORT="$OUT/report.txt"
 
 note()  { echo "$*" | tee -a "$REPORT"; }
 shot()  { adb exec-out screencap -p > "$OUT/$1.png"; }
-dump()  { adb shell uiautomator dump /sdcard/ui.xml >/dev/null 2>&1; adb exec-out cat /sdcard/ui.xml > "$OUT/ui.xml" 2>/dev/null; }
+dump()  {
+  for i in 1 2 3; do
+    adb shell am broadcast -a android.intent.action.CLOSE_SYSTEM_DIALOGS >/dev/null 2>&1
+    adb shell rm -f /sdcard/ui.xml
+    adb shell uiautomator dump /sdcard/ui.xml >/dev/null 2>&1
+    adb exec-out cat /sdcard/ui.xml > "$OUT/ui.xml" 2>/dev/null
+    grep -q "<hierarchy" "$OUT/ui.xml" && return 0
+    sleep 3
+  done
+}
 find()  { dump; python3 scripts/find_node.py "$OUT/ui.xml" "$1" "$2" "${3:-0}"; }
 tap()   {
   local xy; xy=$(find "$1" "$2" "${3:-0}")
@@ -56,6 +65,10 @@ for model in ["gemini-3.8-flash", "gemini-3.5-flash", "gemini-flash-lite-latest"
 PY
 
 adb logcat -c
+# Let the freshly booted emulator settle before driving it
+sleep 40
+adb shell am broadcast -a android.intent.action.CLOSE_SYSTEM_DIALOGS >/dev/null 2>&1
+
 # --- Upgrade from the previous release: data must survive
 if [ -f old-debug.apk ]; then
   adb install -g old-debug.apk | tail -1 | tee -a "$REPORT"
@@ -104,18 +117,21 @@ tap id nav_focus; sleep 2; shot 06_focus_after_return; alive "return to Focus" f
 note "NUDGES   count='$(text_of tv_nudge_count)' drifts='$(text_of tv_drift_count)' away='$(text_of tv_away_time)'"
 tap id btn_focus_stop; sleep 2; alive "end focus" focusend
 
-# --- Distraction watch: Settings stands in for a distracting app, with a 15 s threshold
+# --- Distraction watch: Settings stands in for a distracting app
 adb shell appops set $PKG GET_USAGE_STATS allow
 tap id nav_focus; sleep 1
 adb shell input swipe 500 1600 500 700 300; sleep 1
 tap id btn_distraction_toggle; sleep 3
-adb shell am start-foreground-service -n $PKG/.focus.DistractionService --es test_packages com.android.settings --ei test_threshold_sec 15 >/dev/null 2>&1
-sleep 3
-adb shell am start -a android.settings.SETTINGS >/dev/null; sleep 30
+# Pick Settings as the distracting app through the real picker, and the shortest threshold
+tap id btn_choose_apps; sleep 2
+tap text "Settings"; sleep 1
+tap text "Save" || tap text "SAVE"; sleep 1
+tap id chip_nudge_1; sleep 1
+adb shell am start -a android.settings.SETTINGS >/dev/null; sleep 75
 adb shell dumpsys notification --noredact > "$OUT/notifications_distraction.txt" 2>/dev/null
 adb logcat -d -s ForgeDistraction | tail -40 > "$OUT/distraction_log.txt"
 tail -5 "$OUT/distraction_log.txt" | cut -c1-200 >> "$REPORT"
-if grep -q "|$PKG|2101|" "$OUT/notifications_distraction.txt"; then note "PASS     distraction nudge posted while in a distracting app"; else note "FAIL     no distraction nudge after 30 s in Settings"; fi
+if grep -q "|$PKG|2101|" "$OUT/notifications_distraction.txt"; then note "PASS     distraction nudge posted while in a distracting app"; else note "FAIL     no distraction nudge after 75 s in Settings"; fi
 if grep -q "|$PKG|2100|" "$OUT/notifications_distraction.txt"; then note "PASS     distraction watch is running"; else note "FAIL     distraction watch notification missing"; fi
 adb shell cmd statusbar expand-notifications; sleep 2; shot 18_distraction_nudge
 adb shell cmd statusbar collapse; sleep 1

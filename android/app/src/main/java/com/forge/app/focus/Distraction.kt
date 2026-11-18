@@ -72,13 +72,6 @@ object Distraction {
         prefs(context).edit().putInt("threshold_min", minutes).apply()
     }
 
-    /** Test builds may lower the threshold to seconds. */
-    fun thresholdSecondsOverride(context: Context): Int = prefs(context).getInt("threshold_sec_override", 0)
-
-    fun setThresholdSecondsOverride(context: Context, seconds: Int) {
-        prefs(context).edit().putInt("threshold_sec_override", seconds).apply()
-    }
-
     fun snoozedUntil(context: Context): Long = prefs(context).getLong("snoozed_until", 0L)
 
     fun snooze(context: Context, minutes: Int) {
