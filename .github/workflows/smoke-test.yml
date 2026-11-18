@@ -42,7 +42,7 @@ jobs:
 
     - name: Build the previous release for the upgrade test
       run: |
-        git worktree add /tmp/old v2.1.14
+        git worktree add --detach /tmp/old fdeaa6dd6c69b466d1469cf9c738c5fbb7fd2c6c
         cd /tmp/old/android
         ./gradlew assembleDebug --no-daemon -q
         cp app/build/outputs/apk/debug/app-debug.apk "$GITHUB_WORKSPACE/old-debug.apk"
