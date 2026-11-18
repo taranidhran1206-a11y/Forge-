@@ -83,7 +83,8 @@ class DistractionService : Service() {
         override fun run() {
             try {
                 tick()
-            } catch (_: Exception) {
+            } catch (e: Exception) {
+                android.util.Log.w("ForgeDistraction", "tick failed", e)
             }
             handler.postDelayed(this, POLL_MS)
         }
@@ -156,6 +157,9 @@ class DistractionService : Service() {
         val screenInUse = power.isInteractive && !keyguard.isKeyguardLocked
         val pkg = foregroundPackage()
         val distracting = screenInUse && pkg != null && Distraction.isDistracting(this, pkg)
+        if (BuildConfig.DEBUG) {
+            android.util.Log.d("ForgeDistraction", "front=$pkg inUse=$screenInUse distracting=$distracting streak=$streakSeconds")
+        }
 
         Distraction.currentAppLabel = if (screenInUse && pkg != null && pkg != packageName) {
             Distraction.label(this, pkg)

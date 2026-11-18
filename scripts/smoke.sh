@@ -60,6 +60,7 @@ adb logcat -c
 if [ -f old-debug.apk ]; then
   adb install -g old-debug.apk | tail -1 | tee -a "$REPORT"
   adb shell am start -n $PKG/.SplashActivity >/dev/null; sleep 12
+  for i in 1 2 3; do tap text "Wait" >/dev/null 2>&1 || break; sleep 2; done
   tap id iv_labor_check 0; sleep 2
   old_count=$(text_of tv_labor_count)
   note "UPGRADE  old version count='$old_count'"
@@ -69,6 +70,8 @@ adb install -r -g android/app/build/outputs/apk/debug/app-debug.apk | tail -1 | 
 adb shell pm grant $PKG android.permission.POST_NOTIFICATIONS 2>/dev/null
 adb shell am start -n $PKG/.SplashActivity >/dev/null
 sleep 12
+# The emulator's launcher sometimes shows "isn't responding" over the app; dismiss it
+for i in 1 2 3; do tap text "Wait" >/dev/null 2>&1 || break; sleep 2; done
 shot 01_today; alive "launch" launch
 if [ -n "${old_count:-}" ]; then
   new_count=$(text_of tv_labor_count)
@@ -110,6 +113,8 @@ adb shell am start-foreground-service -n $PKG/.focus.DistractionService --es tes
 sleep 3
 adb shell am start -a android.settings.SETTINGS >/dev/null; sleep 30
 adb shell dumpsys notification --noredact > "$OUT/notifications_distraction.txt" 2>/dev/null
+adb logcat -d -s ForgeDistraction | tail -40 > "$OUT/distraction_log.txt"
+tail -5 "$OUT/distraction_log.txt" | cut -c1-200 >> "$REPORT"
 if grep -q "|$PKG|2101|" "$OUT/notifications_distraction.txt"; then note "PASS     distraction nudge posted while in a distracting app"; else note "FAIL     no distraction nudge after 30 s in Settings"; fi
 if grep -q "|$PKG|2100|" "$OUT/notifications_distraction.txt"; then note "PASS     distraction watch is running"; else note "FAIL     distraction watch notification missing"; fi
 adb shell cmd statusbar expand-notifications; sleep 2; shot 18_distraction_nudge
