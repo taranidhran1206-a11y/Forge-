@@ -18,11 +18,7 @@
 
 ## ✦ Features
 
-<img width="780" height="1688" alt="Forge · Today" src="https://github.com/user-attachments/assets/419d6004-ca83-4a1c-a589-6fd30a07ba03" />
-<img width="780" height="1688" alt="Forge · Focus" src="https://github.com/user-attachments/assets/ae789143-ff51-4c61-89d1-33677a559328" />
-<img width="780" height="1688" alt="Forge · Rank ladder" src="https://github.com/user-attachments/assets/5307ce83-7a47-48f6-9765-a9737c254f18" />
-<img width="780" height="1688" alt="Forge · Coach" src="https://github.com/user-attachments/assets/a23a9791-a01a-425b-8f73-67130f07bf84" />
-<img width="780" height="1688" alt="Forge · Home screen widgets" src="https://github.com/user-attachments/assets/6a3e370a-0ef3-45bd-964e-abe508b46356" />
+<img width="780" height="700" alt="Forge · Home screen widgets" src="https://github.com/user-attachments/assets/6a3e370a-0ef3-45bd-964e-abe508b46356" />
 
 
 
