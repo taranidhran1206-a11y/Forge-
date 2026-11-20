@@ -82,7 +82,8 @@ fi
 adb install -r -g android/app/build/outputs/apk/debug/app-debug.apk | tail -1 | tee -a "$REPORT"
 adb shell pm grant $PKG android.permission.POST_NOTIFICATIONS 2>/dev/null
 adb shell am start -n $PKG/.SplashActivity >/dev/null
-sleep 12
+sleep 1; shot 00_splash
+sleep 11
 # The emulator's launcher sometimes shows "isn't responding" over the app; dismiss it
 for i in 1 2 3; do tap text "Wait" >/dev/null 2>&1 || break; sleep 2; done
 shot 01_today; alive "launch" launch
@@ -122,6 +123,7 @@ adb shell appops set $PKG GET_USAGE_STATS allow
 tap id nav_focus; sleep 1
 adb shell input swipe 500 1600 500 700 300; sleep 1
 tap id btn_distraction_toggle; sleep 3
+tap id tv_distraction_settings; sleep 1
 # Pick Settings as the distracting app through the real picker, and the shortest threshold
 tap id btn_choose_apps; sleep 2
 tap text "Settings"; sleep 1

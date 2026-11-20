@@ -53,49 +53,36 @@ jobs:
       run: |
         APK_PATH=$(find android/app/build/outputs/apk/release -name "*.apk" | head -1)
         echo "Found APK: $APK_PATH"
-        cp "$APK_PATH" android/Forge-v2.1.15-signed.apk
-        ls -la android/Forge-v2.1.15-signed.apk
+        cp "$APK_PATH" android/Forge-v2.1.16-signed.apk
+        ls -la android/Forge-v2.1.16-signed.apk
 
     - name: Upload APK Artifact
       uses: actions/upload-artifact@v4
       with:
         name: Forge-APK
-        path: android/Forge-v2.1.15-signed.apk
+        path: android/Forge-v2.1.16-signed.apk
 
     - name: Create Release
       uses: softprops/action-gh-release@v2
       with:
-        tag_name: v2.1.15
-        name: "Forge v2.1.15 — Harder ranks, distraction watch, live widgets, gym log"
+        tag_name: v2.1.16
+        name: "Forge v2.1.16 — Cleaner focus page, rank badge on the widget, Hercules"
         body: |
-          ## Forge v2.1.15
+          ## Forge v2.1.16
 
-          Tested on an Android emulator before release, including an upgrade from v2.1.14 that kept its data.
+          The settled version of Forge. Tested on an Android emulator before release.
 
-          ### XP and ranks
-          - Only labors and reflections give XP; focus sessions, tracked time and audits no longer do
-          - Labor XP is capped at 150 a day, and unticking takes the XP back, so it cannot be farmed
-          - Ranks: Bronze 300, Silver 900, Gold 2,000, Platinum 4,000, Diamond 7,000, Titan 11,000, Mythic 16,000, Apex 21,000, Legend 27,000
-          - Roughly two weeks of full days to Gold, six months to Legend
-
-          ### Distraction watch (Focus screen)
-          - Watches which app is open all day and nudges you after 1, 3, 5 or 10 minutes in a distracting app
-          - Shows time per app and nudges for today
-          - Needs Usage access; on Samsung also set Forge's battery to Unrestricted (the card links to both)
-
-          ### Widgets
-          - Update by themselves when labors or XP change, every 30 minutes, at midnight and after a restart
-
-          ### Gym log (from the Today screen)
-          - Log workouts set by set, with last time's numbers filled in, best lifts and history
-          - Finishing a workout ticks your Exercise or Gym labor
-          - Exercise names from ExerciseDB via openGym (MIT licence)
+          ### Changes
+          - Opening the app shows just "ENTER THE FORGE." (tap it or wait a moment)
+          - Focus page is cleaner: nudge settings fold away under "Nudge settings", the session tracker only appears once you've done a focus session today, and "Today by category" only appears when there's tracked time
+          - The Rank widget shows the full rank badge (the axe in the coloured hexagon), like the Rank screen
+          - The Coach has the Hercules logo
 
           ### Install
-          1. Download `Forge-v2.1.15-signed.apk`
+          1. Download `Forge-v2.1.16-signed.apk`
           2. If Android refuses to install over the old version, uninstall Forge first. Each build is signed with a new key, and uninstalling clears saved data
           3. Open the app once, then add the widgets again from the home screen
-        files: android/Forge-v2.1.15-signed.apk
+        files: android/Forge-v2.1.16-signed.apk
         draft: false
         prerelease: false
       env:

@@ -259,6 +259,8 @@ class FocusFragment : Fragment() {
 
     private fun renderNudges(state: FocusState.Snapshot) {
         val day = NudgeStore.today(requireContext())
+        // Only worth showing once there's a focus session today.
+        binding.cardNudges.visibility = if (state.active || day.sessions > 0) View.VISIBLE else View.GONE
         val away = day.awaySeconds + state.currentAwaySeconds
         val focus = day.focusSeconds + if (state.active) state.elapsedSeconds else 0
 
@@ -322,6 +324,7 @@ class FocusFragment : Fragment() {
         val longest = rows.maxOfOrNull { it.second } ?: 1
         binding.tvCatTotal.text = minutesText(totalMinutes)
         binding.tvCatEmpty.visibility = if (rows.isEmpty()) View.VISIBLE else View.GONE
+        binding.cardCategories.visibility = if (rows.isEmpty()) View.GONE else View.VISIBLE
         binding.llCategories.removeAllViews()
         val bars = listOf(R.drawable.bg_xp_progress, R.drawable.bg_bar_rank, R.drawable.bg_bar_green)
         rows.sortedByDescending { it.second }.forEachIndexed { index, (name, minutes) ->
@@ -377,6 +380,11 @@ class FocusFragment : Fragment() {
         binding.rowSetupNotifications.setOnClickListener { openNotificationSettings() }
         binding.rowSetupBattery.setOnClickListener { askBatteryUnrestricted() }
         binding.btnChooseApps.setOnClickListener { showAppPicker() }
+        binding.tvDistractionSettings.setOnClickListener {
+            val open = binding.llDistractionSettings.visibility != View.VISIBLE
+            binding.llDistractionSettings.visibility = if (open) View.VISIBLE else View.GONE
+            binding.tvDistractionSettings.text = if (open) "Nudge settings  ˅" else "Nudge settings  ›"
+        }
         listOf(
             binding.chipNudge1 to 1, binding.chipNudge3 to 3,
             binding.chipNudge5 to 5, binding.chipNudge10 to 10
