@@ -1,0 +1,2 @@
+11-20 16:59:49.666  8987  9009 I TestRunner: started: todayPlanWidgetInflatesWhenEmpty(com.forge.app.DeviceTest)
+11-20 16:59:49.685  8987  9009 I TestRunner: finished: todayPlanWidgetInflatesWhenEmpty(com.forge.app.DeviceTest)

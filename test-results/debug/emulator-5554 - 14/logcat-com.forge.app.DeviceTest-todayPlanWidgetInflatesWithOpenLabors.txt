@@ -1,0 +1,2 @@
+11-20 16:59:49.720  8987  9009 I TestRunner: started: todayPlanWidgetInflatesWithOpenLabors(com.forge.app.DeviceTest)
+11-20 16:59:49.744  8987  9009 I TestRunner: finished: todayPlanWidgetInflatesWithOpenLabors(com.forge.app.DeviceTest)

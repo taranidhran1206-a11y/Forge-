@@ -1,0 +1,2 @@
+11-20 16:59:49.652  8987  9009 I TestRunner: started: streakWidgetInflates(com.forge.app.DeviceTest)
+11-20 16:59:49.665  8987  9009 I TestRunner: finished: streakWidgetInflates(com.forge.app.DeviceTest)

@@ -1,0 +1,2 @@
+11-20 16:59:49.783  8987  9009 I TestRunner: started: dailyLaborXpIsCapped(com.forge.app.XpAndWidgetTest)
+11-20 16:59:49.991  8987  9009 I TestRunner: finished: dailyLaborXpIsCapped(com.forge.app.XpAndWidgetTest)

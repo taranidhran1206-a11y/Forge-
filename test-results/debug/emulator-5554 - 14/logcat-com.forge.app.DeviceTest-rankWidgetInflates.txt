@@ -1,0 +1,2 @@
+11-20 16:59:49.638  8987  9009 I TestRunner: started: rankWidgetInflates(com.forge.app.DeviceTest)
+11-20 16:59:49.650  8987  9009 I TestRunner: finished: rankWidgetInflates(com.forge.app.DeviceTest)

@@ -1,0 +1,2 @@
+11-20 16:59:49.686  8987  9009 I TestRunner: started: widgetTapTicksAndUnticksALabor(com.forge.app.DeviceTest)
+11-20 16:59:49.718  8987  9009 I TestRunner: finished: widgetTapTicksAndUnticksALabor(com.forge.app.DeviceTest)

@@ -1,0 +1,5 @@
+11-20 16:55:13.072  5851  5851 E FrameTracker: force finish cuj, time out: J<IME_INSETS_ANIMATION::0@0@com.forge.app>
+11-20 16:55:55.054  5851  5851 E FrameTracker: force finish cuj, time out: J<IME_INSETS_ANIMATION::0@0@com.forge.app>
+11-20 16:57:08.438  5851  5851 E FrameTracker: force finish cuj, time out: J<IME_INSETS_ANIMATION::1@0@com.forge.app>
+11-20 16:57:12.708  5851  5851 E FrameTracker: force finish cuj, time out: J<IME_INSETS_ANIMATION::0@0@com.forge.app>
+11-20 16:57:20.304  5851  5851 E FrameTracker: force finish cuj, time out: J<IME_INSETS_ANIMATION::1@0@com.forge.app>
