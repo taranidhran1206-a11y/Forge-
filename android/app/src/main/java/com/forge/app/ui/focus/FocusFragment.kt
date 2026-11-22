@@ -500,7 +500,7 @@ class FocusFragment : Fragment() {
         b.tvDistractionStatus.text = when {
             !enabled -> "Nudges you when you stay in apps like Instagram or YouTube"
             !usage -> "Needs usage access to see which app is open"
-            else -> "Tracking your apps all day · nudges after $threshold min in one"
+            else -> "Tracking all day · nudges after $threshold min in one app"
         }
         listOf(b.chipNudge1 to 1, b.chipNudge3 to 3, b.chipNudge5 to 5, b.chipNudge10 to 10).forEach { (chip, m) ->
             chip.setBackgroundResource(if (m == threshold) R.drawable.bg_chip_on else R.drawable.bg_chip_neutral)
