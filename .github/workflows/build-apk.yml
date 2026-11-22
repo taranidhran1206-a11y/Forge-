@@ -53,37 +53,35 @@ jobs:
       run: |
         APK_PATH=$(find android/app/build/outputs/apk/release -name "*.apk" | head -1)
         echo "Found APK: $APK_PATH"
-        cp "$APK_PATH" android/Forge-v2.1.17-signed.apk
-        ls -la android/Forge-v2.1.17-signed.apk
+        cp "$APK_PATH" android/Forge-v2.1.18-signed.apk
+        ls -la android/Forge-v2.1.18-signed.apk
 
     - name: Upload APK Artifact
       uses: actions/upload-artifact@v4
       with:
         name: Forge-APK
-        path: android/Forge-v2.1.17-signed.apk
+        path: android/Forge-v2.1.18-signed.apk
 
     - name: Create Release
       uses: softprops/action-gh-release@v2
       with:
-        tag_name: v2.1.17
-        name: "Forge v2.1.17 — Today's plan on your lock screen"
+        tag_name: v2.1.18
+        name: "Forge v2.1.18 — Cleaner Focus page"
         body: |
-          ## Forge v2.1.17
+          ## Forge v2.1.18
 
           Tested on an Android emulator before release.
 
-          ### Today's plan on the lock screen
-          - A quiet card on your lock screen shows how much of the day has passed and your next labors
-          - Tick the next labor straight from the card
-          - While a focus session runs, the focus timer takes its place, with your next labors under it
-          - On Android 16 / One UI 8 both can show in the Now Bar
-          - To hide it: long-press the card → turn off "Today's plan (lock screen)"
+          ### Changes
+          - The distraction watch is now called **Time tracker**: it tracks your time in each app all day and nudges you when you stay too long in a distracting one
+          - The old manual stopwatch and the "Today by category" card are gone. The Focus page is now just the focus timer and the time tracker
+          - Today's plan stays on your lock screen (from v2.1.17)
 
           ### Install
-          1. Download `Forge-v2.1.17-signed.apk`
+          1. Download `Forge-v2.1.18-signed.apk`
           2. If Android refuses to install over the old version, uninstall Forge first. Each build is signed with a new key, and uninstalling clears saved data
           3. Open the app once, then add the widgets again from the home screen
-        files: android/Forge-v2.1.17-signed.apk
+        files: android/Forge-v2.1.18-signed.apk
         draft: false
         prerelease: false
       env:

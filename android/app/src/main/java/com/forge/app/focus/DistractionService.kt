@@ -255,7 +255,7 @@ class DistractionService : Service() {
             (top?.let { " · most on ${Distraction.label(this, it.key)}" } ?: "")
         return NotificationCompat.Builder(this, CHANNEL_WATCH)
             .setSmallIcon(R.drawable.ic_shield_check)
-            .setContentTitle("Distraction watch is on")
+            .setContentTitle("Time tracker is on")
             .setContentText(text)
             .setOngoing(true)
             .setOnlyAlertOnce(true)
@@ -284,7 +284,7 @@ class DistractionService : Service() {
 
     private fun createChannels() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return
-        val watch = NotificationChannel(CHANNEL_WATCH, "Distraction watch", NotificationManager.IMPORTANCE_MIN).apply {
+        val watch = NotificationChannel(CHANNEL_WATCH, "Time tracker", NotificationManager.IMPORTANCE_MIN).apply {
             description = "Quiet notice that Forge is watching for distracting apps"
             setShowBadge(false)
         }

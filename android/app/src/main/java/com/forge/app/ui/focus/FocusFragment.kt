@@ -324,7 +324,7 @@ class FocusFragment : Fragment() {
         val longest = rows.maxOfOrNull { it.second } ?: 1
         binding.tvCatTotal.text = minutesText(totalMinutes)
         binding.tvCatEmpty.visibility = if (rows.isEmpty()) View.VISIBLE else View.GONE
-        binding.cardCategories.visibility = if (rows.isEmpty()) View.GONE else View.VISIBLE
+        binding.cardCategories.visibility = View.GONE // the time tracker card covers today's time now
         binding.llCategories.removeAllViews()
         val bars = listOf(R.drawable.bg_xp_progress, R.drawable.bg_bar_rank, R.drawable.bg_bar_green)
         rows.sortedByDescending { it.second }.forEachIndexed { index, (name, minutes) ->
@@ -500,7 +500,7 @@ class FocusFragment : Fragment() {
         b.tvDistractionStatus.text = when {
             !enabled -> "Nudges you when you stay in apps like Instagram or YouTube"
             !usage -> "Needs usage access to see which app is open"
-            else -> "Watching all day · nudges after $threshold min in one app"
+            else -> "Tracking your apps all day · nudges after $threshold min in one"
         }
         listOf(b.chipNudge1 to 1, b.chipNudge3 to 3, b.chipNudge5 to 5, b.chipNudge10 to 10).forEach { (chip, m) ->
             chip.setBackgroundResource(if (m == threshold) R.drawable.bg_chip_on else R.drawable.bg_chip_neutral)

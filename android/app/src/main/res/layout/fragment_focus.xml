@@ -247,7 +247,7 @@
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Distraction watch"
+                                    android:text="Time tracker"
                                     android:textColor="#F5F5F5"
                                     android:textSize="@dimen/t_row"
                                     android:textStyle="bold" />
@@ -702,6 +702,7 @@
 
                     <LinearLayout
                         android:id="@+id/card_time_tracker"
+                        android:visibility="gone"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
