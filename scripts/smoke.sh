@@ -87,6 +87,14 @@ sleep 11
 # The emulator's launcher sometimes shows "isn't responding" over the app; dismiss it
 for i in 1 2 3; do tap text "Wait" >/dev/null 2>&1 || break; sleep 2; done
 shot 01_today; alive "launch" launch
+# Lock-screen plan card
+adb shell dumpsys notification --noredact > "$OUT/notifications_plan.txt" 2>/dev/null
+if grep -q "|$PKG|2200|" "$OUT/notifications_plan.txt"; then note "PASS     Today's plan card is posted"; else note "FAIL     Today's plan card missing"; fi
+grep -A40 "|$PKG|2200|" "$OUT/notifications_plan.txt" | grep -E "android.title=|android.subText=|android.bigText=|requestPromoted" | head -5 >> "$REPORT"
+adb shell input keyevent KEYCODE_SLEEP; sleep 2; adb shell input keyevent KEYCODE_WAKEUP; sleep 2
+shot 01b_lockscreen_plan
+adb shell wm dismiss-keyguard; sleep 2
+adb shell monkey -p $PKG -c android.intent.category.LAUNCHER 1 >/dev/null 2>&1; sleep 3
 if [ -n "${old_count:-}" ]; then
   new_count=$(text_of tv_labor_count)
   [ "$new_count" = "$old_count" ] && note "PASS     upgrade kept today's labors ($new_count)" || note "FAIL     upgrade lost data: before='$old_count' after='$new_count'"
@@ -103,6 +111,7 @@ note "LABORS   count before='$before' after='$after'"
 # --- Focus session and nudge
 tap id nav_focus; shot 03_focus; alive "open Focus" focus
 tap id btn_focus_start; sleep 3; shot 04_focus_running; alive "start focus" focusstart
+if adb shell dumpsys notification --noredact | grep -q "|$PKG|2200|"; then note "FAIL     plan card should hide during focus"; else note "PASS     plan card hides while the focus timer runs"; fi
 note "FOCUS    label='$(text_of tv_focus_label)' time='$(text_of tv_focus_time)' (expect REMAINING)"
 adb shell input keyevent KEYCODE_HOME; sleep 28
 adb shell dumpsys notification --noredact > "$OUT/notifications.txt" 2>/dev/null
@@ -117,6 +126,8 @@ sleep 5
 tap id nav_focus; sleep 2; shot 06_focus_after_return; alive "return to Focus" focusreturn
 note "NUDGES   count='$(text_of tv_nudge_count)' drifts='$(text_of tv_drift_count)' away='$(text_of tv_away_time)'"
 tap id btn_focus_stop; sleep 2; alive "end focus" focusend
+sleep 2
+if adb shell dumpsys notification --noredact | grep -q "|$PKG|2200|"; then note "PASS     plan card is back after the session"; else note "FAIL     plan card did not come back"; fi
 
 # --- Distraction watch: Settings stands in for a distracting app
 adb shell appops set $PKG GET_USAGE_STATS allow

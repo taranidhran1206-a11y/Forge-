@@ -160,6 +160,8 @@ class FocusService : Service() {
         active = true
         running = true
 
+        com.forge.app.util.PlanCard.focusActive = true
+        com.forge.app.util.PlanCard.update(this)
         try {
             startForeground(NOTIF_SESSION, buildSessionNotification())
         } catch (_: Exception) {
@@ -257,6 +259,8 @@ class FocusService : Service() {
             FocusState.Snapshot(totalSeconds = idleSeconds, remainingSeconds = idleSeconds)
         )
         ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE)
+        com.forge.app.util.PlanCard.focusActive = false
+        com.forge.app.util.PlanCard.update(this)
         stopSelf()
     }
 
@@ -333,7 +337,10 @@ class FocusService : Service() {
             .setOnlyAlertOnce(true)
             .setColor(0xFFE53935.toInt())
             .setContentIntent(openAppIntent())
+            .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+            .addExtras(com.forge.app.util.PlanCard.promoteExtras())
 
+        val next = com.forge.app.util.PlanCard.openLabors(this).take(3)
         if (running) {
             builder.setContentText("Shield wall is up. Leaving Forge gets you a nudge.")
                 .setWhen(System.currentTimeMillis() + remainingMs)
@@ -348,6 +355,10 @@ class FocusService : Service() {
                 .addAction(0, "Resume", serviceIntent(ACTION_RESUME, 12))
         }
         builder.addAction(0, "End", serviceIntent(ACTION_STOP, 13))
+        if (next.isNotEmpty()) {
+            builder.setStyle(NotificationCompat.BigTextStyle().bigText(
+                "Then:\n" + next.joinToString("\n") { "○  ${it.name}" }))
+        }
         return builder.build()
     }
 
@@ -444,6 +455,10 @@ class FocusService : Service() {
     override fun onDestroy() {
         handler.removeCallbacks(tick)
         releaseWakeLock()
+        if (com.forge.app.util.PlanCard.focusActive) {
+            com.forge.app.util.PlanCard.focusActive = false
+            com.forge.app.util.PlanCard.update(this)
+        }
         super.onDestroy()
     }
 }

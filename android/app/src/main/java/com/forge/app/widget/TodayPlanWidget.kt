@@ -33,6 +33,20 @@ class TodayPlanWidget : AppWidgetProvider() {
         fun triggerUpdate(context: Context) {
             WidgetHelper.pushAll(context)
         }
+
+        fun readLabors(context: Context): List<WidgetLabor> {
+            val prefs = context.getSharedPreferences("forge_widget_prefs", Context.MODE_PRIVATE)
+            val stored: List<WidgetLabor> = try {
+                val type = object : TypeToken<List<WidgetLabor>>() {}.type
+                Gson().fromJson<List<WidgetLabor>>(prefs.getString("labors_json", "[]") ?: "[]", type) ?: emptyList()
+            } catch (_: Exception) {
+                emptyList()
+            }
+            // A new day starts unchecked even before the app is opened
+            val today = SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date())
+            val sameDay = prefs.getString("labors_date", today) == today
+            return if (sameDay) stored else stored.map { it.copy(done = false) }
+        }
     }
 
     data class WidgetLabor(val id: Long = 0, val name: String = "", val done: Boolean = false)
@@ -89,19 +103,6 @@ class TodayPlanWidget : AppWidgetProvider() {
         WidgetSyncOnUpdate.refresh(this, context)
     }
 
-    private fun readLabors(context: Context): List<WidgetLabor> {
-        val prefs = context.getSharedPreferences("forge_widget_prefs", Context.MODE_PRIVATE)
-        val stored: List<WidgetLabor> = try {
-            val type = object : TypeToken<List<WidgetLabor>>() {}.type
-            Gson().fromJson<List<WidgetLabor>>(prefs.getString("labors_json", "[]") ?: "[]", type) ?: emptyList()
-        } catch (_: Exception) {
-            emptyList()
-        }
-        // A new day starts unchecked even before the app is opened
-        val today = SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date())
-        val sameDay = prefs.getString("labors_date", today) == today
-        return if (sameDay) stored else stored.map { it.copy(done = false) }
-    }
 
     private fun updateWidget(context: Context, manager: AppWidgetManager, widgetId: Int) {
         manager.updateAppWidget(widgetId, buildViews(context))

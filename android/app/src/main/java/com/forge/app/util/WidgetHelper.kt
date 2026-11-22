@@ -79,6 +79,7 @@ object WidgetHelper {
             }
         } catch (_: Exception) {
         }
+        PlanCard.update(app)
     }
 
     /** A refresh just after midnight, so the date, ticks and streak turn over on time. */
