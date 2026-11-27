@@ -142,7 +142,7 @@ class AlarmActivity : AppCompatActivity() {
         }
         val previewView = PreviewView(this).apply { scaleType = PreviewView.ScaleType.FILL_CENTER }
         box.addView(previewView, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT))
-        content.addView(box, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, 1f).apply { bottomMargin = Kit.dp(this, 12) })
+        content.addView(box, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, 1f).apply { bottomMargin = Kit.dp(this@AlarmActivity, 12) })
 
         content.addView(Kit.quiet(this, "Camera not working? Do 5 sums instead") { stopCamera(); showMath(5) })
         if (preview) content.addView(Kit.quiet(this, "Close practice") { finish() })
