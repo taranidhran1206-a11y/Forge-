@@ -77,12 +77,16 @@ class MainActivity : AppCompatActivity() {
             }
             WidgetHelper.updateAllWidgets(this@MainActivity, repository)
         }
+        // Send this session's changes to other devices
+        com.forge.app.sync.SyncWorker.kick(this, force = true)
     }
 
     override fun onResume() {
         super.onResume()
         // Keeps the watch running after the system or the user stopped it
         com.forge.app.focus.DistractionService.start(this)
+        // Bring in changes made on other devices
+        com.forge.app.sync.SyncWorker.kick(this)
     }
 
     override fun onStart() {

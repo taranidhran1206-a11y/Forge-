@@ -23,5 +23,4 @@
     <item name="btn_fuel_save" type="id" />
     <item name="btn_verdict_run" type="id" />
     <item name="tv_verdict_score" type="id" />
-    <item name="card_account" type="id" />
 </resources>

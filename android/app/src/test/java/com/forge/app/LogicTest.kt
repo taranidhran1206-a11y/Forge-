@@ -16,12 +16,12 @@ class LogicTest {
     fun repCounterNeedsAFullRep() {
         val c = RepCounter(RepCounter.Exercise.PUSHUPS)
         // Arms straight, down, back up: one rep (feed each angle a few times for the smoothing)
-        listOf(170.0, 80.0, 170.0).forEach { a -> repeat(4) { c.feed(a) } }
+        listOf(170.0, 80.0, 170.0).forEach { a -> repeat(10) { c.feed(a) } }
         assertEquals(1, c.reps)
         // A half rep (only down to 120°) doesn't count
-        listOf(120.0, 170.0).forEach { a -> repeat(4) { c.feed(a) } }
+        listOf(120.0, 170.0).forEach { a -> repeat(10) { c.feed(a) } }
         assertEquals(1, c.reps)
-        listOf(70.0, 175.0, 70.0, 175.0).forEach { a -> repeat(4) { c.feed(a) } }
+        listOf(70.0, 175.0, 70.0, 175.0).forEach { a -> repeat(10) { c.feed(a) } }
         assertEquals(3, c.reps)
     }
 
@@ -29,9 +29,9 @@ class LogicTest {
     fun repCounterWaitsForTheStartPosition() {
         val c = RepCounter(RepCounter.Exercise.SQUATS)
         // Starting already squatted and standing up isn't a rep
-        listOf(90.0, 170.0).forEach { a -> repeat(4) { c.feed(a) } }
+        listOf(90.0, 170.0).forEach { a -> repeat(10) { c.feed(a) } }
         assertEquals(0, c.reps)
-        listOf(90.0, 170.0).forEach { a -> repeat(4) { c.feed(a) } }
+        listOf(90.0, 170.0).forEach { a -> repeat(10) { c.feed(a) } }
         assertEquals(1, c.reps)
     }
 

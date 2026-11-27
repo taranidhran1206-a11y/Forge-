@@ -4,6 +4,12 @@ plugins {
     id 'kotlin-kapt'
 }
 
+// Firebase project for Google sign-in and sync (android/firebase.properties). Without it
+// the build still works; sync just stays hidden.
+def firebase = new Properties()
+def firebaseFile = rootProject.file('firebase.properties')
+if (firebaseFile.exists()) firebaseFile.withInputStream { firebase.load(it) }
+
 android {
     namespace 'com.forge.app'
     compileSdk 34
@@ -15,6 +21,11 @@ android {
         versionCode 35
         versionName "2.2.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField "String", "FIREBASE_PROJECT_ID", "\"${firebase.getProperty('projectId', '')}\""
+        buildConfigField "String", "FIREBASE_API_KEY", "\"${firebase.getProperty('apiKey', '')}\""
+        buildConfigField "String", "FIREBASE_APP_ID", "\"${firebase.getProperty('appId', '')}\""
+        buildConfigField "String", "FIREBASE_WEB_CLIENT_ID", "\"${firebase.getProperty('webClientId', '')}\""
     }
 
     // Release builds are signed with Forge's permanent key, kept off GitHub. Without the key
@@ -118,6 +129,15 @@ dependencies {
     implementation 'androidx.camera:camera-lifecycle:1.3.4'
     implementation 'androidx.camera:camera-view:1.3.4'
     implementation 'com.google.mlkit:pose-detection:18.0.0-beta5'
+
+    // Google sign-in and sync between devices
+    implementation platform('com.google.firebase:firebase-bom:33.7.0')
+    implementation 'com.google.firebase:firebase-auth'
+    implementation 'com.google.firebase:firebase-firestore'
+    implementation 'androidx.credentials:credentials:1.3.0'
+    implementation 'androidx.credentials:credentials-play-services-auth:1.3.0'
+    implementation 'com.google.android.libraries.identity.googleid:googleid:1.1.1'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.3'
 
     // Unit tests for the counting and scoring logic
     testImplementation 'junit:junit:4.13.2'
