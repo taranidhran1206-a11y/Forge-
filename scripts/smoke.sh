@@ -232,15 +232,37 @@ tap id card_alarm_link && {
 }
 note "TODAY    alarm card='$(text_of tv_alarm_link)'"
 
-# Ring it now, with the screen off, and switch it off with sums
-if adb root >/dev/null 2>&1; then
-  sleep 3; adb wait-for-device
-  adb shell input keyevent KEYCODE_SLEEP; sleep 3
-  adb shell am broadcast -n $PKG/.alarm.AlarmReceiver -a com.forge.app.alarm.RING --ei alarm_id 1 >/dev/null
-  sleep 8; shot 43_alarm_ringing
+# Make the alarm ring in a minute (edit its time the way the app stores it), lock the
+# screen, and let Android fire it for real. Then switch it off with sums.
+adb shell run-as $PKG cat shared_prefs/forge_alarms.xml > "$OUT/alarms_before.xml" 2>/dev/null
+python3 - "$OUT/alarms_before.xml" "$(adb shell date +%H:%M:%S | tr -d '\r')" > "$OUT/alarms_soon.xml" <<'PY'
+import html, json, re, sys
+xml = open(sys.argv[1]).read()
+h, m, s = map(int, sys.argv[2].split(":"))
+m += 2 if s > 40 else 1
+h, m = (h + m // 60) % 24, m % 60
+def fix(match):
+    alarms = json.loads(html.unescape(match.group(1)))
+    for a in alarms:
+        a.update(hour=h, minute=m, days=[], enabled=True)
+    return '<string name="alarms">' + html.escape(json.dumps(alarms), quote=True) + '</string>'
+print(re.sub(r'<string name="alarms">(.*?)</string>', fix, xml, flags=re.S))
+PY
+if grep -q '"hour' "$OUT/alarms_soon.xml" || grep -q 'hour&quot;' "$OUT/alarms_soon.xml"; then
+  adb shell am force-stop $PKG
+  adb shell "run-as $PKG sh -c 'cat > shared_prefs/forge_alarms.xml'" < "$OUT/alarms_soon.xml"
+  adb shell am start -n $PKG/.SplashActivity >/dev/null; sleep 10
+  note "ALARM    next alarm clock: $(adb shell dumpsys alarm | grep -m1 -A2 'nextAlarmClock\|Next alarm clock' | tr -d '\r' | tr '\n' ' ' | cut -c1-160)"
+  adb shell input keyevent KEYCODE_HOME; sleep 1
+  adb shell input keyevent KEYCODE_SLEEP
+  for i in $(seq 1 30); do
+    sleep 5
+    adb shell dumpsys activity services $PKG/.alarm.AlarmService | grep -q "ServiceRecord" && break
+  done
+  sleep 5; shot 43_alarm_ringing
   alive "alarm rings" alarmring
-  dump; grep -q "Wake-up challenge" "$OUT/ui.xml" && note "PASS     the alarm opens its challenge over the lock screen" || note "FAIL     the challenge screen didn't open"
-  adb shell dumpsys activity services $PKG/.alarm.AlarmService | grep -q "ServiceRecord" && note "PASS     the alarm is ringing" || note "FAIL     the ring service isn't running"
+  adb shell dumpsys activity services $PKG/.alarm.AlarmService | grep -q "ServiceRecord" && note "PASS     the alarm rang on time" || note "FAIL     the alarm didn't ring"
+  dump; grep -qi "Wake-up challenge" "$OUT/ui.xml" && note "PASS     the challenge opened over the lock screen" || note "FAIL     the challenge screen didn't open"
   tap text "Camera not working? Do 5 sums instead"; sleep 2
   for i in 1 2 3 4 5 6; do
     q=$(dump; python3 - "$OUT/ui.xml" <<'PY'
@@ -264,7 +286,7 @@ PY
   adb shell input keyevent KEYCODE_WAKEUP; adb shell wm dismiss-keyguard; sleep 2
   adb shell am start -n $PKG/.SplashActivity >/dev/null; sleep 6
 else
-  note "INFO     adb root not available; alarm ring not tested"
+  note "FAIL     couldn't read the saved alarm to move it"
 fi
 
 # --- Coach

@@ -32,6 +32,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        // Wake-up alarms are lost if Android force-stops Forge; book them again
+        com.forge.app.alarm.AlarmStore.rescheduleAll(this)
 
         // Dark status & nav bars
         window.statusBarColor = 0xFF0A0A0A.toInt()
