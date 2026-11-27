@@ -1,6 +1,12 @@
 Exercise list
 
-The exercise names, body parts, equipment and target muscles in Forge's gym log
+Most exercises, with their muscles, instructions and start/end photos, come from
+Free Exercise DB by yuhonas (https://github.com/yuhonas/free-exercise-db),
+released into the public domain under the Unlicense (https://unlicense.org).
+Photos load from that repository when you open an exercise.
+
+The remaining exercise names, body parts, equipment and target muscles
+in Forge's gym log
 come from ExerciseDB v1 by AscendAPI (https://exercisedb.dev/), as published in
 hasaneyldrm/exercises-dataset and carried in the openGym catalogue
 (https://github.com/DuarteSantos8/openGym), where these entries are marked

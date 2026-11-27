@@ -12,6 +12,8 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.asLiveData
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.forge.app.R
@@ -72,8 +74,42 @@ class TodayFragment : Fragment() {
             } catch (_: Exception) {
             }
         }
+        binding.cardFuelLink.setOnClickListener {
+            try {
+                findNavController().navigate(R.id.nav_fuel)
+            } catch (_: Exception) {
+            }
+        }
+        binding.cardVerdictLink.setOnClickListener {
+            com.forge.app.ui.verdict.VerdictUi.open(requireContext(), viewLifecycleOwner.lifecycleScope) { refreshLinkCards() }
+        }
+        binding.cardAlarmLink.setOnClickListener {
+            com.forge.app.alarm.AlarmUi.open(requireContext(), viewLifecycleOwner.lifecycleScope) { refreshLinkCards() }
+        }
 
         observeViewModel()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        refreshLinkCards()
+    }
+
+    /** The one-line status on the Fuel, Verdict and Alarm cards. */
+    private fun refreshLinkCards() {
+        val b = _binding ?: return
+        val c = requireContext().applicationContext
+        b.tvVerdictLink.text = com.forge.app.ui.verdict.VerdictUi.cardLine(c)
+        b.tvAlarmLink.text = com.forge.app.alarm.AlarmUi.cardLine(c)
+        viewLifecycleOwner.lifecycleScope.launch {
+            val left = com.forge.app.ui.fuel.FuelFragment.todaySummary(c)
+            val bb = _binding ?: return@launch
+            bb.tvFuelLink.text = when {
+                left == null -> "Snap a meal to log calories"
+                left.first >= 0 -> "%,d kcal left · %dg protein to go".format(left.first, maxOf(0, left.second))
+                else -> "%,d kcal over · %dg protein to go".format(-left.first, maxOf(0, left.second))
+            }
+        }
     }
 
     /** Side by side in landscape and on tablets, stacked on a phone in portrait. */

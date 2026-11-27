@@ -88,12 +88,67 @@ object Gemini {
             })
         }.toString()
 
+        post(key, body, FIRST_TRY_SECONDS, LATER_TRY_SECONDS)
+    }
+
+    /** Text and pictures for [ask]. */
+    sealed class Part {
+        data class Text(val text: String) : Part()
+        class Image(val bytes: ByteArray, val mime: String = "image/jpeg") : Part()
+    }
+
+    /**
+     * One request with text and optional images. With [json] the model must answer with
+     * a JSON value (no prose), which is what the food and critique features parse.
+     */
+    suspend fun ask(
+        context: Context,
+        system: String,
+        parts: List<Part>,
+        json: Boolean = false,
+        maxTokens: Int = 2000,
+        temperature: Double = 0.4
+    ): String = withContext(Dispatchers.IO) {
+        val key = activeKey(context)
+        if (key.isEmpty()) throw Failure("no API key is set")
+        val arr = JSONArray()
+        parts.forEach { p ->
+            when (p) {
+                is Part.Text -> arr.put(JSONObject().put("text", p.text))
+                is Part.Image -> arr.put(JSONObject().put("inline_data", JSONObject()
+                    .put("mime_type", p.mime)
+                    .put("data", Base64.encodeToString(p.bytes, Base64.NO_WRAP))))
+            }
+        }
+        val body = JSONObject().apply {
+            put("system_instruction", JSONObject().put("parts", JSONArray().put(JSONObject().put("text", system))))
+            put("contents", JSONArray().put(JSONObject().put("role", "user").put("parts", arr)))
+            put("generationConfig", JSONObject().apply {
+                put("temperature", temperature)
+                put("maxOutputTokens", maxTokens)
+                if (json) put("responseMimeType", "application/json")
+            })
+        }.toString()
+        val hasImage = parts.any { it is Part.Image }
+        post(key, body, if (hasImage) 30L else FIRST_TRY_SECONDS, if (hasImage) 45L else LATER_TRY_SECONDS)
+    }
+
+    /** Pulls the first JSON object or array out of a reply, even if it came wrapped in ``` fences. */
+    fun jsonOf(reply: String): String {
+        val t = reply.trim().removePrefix("```json").removePrefix("```").removeSuffix("```").trim()
+        val start = t.indexOfFirst { it == '{' || it == '[' }
+        val end = t.indexOfLast { it == '}' || it == ']' }
+        return if (start >= 0 && end > start) t.substring(start, end + 1) else t
+    }
+
+    /** Tries each model in turn; returns the first non-empty reply. */
+    private fun post(key: String, body: String, firstTry: Long, laterTry: Long): String {
         var lastError = "no response"
         val errors = mutableListOf<String>()
         val order = listOfNotNull(lastWorkingModel) + MODELS.filter { it != lastWorkingModel }
         order.forEachIndexed { attempt, model ->
             val call = client.newBuilder()
-                .callTimeout(if (attempt == 0) FIRST_TRY_SECONDS else LATER_TRY_SECONDS, TimeUnit.SECONDS)
+                .callTimeout(if (attempt == 0) firstTry else laterTry, TimeUnit.SECONDS)
                 .build()
             val request = Request.Builder()
                 .url("https://generativelanguage.googleapis.com/v1beta/models/$model:generateContent")
@@ -107,7 +162,7 @@ object Gemini {
                         val reply = parseReply(text)
                         if (reply.isNotBlank()) {
                             lastWorkingModel = model
-                            return@withContext reply
+                            return reply
                         }
                         lastError = "the model returned an empty reply"
                     } else {

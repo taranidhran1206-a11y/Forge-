@@ -427,6 +427,120 @@
                     </LinearLayout>
 
                     <LinearLayout
+                        android:id="@+id/card_fuel_link"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:minHeight="@dimen/tap_min"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:background="@drawable/bg_card"
+                        android:padding="@dimen/card_pad"
+                        android:layout_marginBottom="12dp">
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+                            <TextView
+                                style="@style/Forge.Label"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Fuel" />
+                            <TextView
+                                android:id="@+id/tv_fuel_link"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:maxLines="2"
+                                android:ellipsize="end"
+                                android:text="Snap a meal to log calories"
+                                android:textColor="#F5F5F5"
+                                android:textSize="@dimen/t_row"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_chevron"
+                            android:contentDescription="@null" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/card_verdict_link"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:minHeight="@dimen/tap_min"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:background="@drawable/bg_card"
+                        android:padding="@dimen/card_pad"
+                        android:layout_marginBottom="12dp">
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+                            <TextView
+                                style="@style/Forge.Label"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Hercules&apos; verdict" />
+                            <TextView
+                                android:id="@+id/tv_verdict_link"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:maxLines="2"
+                                android:ellipsize="end"
+                                android:text="Score today and get tomorrow&apos;s fixes"
+                                android:textColor="#F5F5F5"
+                                android:textSize="@dimen/t_row"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_chevron"
+                            android:contentDescription="@null" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/card_alarm_link"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:minHeight="@dimen/tap_min"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:background="@drawable/bg_card"
+                        android:padding="@dimen/card_pad"
+                        android:layout_marginBottom="12dp">
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+                            <TextView
+                                style="@style/Forge.Label"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Wake-up challenge" />
+                            <TextView
+                                android:id="@+id/tv_alarm_link"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:maxLines="2"
+                                android:ellipsize="end"
+                                android:text="Alarms you switch off with push-ups"
+                                android:textColor="#F5F5F5"
+                                android:textSize="@dimen/t_row"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_chevron"
+                            android:contentDescription="@null" />
+                    </LinearLayout>
+
+                    <LinearLayout
                         android:id="@+id/card_plan_link"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

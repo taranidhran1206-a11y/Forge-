@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Ids for screens built in code, so tests can find them -->
+    <item name="tv_gym_title" type="id" />
+    <item name="btn_start_workout" type="id" />
+    <item name="btn_add_exercise" type="id" />
+    <item name="btn_finish_workout" type="id" />
+    <item name="btn_discard_workout" type="id" />
+    <item name="tv_gym_credit" type="id" />
+    <item name="tv_active_name" type="id" />
+    <item name="tv_active_summary" type="id" />
+    <item name="tv_active_time" type="id" />
+    <item name="ll_exercises" type="id" />
+    <item name="et_exercise_search" type="id" />
+    <item name="et_set_kg" type="id" />
+    <item name="et_set_reps" type="id" />
+    <item name="btn_set_done" type="id" />
+    <item name="tv_fuel_left" type="id" />
+    <item name="btn_fuel_describe" type="id" />
+    <item name="btn_fuel_snap" type="id" />
+    <item name="btn_fuel_scan" type="id" />
+    <item name="et_fuel_describe" type="id" />
+    <item name="btn_fuel_save" type="id" />
+    <item name="btn_verdict_run" type="id" />
+    <item name="tv_verdict_score" type="id" />
+    <item name="card_account" type="id" />
+</resources>
