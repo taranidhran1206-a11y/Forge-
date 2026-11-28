@@ -43,7 +43,7 @@ jobs:
     - name: Unit tests
       run: |
         cd android
-        ./gradlew testDebugUnitTest --no-daemon
+        ./gradlew testDebugUnitTest compileDebugAndroidTestKotlin --no-daemon
 
     - name: Build release APK (unsigned)
       run: |

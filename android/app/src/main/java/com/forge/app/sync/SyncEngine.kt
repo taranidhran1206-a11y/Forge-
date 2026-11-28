@@ -436,7 +436,8 @@ object SyncEngine {
                 db.query("SELECT COALESCE(SUM(amount), 0) FROM xp_events WHERE date = ?", arrayOf<Any?>(d)).use { if (it.moveToFirst()) xp = it.getLong(0) }
                 val cv = ContentValues().apply { put("laborsCompleted", done); put("laborsTotal", total); put("totalXp", xp) }
                 if (db.update("daily_stats", SQLiteDatabase.CONFLICT_NONE, cv, "date = ?", arrayOf(d)) == 0) {
-                    cv.put("date", d)
+                    cv.put("date", d); cv.put("focusMinutes", 0); cv.put("reflectionDone", 0); cv.put("auditDone", 0)
+                    cv.put("briefDone", 0); cv.put("streakCount", 0); cv.put("moodScore", -1)
                     db.insert("daily_stats", SQLiteDatabase.CONFLICT_IGNORE, cv)
                 }
             }
