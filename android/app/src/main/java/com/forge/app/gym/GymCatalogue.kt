@@ -73,6 +73,7 @@ object GymCatalogue {
     /** Matches every word of the query against name, muscles and equipment; photo entries first. */
     fun search(context: Context, query: String, group: String? = null, limit: Int = 80): List<Exercise> {
         val words = query.lowercase().split(' ').filter { it.isNotBlank() }
+        val phrase = words.joinToString(" ")
         return all(context).asSequence()
             .filter { group == null || it.group == group }
             .filter { e ->
@@ -82,12 +83,23 @@ object GymCatalogue {
                 }
             }
             .sortedWith(compareBy<Exercise>(
-                { if (words.isNotEmpty() && it.name.lowercase().startsWith(words.first())) 0 else 1 },
+                { rank(it.name.lowercase(), phrase, words) },
                 { if (it.hasPhotos) 0 else 1 },
                 { it.name.length }
             ))
             .take(limit)
             .toList()
+    }
+
+    /** Lower is better: the exact name, then names starting with what was typed, then names holding every word. */
+    private fun rank(name: String, phrase: String, words: List<String>): Int = when {
+        words.isEmpty() -> 0
+        name == phrase -> 0
+        name.startsWith(phrase) -> 1
+        name.contains(phrase) -> 2
+        words.all { w -> name.split(' ', '-', '(', ')').any { it.startsWith(w) } } -> 3
+        name.startsWith(words.first()) -> 4
+        else -> 5
     }
 
     /** Other ways to train the same muscle: same equipment first, then easier/equal level. */

@@ -180,6 +180,9 @@ tap id card_gym_link && {
   tap text "Exercise library" && { sleep 3; shot 26_gym_library; alive "exercise library" gymlib; adb shell input keyevent KEYCODE_BACK; sleep 1; }
   adb shell input keyevent KEYCODE_BACK; sleep 2
 }
+# Leave any sheet still open so the rest of the run isn't stuck behind it
+for i in 1 2; do has text "Close" && { tap text "Close"; sleep 1; }; done
+has id nav_today || { adb shell input keyevent KEYCODE_BACK; sleep 1; adb shell input keyevent KEYCODE_BACK; sleep 1; }
 tap id nav_today; sleep 2
 note "GYM      labors before='$before_gym' after='$(text_of tv_labor_count)' (Exercise labor should tick)"
 
