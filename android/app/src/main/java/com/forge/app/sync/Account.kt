@@ -24,11 +24,15 @@ object Account {
 
     private const val APP_NAME = "forge"
 
+    /** Device tests point sync at the Firebase emulator through this. */
+    @Volatile internal var testApp: FirebaseApp? = null
+
     val configured: Boolean
-        get() = BuildConfig.FIREBASE_PROJECT_ID.isNotBlank() && BuildConfig.FIREBASE_API_KEY.isNotBlank() &&
+        get() = testApp != null || BuildConfig.FIREBASE_PROJECT_ID.isNotBlank() && BuildConfig.FIREBASE_API_KEY.isNotBlank() &&
             BuildConfig.FIREBASE_APP_ID.isNotBlank() && BuildConfig.FIREBASE_WEB_CLIENT_ID.isNotBlank()
 
     fun app(c: Context): FirebaseApp? {
+        testApp?.let { return it }
         if (!configured) return null
         val ctx = c.applicationContext
         return FirebaseApp.getApps(ctx).firstOrNull { it.name == APP_NAME } ?: synchronized(this) {
@@ -82,9 +86,12 @@ object Account {
         }
     }
 
-    /** Signs out of this device. Data on the phone stays; nothing is deleted online. */
+    /**
+     * Signs out of this device. Data on the phone stays and nothing is deleted online. What
+     * was synced is remembered, so signing back in to the same account doesn't double
+     * anything; a different account starts fresh.
+     */
     fun signOut(c: Context) {
         try { auth(c)?.signOut() } catch (_: Exception) {}
-        SyncEngine.forget(c)
     }
 }

@@ -52,6 +52,17 @@ jobs:
         cd android
         ./gradlew assembleDebug assembleDebugAndroidTest --no-daemon
 
+    - name: Start the Firebase emulators for the sync test
+      run: |
+        npm install -g firebase-tools@13 > /tmp/firebase-install.log 2>&1 || tail -20 /tmp/firebase-install.log
+        printf '{"emulators": {"auth": {"host": "0.0.0.0", "port": 9099}, "firestore": {"host": "0.0.0.0", "port": 8080}}}' > /tmp/firebase.json
+        cd /tmp && nohup firebase emulators:start --only auth,firestore --project demo-forge --config /tmp/firebase.json > /tmp/firebase.log 2>&1 &
+        for i in $(seq 1 60); do
+          curl -s -o /dev/null localhost:8080 && curl -s -o /dev/null localhost:9099 && echo "emulators up" && break
+          sleep 2
+        done
+        tail -5 /tmp/firebase.log
+
     - name: Run the app on an emulator
       uses: reactivecircus/android-emulator-runner@v2
       with:
@@ -62,6 +73,10 @@ jobs:
         disable-animations: true
         emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim
         script: bash scripts/smoke.sh
+
+    - name: Keep the Firebase emulator log
+      if: always()
+      run: mkdir -p smoke-out && cp /tmp/firebase.log smoke-out/firebase.log 2>/dev/null || true
 
     - name: Upload results
       if: always()

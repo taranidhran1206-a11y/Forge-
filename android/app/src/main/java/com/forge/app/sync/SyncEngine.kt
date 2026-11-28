@@ -212,6 +212,10 @@ object SyncEngine {
         return out
     }
 
+    /** The shared document id for a row every device makes for itself (tests use it too). */
+    internal fun naturalId(table: String, remoteForm: Map<String, Any?>): String? =
+        TABLES.firstOrNull { it.name == table }?.let { naturalId(it, remoteForm) }
+
     private fun naturalId(t: Table, remoteForm: Map<String, Any?>): String? {
         val cols = t.natural ?: return null
         val s = cols.joinToString("|") { (remoteForm[it] ?: "").toString().trim().lowercase() }
@@ -229,6 +233,10 @@ object SyncEngine {
             val app = c.applicationContext
             val user = Account.user(app) ?: throw IllegalStateException("Not signed in")
             val fs = Account.firestore(app) ?: throw IllegalStateException("Sync isn't set up")
+            // Another account on this device: what was synced before belongs to the old one.
+            val lastUid = prefs(app).getString("uid", null)
+            if (lastUid != null && lastUid != user.uid) forget(app)
+            prefs(app).edit().putString("uid", user.uid).apply()
             val root = fs.collection("users").document(user.uid)
             val device = deviceId(app)
             var pushed = 0
