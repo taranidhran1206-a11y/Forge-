@@ -1,0 +1,2 @@
+11-28 03:14:16.136 11541 11562 I TestRunner: started: ranksArePacedForMonths(com.forge.app.XpAndWidgetTest)
+11-28 03:14:16.138 11541 11562 I TestRunner: finished: ranksArePacedForMonths(com.forge.app.XpAndWidgetTest)

@@ -1,0 +1,90 @@
+GEMINI   gemini-3.8-flash -> 503 This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.
+GEMINI   gemini-3.5-flash -> 200
+GEMINI   gemini-flash-lite-latest -> 200
+Success
+MISSING  text=Wait
+UPGRADE  old version count='1/9'
+Success
+MISSING  text=Wait
+ALIVE    after: launch
+PASS     Today's plan card is posted
+                android.title=String (Today's plan · 1/9 done)
+                android.subText=String (12% of the day has passed)
+                android.bigText=String (○  Meditate
+PASS     upgrade kept today's labors (1/9)
+ALIVE    after: tick labor
+LABORS   count before='1/9' after='0/9'
+PASS     ticking a labor changes the count
+ALIVE    after: open Focus
+ALIVE    after: start focus
+PASS     plan card hides while the focus timer runs
+FOCUS    label='REMAINING' time='24:49' (expect REMAINING)
+PASS     a nudge notification was posted while away
+PASS     the session notification is showing
+    NotificationRecord(0x01ac8c83: pkg=com.forge.app user=UserHandle{0} id=2002 tag=null importance=4 key=0|com.forge.app|2002|null|10192: Notification(channel=forge_focus_nudge shortcut=null contentView=null vibrate=null sound=null defaults=0x0 flags=0x10 color=0xffe53935 category=reminder actions=2 vis=PRIVATE))
+      key=0|com.forge.app|2002|null|10192
+    NotificationRecord(0x09924949: pkg=com.forge.app user=UserHandle{0} id=2001 tag=null importance=2 key=0|com.forge.app|2001|null|10192: Notification(channel=forge_focus_session shortcut=null contentView=null vibrate=null sound=null defaults=0x0 flags=0x6a color=0xffe53935 actions=2 vis=PUBLIC))
+      key=0|com.forge.app|2001|null|10192
+  mSoundNotificationKey=0|com.forge.app|2002|null|10192
+ALIVE    after: return to Focus
+NUDGES   count='1' drifts='1' away='32s'
+ALIVE    after: end focus
+PASS     plan card is back after the session
+MISSING  text=Save
+11-28 03:00:10.506  5624  6840 D ForgeDistraction: front=com.android.settings inUse=true distracting=true streak=60
+11-28 03:00:13.516  5624  6840 D ForgeDistraction: front=com.android.settings inUse=true distracting=true streak=63
+11-28 03:00:16.520  5624  6840 D ForgeDistraction: front=com.android.settings inUse=true distracting=true streak=66
+11-28 03:00:19.529  5624  6840 D ForgeDistraction: front=com.android.settings inUse=true distracting=true streak=69
+11-28 03:00:22.534  5624  6840 D ForgeDistraction: front=com.android.settings inUse=true distracting=true streak=72
+PASS     distraction nudge posted while in a distracting app
+PASS     distraction watch is running
+DISTRACT total='1m' nudges='1'
+ALIVE    after: open Gym
+ALIVE    after: log a set
+FAIL     the set didn't stay ticked
+MISSING  id=btn_finish_workout
+ALIVE    after: finish workout
+PASS     the workout is saved
+MISSING  text=Nice
+FAIL     finished workout not shown
+MISSING  text=Exercise library
+ALIVE    after: exercise library
+GYM      labors before='' after='1/9' (Exercise labor should tick)
+ALIVE    after: open Fuel
+PASS     first-time Fuel goal saved
+MISSING  text=Estimate
+ALIVE    after: estimate a meal
+PASS     the meal estimate opened and was logged
+FUEL     ring=''
+TODAY    fuel='1,930 kcal left · 97g protein to go' verdict='Score today and get tomorrow's fixes' alarm='Alarms you switch off with push-ups'
+ALIVE    after: judge the day
+PASS     the day has a verdict and score
+ALIVE    after: open alarms
+MISSING  text=While using the app
+MISSING  text=WHILE USING THE APP
+MISSING  text=Allow
+PASS     the alarm is saved
+ALARM    scheduled entries for Forge: 14
+TODAY    alarm card='Mon 6:30 AM · 15 push-ups'
+ALARM    next alarm clock:   Next alarm clock information:      user:0 pendingSend:false time:1795835280000 = 2026-11-28 03:08:00.000 = +13s16ms    
+ALIVE    after: alarm rings
+PASS     the alarm rang on time
+PASS     the challenge opened over the lock screen
+PASS     the sums switched the alarm off
+ALIVE    after: open Coach
+ALIVE    after: send coach message
+COACH    ai replies on screen: 1
+COACH    reply: It's 3:09 PM and you're sitting at 0 focus minutes with only 1/9 labors done. Start your **Deep Work Block** right now. Lock in, get on the board, and start earning your XP today.
+ALIVE    after: open Reflect
+ALIVE    after: save reflection
+PASS     the reflection appears under past entries
+PASS     the reflection has a coach insight
+ALIVE    after: open Rank
+RANK     IRON · 35 XP · 265 XP to Bronze
+ALIVE    after: open Plan
+ALIVE    after: widget tick broadcast
+LABORS   count after widget tick='2/9'
+todayDone" value="3"
+ALIVE    after: rotate to landscape
+ALIVE    after: Focus in landscape
+PASS     device tests

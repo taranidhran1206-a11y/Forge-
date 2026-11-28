@@ -1,0 +1,5 @@
+11-28 03:14:06.947 11541 11562 I TestRunner: started: todayPlanWidgetInflatesWithOpenLabors(com.forge.app.DeviceTest)
+11-28 03:14:06.951  1624  1972 W AiAiEcho: LyftNotificationParser Ridesharing ETA not enabled
+11-28 03:14:06.952  1624  1972 W AiAiEcho: SmartspaceNotificationPredictor no parser can handle this notification or notification is invalid
+11-28 03:14:06.968   834   879 D EGL_emulation: app_time_stats: avg=193.82ms min=11.35ms max=1009.63ms count=7
+11-28 03:14:06.978 11541 11562 I TestRunner: finished: todayPlanWidgetInflatesWithOpenLabors(com.forge.app.DeviceTest)

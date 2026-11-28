@@ -1,0 +1,2 @@
+11-28 03:14:07.061 11541 11562 I TestRunner: started: gymLogFromVersionOneSurvives(com.forge.app.MigrationTest)
+11-28 03:14:07.115 11541 11562 I TestRunner: finished: gymLogFromVersionOneSurvives(com.forge.app.MigrationTest)

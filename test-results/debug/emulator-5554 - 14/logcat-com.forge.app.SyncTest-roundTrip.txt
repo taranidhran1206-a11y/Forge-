@@ -1,0 +1,103 @@
+11-28 03:14:07.140 11541 11562 I TestRunner: started: roundTrip(com.forge.app.SyncTest)
+11-28 03:14:07.140  1624  1932 I AiAiEcho: Predicting[0]:
+11-28 03:14:07.140  1624  1932 I AiAiEcho: EchoTargets:
+11-28 03:14:07.140  1624  1932 I AiAiEcho: Filtered by AiAi flag check:
+11-28 03:14:07.141  1624  1932 I AiAiEcho: Ranked targets strategy: SORT, count: 0, ranking metadata:
+11-28 03:14:07.142  1624  1932 I AiAiEcho: #postPredictionTargets: Sending updates to UISurface lockscreen with targets# 0 (types=[])
+11-28 03:14:07.142   834   834 W PageIndicator: Total number of pages invalid: 0. Assuming 1 page.
+11-28 03:14:07.146 11541 11562 D TrafficStats: tagSocket(99) with statsTag=0xffffffff, statsUid=-1
+11-28 03:14:07.149 11541 11562 D TrafficStats: tagSocket(99) with statsTag=0xffffffff, statsUid=-1
+11-28 03:14:07.154   834   957 V WallpaperService: Setting wallpaper dimming: 0
+11-28 03:14:07.166   834   834 D Tonal   : Tonal Palette - index: 4. Main color: ff343e65
+11-28 03:14:07.166   834   834 D Tonal   : Colors: ff0b0c16, ff141627, ff1d2138, ff272d4c, ff343e65, ff41477e, ff4e5597, ff8184a4, ff898cc3, ff9e9ecd, ffb7b6d9, ffd9d7eb, ffefeef7
+11-28 03:14:07.167   834   834 D Tonal   : Gradients:
+11-28 03:14:07.167   834   834 D Tonal   : 	Normal GradientColors(ff343e65, ff343e65)
+11-28 03:14:07.167   834   834 D Tonal   : 	Dark GradientColors(ff272d4c, ff272d4c)
+11-28 03:14:07.167   834   834 D Tonal   : 	Extra dark: GradientColors(ff1d2138, ff1d2138)
+11-28 03:14:07.168 11541 11562 D CompatibilityChangeReporter: Compat change id reported: 183155436; UID 10192; state: ENABLED
+11-28 03:14:07.195 11541 11562 I FirebaseApp: Device unlocked: initializing all Firebase APIs for app forge-test
+11-28 03:14:07.201   834   879 E OpenGLRenderer: Unable to match the desired swap behavior.
+11-28 03:14:07.224   834   880 D LocalImageResolver: Couldn't use ImageDecoder for drawable, falling back to non-resized load.
+11-28 03:14:07.230   834   880 D LocalImageResolver: Couldn't use ImageDecoder for drawable, falling back to non-resized load.
+11-28 03:14:07.238 11541 11562 D CompatibilityChangeReporter: Compat change id reported: 3400644; UID 10192; state: ENABLED
+11-28 03:14:07.288   834   834 D TileServices: Couldn't find tile for ComponentInfo{com.google.android.apps.wellbeing/com.google.android.apps.wellbeing.screen.ui.GrayscaleTileService}(0)
+11-28 03:14:07.310   834   957 V WallpaperService: Setting wallpaper dimming: 0
+11-28 03:14:07.311 11541 11584 W System  : Ignoring header X-Firebase-Locale because its value was null.
+11-28 03:14:07.327   834   834 D Tonal   : Tonal Palette - index: 4. Main color: ff343e65
+11-28 03:14:07.327   834   834 D Tonal   : Colors: ff0b0c16, ff141627, ff1d2138, ff272d4c, ff343e65, ff41477e, ff4e5597, ff8184a4, ff898cc3, ff9e9ecd, ffb7b6d9, ffd9d7eb, ffefeef7
+11-28 03:14:07.327   834   834 D Tonal   : Gradients:
+11-28 03:14:07.327   834   834 D Tonal   : 	Normal GradientColors(ff343e65, ff343e65)
+11-28 03:14:07.327   834   834 D Tonal   : 	Dark GradientColors(ff272d4c, ff272d4c)
+11-28 03:14:07.327   834   834 D Tonal   : 	Extra dark: GradientColors(ff1d2138, ff1d2138)
+11-28 03:14:07.341 11541 11584 D TrafficStats: tagSocket(101) with statsTag=0xffffffff, statsUid=-1
+11-28 03:14:07.679  1624  1972 W AiAiEcho: LyftNotificationParser Ridesharing ETA not enabled
+11-28 03:14:07.679  1624  1972 W AiAiEcho: SmartspaceNotificationPredictor no parser can handle this notification or notification is invalid
+11-28 03:14:07.849 11541 11584 W System  : Ignoring header X-Firebase-Locale because its value was null.
+11-28 03:14:07.867 11541 11584 D FirebaseAuth: Notifying id token listeners about user ( XfM4JapK36Si1BRJgYUDlO6M5WpL ).
+11-28 03:14:07.868 11541 11584 D FirebaseAuth: Notifying auth state listeners about user ( XfM4JapK36Si1BRJgYUDlO6M5WpL ).
+11-28 03:14:07.908   521  2250 D ConnectivityService: requestNetwork for uid/pid:10192/11541 activeRequest: null callbackRequest: 156 [NetworkRequest [ REQUEST id=157, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED Uid: 10192 RequestorUid: 10192 RequestorPkg: com.forge.app UnderlyingNetworks: Null] ]] callback flags: 0 order: 2147483647
+11-28 03:14:07.910   521   760 D WifiNetworkFactory: got request NetworkRequest [ REQUEST id=157, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED Uid: 10192 RequestorUid: 10192 RequestorPkg: com.forge.app UnderlyingNetworks: Null] ]
+11-28 03:14:07.911   521   760 D UntrustedWifiNetworkFactory: got request NetworkRequest [ REQUEST id=157, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED Uid: 10192 RequestorUid: 10192 RequestorPkg: com.forge.app UnderlyingNetworks: Null] ]
+11-28 03:14:07.911   521   760 D OemPaidWifiNetworkFactory: got request NetworkRequest [ REQUEST id=157, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED Uid: 10192 RequestorUid: 10192 RequestorPkg: com.forge.app UnderlyingNetworks: Null] ]
+11-28 03:14:07.916   521   767 D ConnectivityService: NetReassign [157 : null → 100] [c 0] [a 0] [i 7]
+11-28 03:14:07.924   834   880 D LocalImageResolver: Couldn't use ImageDecoder for drawable, falling back to non-resized load.
+11-28 03:14:07.925   521   760 D MultiInternetWifiNetworkFactory: got request NetworkRequest [ REQUEST id=157, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED Uid: 10192 RequestorUid: 10192 RequestorPkg: com.forge.app UnderlyingNetworks: Null] ]
+11-28 03:14:07.926   834   880 D LocalImageResolver: Couldn't use ImageDecoder for drawable, falling back to non-resized load.
+11-28 03:14:07.928 11541 11591 W DynamiteModule: Local module descriptor class for com.google.android.gms.providerinstaller.dynamite not found.
+11-28 03:14:07.934  5268  6014 W ProviderHelper: Unknown dynamite feature providerinstaller.dynamite
+11-28 03:14:07.935 11541 11591 I DynamiteModule: Considering local module com.google.android.gms.providerinstaller.dynamite:0 and remote module com.google.android.gms.providerinstaller.dynamite:0
+11-28 03:14:07.935 11541 11591 W ProviderInstaller: Failed to load providerinstaller module: No acceptable module com.google.android.gms.providerinstaller.dynamite found. Local version is 0 and remote version is 0.
+11-28 03:14:07.943 11541 11591 D nativeloader: Configuring clns-9 for other apk /system/framework/org.apache.http.legacy.jar. target_sdk_version=33, uses_libraries=ALL, library_path=/product/priv-app/PrebuiltGmsCore/lib/x86_64:/product/priv-app/PrebuiltGmsCore/PrebuiltGmsCore.apk!/lib/x86_64, permitted_path=/data:/mnt/expand:/data/user/0/com.google.android.gms
+11-28 03:14:07.973   834   879 D EGL_emulation: app_time_stats: avg=200.97ms min=71.31ms max=400.30ms count=5
+11-28 03:14:07.973 11541 11591 D nativeloader: Configuring clns-10 for other apk /system/framework/com.android.media.remotedisplay.jar. target_sdk_version=33, uses_libraries=ALL, library_path=/product/priv-app/PrebuiltGmsCore/lib/x86_64:/product/priv-app/PrebuiltGmsCore/PrebuiltGmsCore.apk!/lib/x86_64, permitted_path=/data:/mnt/expand:/data/user/0/com.google.android.gms
+11-28 03:14:07.999 11541 11591 D nativeloader: Configuring clns-11 for other apk /system/framework/com.android.location.provider.jar. target_sdk_version=33, uses_libraries=ALL, library_path=/product/priv-app/PrebuiltGmsCore/lib/x86_64:/product/priv-app/PrebuiltGmsCore/PrebuiltGmsCore.apk!/lib/x86_64, permitted_path=/data:/mnt/expand:/data/user/0/com.google.android.gms
+11-28 03:14:08.002 11541 11591 D ApplicationLoaders: Returning zygote-cached class loader: /system_ext/framework/androidx.window.extensions.jar
+11-28 03:14:08.002 11541 11591 D ApplicationLoaders: Returning zygote-cached class loader: /system_ext/framework/androidx.window.sidecar.jar
+11-28 03:14:08.032 11541 11591 D nativeloader: InitLlndkLibrariesProduct: libEGL.so:libGLESv1_CM.so:libGLESv2.so:libGLESv3.so:libRS.so:libandroid_net.so:libbinder_ndk.so:libc.so:libcgrouprc.so:libclang_rt.asan-x86_64-android.so:libcom.android.tethering.connectivity_native.so:libdl.so:libft2.so:liblog.so:libm.so:libmediandk.so:libnativewindow.so:libneuralnetworks.so:libselinux.so:libsync.so:libvndksupport.so:libvulkan.so
+11-28 03:14:08.032 11541 11591 D nativeloader: Configuring product-clns-12 for unbundled product apk /product/priv-app/PrebuiltGmsCore/PrebuiltGmsCore.apk. target_sdk_version=33, uses_libraries=, library_path=/product/priv-app/PrebuiltGmsCore/lib/x86_64:/product/priv-app/PrebuiltGmsCore/PrebuiltGmsCore.apk!/lib/x86_64:/product/lib64:/system/product/lib64, permitted_path=/data:/mnt/expand:/data/user/0/com.google.android.gms:/product/lib64:/system/product/lib64
+11-28 03:14:08.033 11541 11591 D nativeloader: InitVndkspLibrariesProduct: android.hardware.common-V2-ndk.so:android.hardware.common.fmq-V1-ndk.so:android.hardware.graphics.allocator-V2-ndk.so:android.hardware.graphics.common-V4-ndk.so:android.hardware.graphics.common@1.0.so:android.hardware.graphics.common@1.1.so:android.hardware.graphics.common@1.2.so:android.hardware.graphics.composer3-V1-ndk.so:android.hardware.graphics.mapper@2.0.so:android.hardware.graphics.mapper@2.1.so:android.hardware.graphics.mapper@3.0.so:android.hardware.graphics.mapper@4.0.so:android.hardware.renderscript@1.0.so:android.hidl.memory.token@1.0.so:android.hidl.memory@1.0-impl.so:android.hidl.memory@1.0.so:android.hidl.safe_union@1.0.so:libRSCpuRef.so:libRSDriver.so:libRS_internal.so:libbase.so:libbcinfo.so:libblas.so:libc++.so:libcompiler_rt.so:libcutils.so:libdmabufheap.so:libgralloctypes.so:libhardware.so:libhidlbase.so:libhidlmemory.so:libion.so:libjsoncpp.so:liblzma.so:libprocessgroup.so:libunwindstack.so:libutils.so:libutilscallstack.so:libz.so
+11-28 03:14:08.042 11541 11591 V NativeCrypto: Registering com/google/android/gms/org/conscrypt/NativeCrypto's 295 native methods...
+11-28 03:14:08.056 11541 11591 W com.forge.app: Accessing hidden method Ljava/security/spec/ECParameterSpec;->getCurveName()Ljava/lang/String; (unsupported, reflection, allowed)
+11-28 03:14:08.088 11541 11591 I ProviderInstaller: Installed default security provider GmsCore_OpenSSL
+11-28 03:14:08.112   521  2250 D ConnectivityService: requestNetwork for uid/pid:10192/11541 activeRequest: null callbackRequest: 158 [NetworkRequest [ REQUEST id=159, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED Uid: 10192 RequestorUid: 10192 RequestorPkg: com.forge.app UnderlyingNetworks: Null] ]] callback flags: 0 order: 2147483647
+11-28 03:14:08.113   521   760 D WifiNetworkFactory: got request NetworkRequest [ REQUEST id=159, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED Uid: 10192 RequestorUid: 10192 RequestorPkg: com.forge.app UnderlyingNetworks: Null] ]
+11-28 03:14:08.113   521   760 D UntrustedWifiNetworkFactory: got request NetworkRequest [ REQUEST id=159, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED Uid: 10192 RequestorUid: 10192 RequestorPkg: com.forge.app UnderlyingNetworks: Null] ]
+11-28 03:14:08.115   521   760 D OemPaidWifiNetworkFactory: got request NetworkRequest [ REQUEST id=159, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED Uid: 10192 RequestorUid: 10192 RequestorPkg: com.forge.app UnderlyingNetworks: Null] ]
+11-28 03:14:08.115   521   760 D MultiInternetWifiNetworkFactory: got request NetworkRequest [ REQUEST id=159, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED Uid: 10192 RequestorUid: 10192 RequestorPkg: com.forge.app UnderlyingNetworks: Null] ]
+11-28 03:14:08.115   521   767 D ConnectivityService: NetReassign [159 : null → 100] [c 0] [a 0] [i 3]
+11-28 03:14:08.131 11541 11598 D TrafficStats: tagSocket(117) with statsTag=0xffffffff, statsUid=-1
+11-28 03:14:08.198 11359 11362 I AidlLazyServiceRegistrar: Process has 0 (of 1 available) client(s) in use after notification artd has clients: 0
+11-28 03:14:08.198 11359 11362 I AidlLazyServiceRegistrar: Trying to shut down the service. No clients in use for any service in process.
+11-28 03:14:08.200 11359 11362 I AidlLazyServiceRegistrar: Unregistered all clients and exiting
+11-28 03:14:09.940   834   834 D StatusBarIconController: ignoring old pipeline callback because the new wifi icon is enabled
+11-28 03:14:11.041 11541 11547 I com.forge.app: Compiler allocated 5333KB to compile java.lang.Object com.forge.app.sync.SyncEngine$sync$2$1.invokeSuspend(java.lang.Object)
+11-28 03:14:11.452  1624  1972 W AiAiEcho: LyftNotificationParser Ridesharing ETA not enabled
+11-28 03:14:11.452  1624  1972 W AiAiEcho: SmartspaceNotificationPredictor no parser can handle this notification or notification is invalid
+11-28 03:14:11.468   834   879 D EGL_emulation: app_time_stats: avg=3494.86ms min=3494.86ms max=3494.86ms count=1
+11-28 03:14:11.680   834   880 D LocalImageResolver: Couldn't use ImageDecoder for drawable, falling back to non-resized load.
+11-28 03:14:11.681   834   880 D LocalImageResolver: Couldn't use ImageDecoder for drawable, falling back to non-resized load.
+11-28 03:14:12.267 11541 11606 D ProfileInstaller: Installing profile for com.forge.app
+11-28 03:14:12.295  5268 10897 W ctxmgr  : [PendingIntentCompat] Timed out delivering to pendingIntent=PendingIntent{9799e1e: android.os.BinderProxy@b7463f4}, package=com.google.android.apps.wellbeing, permission=null [CONTEXT service_id=47 ]
+11-28 03:14:12.296  5268 10897 W ctxmgr  : [WorkManager] Long workInfo: pkg=com.google.android.gms, lbl=DispatcherDeliver, start=2026-11-28 03:14:07.293+0000, stop=2026-11-28 03:14:12.296+0000, durtn=5003ms [CONTEXT service_id=47 ]
+11-28 03:14:12.300   834   834 D TileServices: Couldn't find tile for ComponentInfo{com.google.android.apps.wellbeing/com.google.android.apps.wellbeing.screen.ui.GrayscaleTileService}(0)
+11-28 03:14:12.372  1624  1972 W AiAiEcho: LyftNotificationParser Ridesharing ETA not enabled
+11-28 03:14:12.373  1624  1972 W AiAiEcho: SmartspaceNotificationPredictor no parser can handle this notification or notification is invalid
+11-28 03:14:12.589   834   879 D EGL_emulation: app_time_stats: avg=280.38ms min=51.23ms max=667.21ms count=4
+11-28 03:14:12.602   834   880 D LocalImageResolver: Couldn't use ImageDecoder for drawable, falling back to non-resized load.
+11-28 03:14:12.602   834   880 D LocalImageResolver: Couldn't use ImageDecoder for drawable, falling back to non-resized load.
+11-28 03:14:14.039  1624  1972 W AiAiEcho: LyftNotificationParser Ridesharing ETA not enabled
+11-28 03:14:14.039  1624  1972 W AiAiEcho: SmartspaceNotificationPredictor no parser can handle this notification or notification is invalid
+11-28 03:14:14.053   834   879 D EGL_emulation: app_time_stats: avg=731.74ms min=53.60ms max=1409.88ms count=2
+11-28 03:14:14.270   834   880 D LocalImageResolver: Couldn't use ImageDecoder for drawable, falling back to non-resized load.
+11-28 03:14:14.271   834   880 D LocalImageResolver: Couldn't use ImageDecoder for drawable, falling back to non-resized load.
+11-28 03:14:14.695  1624  1972 W AiAiEcho: LyftNotificationParser Ridesharing ETA not enabled
+11-28 03:14:14.696  1624  1972 W AiAiEcho: SmartspaceNotificationPredictor no parser can handle this notification or notification is invalid
+11-28 03:14:14.940   834   880 D LocalImageResolver: Couldn't use ImageDecoder for drawable, falling back to non-resized load.
+11-28 03:14:14.942   834   880 D LocalImageResolver: Couldn't use ImageDecoder for drawable, falling back to non-resized load.
+11-28 03:14:15.001   834   834 D StatusBarIconController: ignoring old pipeline callbacks, because the new mobile icons are enabled
+11-28 03:14:15.122  1624  1972 W AiAiEcho: LyftNotificationParser Ridesharing ETA not enabled
+11-28 03:14:15.122  1624  1972 W AiAiEcho: SmartspaceNotificationPredictor no parser can handle this notification or notification is invalid
+11-28 03:14:15.134   834   879 D EGL_emulation: app_time_stats: avg=180.16ms min=54.66ms max=411.03ms count=6
+11-28 03:14:15.347   834   880 D LocalImageResolver: Couldn't use ImageDecoder for drawable, falling back to non-resized load.
+11-28 03:14:15.348   834   880 D LocalImageResolver: Couldn't use ImageDecoder for drawable, falling back to non-resized load.
+11-28 03:14:15.787 11541 11562 I TestRunner: finished: roundTrip(com.forge.app.SyncTest)

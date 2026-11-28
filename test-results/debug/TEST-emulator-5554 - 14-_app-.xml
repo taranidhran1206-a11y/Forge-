@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<testsuite name="com.forge.app.DeviceTest" tests="15" failures="0" errors="0" skipped="0" time="11.056" timestamp="2026-11-28T03:14:18" hostname="localhost">
+  <properties>
+    <property name="device" value="emulator-5554 - 14" />
+    <property name="flavor" value="" />
+    <property name="project" value=":app" />
+  </properties>
+  <testcase name="todayPlanWidgetInflatesWhenAllDone" classname="com.forge.app.DeviceTest" time="0.016" />
+  <testcase name="rankWidgetInflates" classname="com.forge.app.DeviceTest" time="0.0" />
+  <testcase name="streakWidgetInflates" classname="com.forge.app.DeviceTest" time="0.001" />
+  <testcase name="todayPlanWidgetInflatesWhenEmpty" classname="com.forge.app.DeviceTest" time="0.025" />
+  <testcase name="widgetTapTicksAndUnticksALabor" classname="com.forge.app.DeviceTest" time="0.027" />
+  <testcase name="todayPlanWidgetInflatesWithOpenLabors" classname="com.forge.app.DeviceTest" time="0.038" />
+  <testcase name="yesterdaysLaborsCarryIntoToday" classname="com.forge.app.DeviceTest" time="0.072" />
+  <testcase name="gymLogFromVersionOneSurvives" classname="com.forge.app.MigrationTest" time="0.054" />
+  <testcase name="alarmSchedulesWithTheSystem" classname="com.forge.app.MigrationTest" time="0.032" />
+  <testcase name="roundTrip" classname="com.forge.app.SyncTest" time="8.654" />
+  <testcase name="dailyLaborXpIsCapped" classname="com.forge.app.XpAndWidgetTest" time="0.328" />
+  <testcase name="ranksArePacedForMonths" classname="com.forge.app.XpAndWidgetTest" time="0.0" />
+  <testcase name="widgetDataFollowsDatabaseWithoutAnyScreen" classname="com.forge.app.XpAndWidgetTest" time="0.539" />
+  <testcase name="onlyLaborsAndReflectionsCount" classname="com.forge.app.XpAndWidgetTest" time="0.0" />
+  <testcase name="retickingCannotFarmXp" classname="com.forge.app.XpAndWidgetTest" time="0.101" />
+</testsuite>

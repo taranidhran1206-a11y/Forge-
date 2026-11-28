@@ -1,0 +1,2 @@
+11-28 03:14:06.979 11541 11562 I TestRunner: started: yesterdaysLaborsCarryIntoToday(com.forge.app.DeviceTest)
+11-28 03:14:07.060 11541 11562 I TestRunner: finished: yesterdaysLaborsCarryIntoToday(com.forge.app.DeviceTest)

@@ -1,0 +1,5 @@
+11-28 03:14:16.141 11541 11562 I TestRunner: started: widgetDataFollowsDatabaseWithoutAnyScreen(com.forge.app.XpAndWidgetTest)
+11-28 03:14:16.203   834   879 D EGL_emulation: app_time_stats: avg=267.19ms min=56.79ms max=613.89ms count=4
+11-28 03:14:16.214   834   880 D LocalImageResolver: Couldn't use ImageDecoder for drawable, falling back to non-resized load.
+11-28 03:14:16.215   834   880 D LocalImageResolver: Couldn't use ImageDecoder for drawable, falling back to non-resized load.
+11-28 03:14:16.686 11541 11562 I TestRunner: finished: widgetDataFollowsDatabaseWithoutAnyScreen(com.forge.app.XpAndWidgetTest)

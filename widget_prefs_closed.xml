@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<map>
+    <int name="todayDone" value="3" />
+    <int name="todayTotal" value="9" />
+    <string name="labors_json">[{&quot;id&quot;:1,&quot;name&quot;:&quot;Morning Brief&quot;,&quot;done&quot;:false},{&quot;id&quot;:2,&quot;name&quot;:&quot;Meditate&quot;,&quot;done&quot;:true},{&quot;id&quot;:3,&quot;name&quot;:&quot;Exercise&quot;,&quot;done&quot;:true},{&quot;id&quot;:4,&quot;name&quot;:&quot;Deep Work Block&quot;,&quot;done&quot;:true},{&quot;id&quot;:5,&quot;name&quot;:&quot;Learn&quot;,&quot;done&quot;:false},{&quot;id&quot;:6,&quot;name&quot;:&quot;Admin&quot;,&quot;done&quot;:false},{&quot;id&quot;:7,&quot;name&quot;:&quot;Evening Reflection&quot;,&quot;done&quot;:false},{&quot;id&quot;:8,&quot;name&quot;:&quot;Shield Wall&quot;,&quot;done&quot;:false},{&quot;id&quot;:9,&quot;name&quot;:&quot;Wind Down&quot;,&quot;done&quot;:false}]</string>
+    <string name="rank_color">#78909C</string>
+    <string name="rank_name">IRON</string>
+    <int name="total_xp" value="75" />
+    <float name="rank_progress" value="0.25" />
+    <int name="streak" value="1" />
+    <string name="labors_date">2026-11-28</string>
+    <int name="streak_count" value="1" />
+</map>

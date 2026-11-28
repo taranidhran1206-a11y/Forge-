@@ -1,0 +1,4 @@
+11-28 03:14:15.789 11541 11562 I TestRunner: started: dailyLaborXpIsCapped(com.forge.app.XpAndWidgetTest)
+11-28 03:14:15.986  1624  1972 W AiAiEcho: LyftNotificationParser Ridesharing ETA not enabled
+11-28 03:14:15.987  1624  1972 W AiAiEcho: SmartspaceNotificationPredictor no parser can handle this notification or notification is invalid
+11-28 03:14:16.134 11541 11562 I TestRunner: finished: dailyLaborXpIsCapped(com.forge.app.XpAndWidgetTest)

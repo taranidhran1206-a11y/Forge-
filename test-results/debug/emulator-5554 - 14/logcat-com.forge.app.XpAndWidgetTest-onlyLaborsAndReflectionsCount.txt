@@ -1,0 +1,2 @@
+11-28 03:14:16.688 11541 11562 I TestRunner: started: onlyLaborsAndReflectionsCount(com.forge.app.XpAndWidgetTest)
+11-28 03:14:16.700 11541 11562 I TestRunner: finished: onlyLaborsAndReflectionsCount(com.forge.app.XpAndWidgetTest)

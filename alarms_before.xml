@@ -1,0 +1,4 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<map>
+    <string name="alarms">[{&quot;id&quot;:1,&quot;hour&quot;:6,&quot;minute&quot;:30,&quot;days&quot;:[2,3,4,5,6],&quot;enabled&quot;:true,&quot;challenge&quot;:&quot;pushups&quot;,&quot;reps&quot;:15,&quot;label&quot;:&quot;&quot;}]</string>
+</map>
