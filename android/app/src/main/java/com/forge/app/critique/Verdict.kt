@@ -225,8 +225,8 @@ Give 1-3 wins (only real ones; if there are none, an empty list) and 2-3 fixes."
     suspend fun judge(c: Context, day: Day): Result {
         val now = System.currentTimeMillis()
         return try {
-            val now = java.util.Calendar.getInstance()
-            val over = day.date != today() || now.get(java.util.Calendar.HOUR_OF_DAY) >= 20
+            val cal = java.util.Calendar.getInstance()
+            val over = day.date != today() || cal.get(java.util.Calendar.HOUR_OF_DAY) >= 20
             val clock = if (day.date == today()) SimpleDateFormat("h:mm a", Locale.US).format(Date()) else "end of day"
             val prompt = "Date: ${day.date}\nTime now: $clock (${if (over) "the day is basically over" else "the day isn't over yet"})\n" +
                 "Forge score: ${day.score}/100\nPart scores: " +
