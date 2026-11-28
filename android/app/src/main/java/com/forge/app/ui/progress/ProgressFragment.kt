@@ -41,6 +41,7 @@ class ProgressFragment : Fragment() {
         viewModel = ViewModelProvider(this, factory)[ProgressViewModel::class.java]
         applyPanes()
         observeViewModel()
+        com.forge.app.sync.AccountUi.bind(this, binding.tvAccountLabel, binding.cardAccount)
     }
 
     /** Side by side in landscape and on tablets, stacked on a phone in portrait. */

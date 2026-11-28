@@ -1,8 +1,12 @@
 name: Build Forge APK
 
+# Builds and tests every push to main and to feature branches. The release APK comes out
+# unsigned: it is signed with Forge's permanent key outside GitHub, so every version can
+# install over the last one without uninstalling.
+
 on:
   push:
-    branches: [main]
+    branches: [main, 'feat/**']
     paths:
       - 'android/**'
       - '.github/workflows/build-apk.yml'
@@ -36,53 +40,45 @@ jobs:
           "platforms;android-34" \
           "build-tools;34.0.0" || true
 
-    - name: Generate signing keystore
+    - name: Unit tests
       run: |
-        keytool -genkey -v \
-          -keystore android/forge-release.jks \
-          -alias key0 -keyalg RSA -keysize 2048 -validity 10000 \
-          -storepass android -keypass android \
-          -dname "CN=Forge, O=Forge, C=US"
+        cd android
+        ./gradlew testDebugUnitTest compileDebugAndroidTestKotlin --no-daemon
 
-    - name: Build Release APK
+    - name: Build release APK (unsigned)
       run: |
         cd android
         ./gradlew assembleRelease --no-daemon
 
-    - name: Prepare APK
+    - name: Align the APK
       run: |
-        APK_PATH=$(find android/app/build/outputs/apk/release -name "*.apk" | head -1)
-        echo "Found APK: $APK_PATH"
-        cp "$APK_PATH" android/Forge-v2.1.18-signed.apk
-        ls -la android/Forge-v2.1.18-signed.apk
+        APK=$(find android/app/build/outputs/apk/release -name "*.apk" | head -1)
+        echo "Found APK: $APK"
+        $ANDROID_HOME/build-tools/34.0.0/zipalign -p -f 4 "$APK" android/Forge-unsigned.apk
+        $ANDROID_HOME/build-tools/34.0.0/zipalign -c -p 4 android/Forge-unsigned.apk
+        ls -la android/Forge-unsigned.apk
 
-    - name: Upload APK Artifact
+    - name: Upload test reports
+      if: always()
       uses: actions/upload-artifact@v4
       with:
-        name: Forge-APK
-        path: android/Forge-v2.1.18-signed.apk
+        name: unit-test-reports
+        path: android/app/build/reports/tests/
+        if-no-files-found: ignore
 
-    - name: Create Release
-      uses: softprops/action-gh-release@v2
+    - name: Upload APK
+      uses: actions/upload-artifact@v4
       with:
-        tag_name: v2.1.18
-        name: "Forge v2.1.18 — Cleaner Focus page"
-        body: |
-          ## Forge v2.1.18
+        name: Forge-unsigned
+        path: android/Forge-unsigned.apk
 
-          Tested on an Android emulator before release.
-
-          ### Changes
-          - The distraction watch is now called **Time tracker**: it tracks your time in each app all day and nudges you when you stay too long in a distracting one
-          - The old manual stopwatch and the "Today by category" card are gone. The Focus page is now just the focus timer and the time tracker
-          - Today's plan stays on your lock screen (from v2.1.17)
-
-          ### Install
-          1. Download `Forge-v2.1.18-signed.apk`
-          2. If Android refuses to install over the old version, uninstall Forge first. Each build is signed with a new key, and uninstalling clears saved data
-          3. Open the app once, then add the widgets again from the home screen
-        files: android/Forge-v2.1.18-signed.apk
-        draft: false
-        prerelease: false
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Publish the unsigned APK for signing
+      run: |
+        mkdir -p /tmp/pub && cp android/Forge-unsigned.apk /tmp/pub/ && cd /tmp/pub
+        echo "$GITHUB_SHA" > SOURCE_COMMIT
+        git init -q -b unsigned-apk
+        git config user.name "forge-ci"
+        git config user.email "forge-ci@users.noreply.github.com"
+        git add -A
+        git commit -q -m "Unsigned APK for $GITHUB_SHA"
+        git push -q -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}" unsigned-apk

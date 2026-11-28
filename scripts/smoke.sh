@@ -160,22 +160,140 @@ adb shell input swipe 500 1800 500 400 300; sleep 1
 adb shell input swipe 500 1800 500 400 300; sleep 1
 before_gym=$(text_of tv_labor_count)
 tap id card_gym_link && {
-  sleep 2; tap id btn_start_workout; sleep 2
+  sleep 3; shot 20_gym_idle; alive "open Gym" gymopen
+  tap id btn_start_workout; sleep 2
   tap id btn_add_exercise; sleep 2
-  tap text "Search exercises, e.g. bench or chest"; adb shell input text "barbell%sbench"; sleep 2
-  shot 20_gym_picker
-  tap text "Barbell Bench Press"; sleep 2
-  tap text "Weight (kg)"; adb shell input text "60"
-  tap text "Reps"; adb shell input text "8"
-  tap text "Log set" || tap text "LOG SET"; sleep 2
-  shot 21_gym_active; alive "log a set" gymset
-  tap id btn_finish_workout; sleep 3
-  shot 22_gym_finished; alive "finish workout" gymfinish
-  dump; grep -q "Barbell Bench Press" "$OUT/ui.xml" && note "PASS     the workout is saved with its best lift" || note "FAIL     finished workout not shown"
+  tap id et_exercise_search; adb shell input text "barbell%sbench"; sleep 3
+  shot 21_gym_picker
+  tap text "Barbell Bench Press"; sleep 3
+  tap id et_set_kg; adb shell input text "60"
+  tap id et_set_reps; adb shell input text "8"
+  tap id btn_set_done; sleep 2
+  shot 22_gym_active; alive "log a set" gymset
+  dump; grep -q 'content-desc="Done"' "$OUT/ui.xml" && note "PASS     the set stays ticked" || note "FAIL     the set didn't stay ticked"
+  tap id btn_finish_workout || tap text "Finish workout"; sleep 3
+  has text "Finish" && { tap text "Finish"; sleep 3; }
+  shot 23_gym_finished; alive "finish workout" gymfinish
+  dump; grep -q "Workout saved" "$OUT/ui.xml" && note "PASS     the workout is saved" || note "FAIL     no saved-workout summary"
+  tap text "Nice" || tap text "NICE"; sleep 2
+  dump; grep -q "Barbell Bench Press" "$OUT/ui.xml" && note "PASS     the workout shows on the Gym page" || note "FAIL     finished workout not shown"
+  shot 24_gym_after
+  adb shell input swipe 500 1800 500 500 300; sleep 1; shot 25_gym_lower
+  adb shell input swipe 500 1800 500 500 300; sleep 1
+  { tap text "Exercise library" || tap text "EXERCISE LIBRARY"; } && { sleep 3; shot 26_gym_library; alive "exercise library" gymlib; adb shell input keyevent KEYCODE_BACK; sleep 1; }
+  adb shell input keyevent KEYCODE_BACK; sleep 2
+}
+# Leave any sheet still open so the rest of the run isn't stuck behind it
+for i in 1 2; do has text "Close" && { tap text "Close"; sleep 1; }; done
+has id nav_today || { adb shell input keyevent KEYCODE_BACK; sleep 1; adb shell input keyevent KEYCODE_BACK; sleep 1; }
+tap id nav_today; sleep 2
+note "GYM      labors before='$before_gym' after='$(text_of tv_labor_count)' (Exercise labor should tick)"
+
+# --- Fuel
+adb shell input swipe 500 1800 500 400 300; sleep 1
+adb shell input swipe 500 1800 500 400 300; sleep 1
+tap id card_fuel_link && {
+  sleep 3; shot 30_fuel_goal_first; alive "open Fuel" fuelopen
+  for i in 1 2 3; do has text "Save goal" && break; adb shell input swipe 500 1700 500 600 300; sleep 1; done
+  tap text "Save goal" && note "PASS     first-time Fuel goal saved" || note "INFO     no goal sheet on first open"
+  sleep 2; shot 31_fuel_day
+  tap id btn_fuel_describe; sleep 2
+  tap id et_fuel_describe; adb shell input text "2%sroti%scanai%swith%sdhal%sand%steh%starik"; sleep 1
+  tap text "Estimate" || tap text "ESTIMATE"; sleep 35
+  shot 32_fuel_result; alive "estimate a meal" fuelest
+  for i in 1 2 3; do has id btn_fuel_save && break; adb shell input swipe 500 1700 500 600 300; sleep 1; done
+  tap id btn_fuel_save && note "PASS     the meal estimate opened and was logged" || note "FAIL     no meal estimate to log"
+  sleep 2; shot 33_fuel_logged
+  note "FUEL     ring='$(text_of tv_fuel_left)'"
   adb shell input keyevent KEYCODE_BACK; sleep 2
 }
 tap id nav_today; sleep 2
-note "GYM      labors before='$before_gym' after='$(text_of tv_labor_count)' (Exercise labor should tick)"
+adb shell input swipe 500 1800 500 400 300; sleep 1
+adb shell input swipe 500 1800 500 400 300; sleep 1
+note "TODAY    fuel='$(text_of tv_fuel_link)' verdict='$(text_of tv_verdict_link)' alarm='$(text_of tv_alarm_link)'"
+shot 34_today_links
+
+# --- Hercules' verdict
+tap id card_verdict_link && {
+  sleep 2; shot 35_verdict_empty
+  tap id btn_verdict_run; sleep 40
+  shot 36_verdict; alive "judge the day" verdict
+  has id tv_verdict_score && note "PASS     the day has a verdict and score" || note "FAIL     no verdict score"
+  adb shell input swipe 500 1700 500 600 300; sleep 1; shot 37_verdict_lower
+  adb shell input keyevent KEYCODE_BACK; sleep 2
+}
+
+# --- Wake-up challenge
+tap id card_alarm_link && {
+  sleep 2; shot 40_alarms_empty; alive "open alarms" alarms
+  tap text "New alarm"; sleep 2; shot 41_alarm_editor
+  for i in 1 2 3; do has text "Save alarm" && break; adb shell input swipe 500 1700 500 600 300; sleep 1; done
+  tap text "Save alarm"; sleep 2
+  # Camera permission prompt for counting reps
+  tap text "While using the app" || tap text "WHILE USING THE APP" || tap text "Allow" || true
+  sleep 2; shot 42_alarm_list
+  dump; grep -q "push-ups" "$OUT/ui.xml" && note "PASS     the alarm is saved" || note "FAIL     alarm not in the list"
+  adb shell dumpsys alarm | grep -c "com.forge.app" | xargs -I{} echo "ALARM    scheduled entries for Forge: {}" | tee -a "$REPORT"
+  adb shell input keyevent KEYCODE_BACK; sleep 2
+}
+note "TODAY    alarm card='$(text_of tv_alarm_link)'"
+
+# Make the alarm ring in a minute (edit its time the way the app stores it), lock the
+# screen, and let Android fire it for real. Then switch it off with sums.
+adb shell run-as $PKG cat shared_prefs/forge_alarms.xml > "$OUT/alarms_before.xml" 2>/dev/null
+python3 - "$OUT/alarms_before.xml" "$(adb shell date +%H:%M:%S | tr -d '\r')" > "$OUT/alarms_soon.xml" <<'PY'
+import html, json, re, sys
+xml = open(sys.argv[1]).read()
+h, m, s = map(int, sys.argv[2].split(":"))
+m += 2 if s > 40 else 1
+h, m = (h + m // 60) % 24, m % 60
+def fix(match):
+    alarms = json.loads(html.unescape(match.group(1)))
+    for a in alarms:
+        a.update(hour=h, minute=m, days=[], enabled=True)
+    return '<string name="alarms">' + html.escape(json.dumps(alarms), quote=True) + '</string>'
+print(re.sub(r'<string name="alarms">(.*?)</string>', fix, xml, flags=re.S))
+PY
+if grep -q '"hour' "$OUT/alarms_soon.xml" || grep -q 'hour&quot;' "$OUT/alarms_soon.xml"; then
+  adb shell am force-stop $PKG
+  adb shell "run-as $PKG sh -c 'cat > shared_prefs/forge_alarms.xml'" < "$OUT/alarms_soon.xml"
+  adb shell am start -n $PKG/.SplashActivity >/dev/null; sleep 10
+  note "ALARM    next alarm clock: $(adb shell dumpsys alarm | grep -m1 -A2 'nextAlarmClock\|Next alarm clock' | tr -d '\r' | tr '\n' ' ' | cut -c1-160)"
+  adb shell input keyevent KEYCODE_HOME; sleep 1
+  adb shell input keyevent KEYCODE_SLEEP
+  for i in $(seq 1 30); do
+    sleep 5
+    adb shell dumpsys activity services $PKG/.alarm.AlarmService | grep -q "ServiceRecord" && break
+  done
+  sleep 5; shot 43_alarm_ringing
+  alive "alarm rings" alarmring
+  adb shell dumpsys activity services $PKG/.alarm.AlarmService | grep -q "ServiceRecord" && note "PASS     the alarm rang on time" || note "FAIL     the alarm didn't ring"
+  dump; grep -qi "Wake-up challenge" "$OUT/ui.xml" && note "PASS     the challenge opened over the lock screen" || note "FAIL     the challenge screen didn't open"
+  tap text "Camera not working? Do 5 sums instead"; sleep 2
+  for i in 1 2 3 4 5 6; do
+    q=$(dump; python3 - "$OUT/ui.xml" <<'PY'
+import re, sys, xml.etree.ElementTree as ET
+try:
+    for n in ET.parse(sys.argv[1]).getroot().iter("node"):
+        m = re.fullmatch(r"(\d+) ([+×]) (\d+)", n.get("text", ""))
+        if m:
+            a, op, b = int(m.group(1)), m.group(2), int(m.group(3))
+            print(a + b if op == "+" else a * b); break
+except Exception:
+    pass
+PY
+)
+    [ -z "$q" ] && break
+    tap text "Answer"; adb shell input text "$q"; sleep 1
+    tap text "Check" || tap text "CHECK"; sleep 2
+  done
+  shot 44_alarm_done; sleep 4
+  adb shell dumpsys activity services $PKG/.alarm.AlarmService | grep -q "ServiceRecord" && note "FAIL     the alarm kept ringing after the sums" || note "PASS     the sums switched the alarm off"
+  adb shell input keyevent KEYCODE_WAKEUP; adb shell wm dismiss-keyguard; sleep 2
+  adb shell am start -n $PKG/.SplashActivity >/dev/null; sleep 6
+else
+  note "FAIL     couldn't read the saved alarm to move it"
+fi
 
 # --- Coach
 tap id nav_coach; shot 07_coach; alive "open Coach" coach

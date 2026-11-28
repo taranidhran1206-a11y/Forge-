@@ -32,6 +32,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        // Wake-up alarms are lost if Android force-stops Forge; book them again
+        com.forge.app.alarm.AlarmStore.rescheduleAll(this)
 
         // Dark status & nav bars
         window.statusBarColor = 0xFF0A0A0A.toInt()
@@ -77,12 +79,16 @@ class MainActivity : AppCompatActivity() {
             }
             WidgetHelper.updateAllWidgets(this@MainActivity, repository)
         }
+        // Send this session's changes to other devices
+        com.forge.app.sync.SyncWorker.kick(this, force = true)
     }
 
     override fun onResume() {
         super.onResume()
         // Keeps the watch running after the system or the user stopped it
         com.forge.app.focus.DistractionService.start(this)
+        // Bring in changes made on other devices
+        com.forge.app.sync.SyncWorker.kick(this)
     }
 
     override fun onStart() {

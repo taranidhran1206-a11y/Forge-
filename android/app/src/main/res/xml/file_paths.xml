@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Where the camera may write photos for Fuel and the physique check -->
+<paths>
+    <files-path name="fuel" path="fuel/" />
+    <files-path name="physique" path="physique/" />
+    <cache-path name="cache" path="." />
+</paths>

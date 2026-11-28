@@ -20,6 +20,11 @@
         android:label="Gym log" />
 
     <fragment
+        android:id="@+id/nav_fuel"
+        android:name="com.forge.app.ui.fuel.FuelFragment"
+        android:label="Fuel" />
+
+    <fragment
         android:id="@+id/nav_plan"
         android:name="com.forge.app.ui.plan.PlanFragment"
         android:label="@string/tab_plan" />
