@@ -134,6 +134,16 @@ interface GymDao {
     @Update
     suspend fun updateSet(set: GymSet)
 
+    /** Field-level writes, so a row edited from a stale copy can't undo a tick. */
+    @Query("UPDATE gym_sets SET weightKg = :weightKg, reps = :reps WHERE id = :id")
+    suspend fun setValues(id: Long, weightKg: Double, reps: Int)
+
+    @Query("UPDATE gym_sets SET done = :done, weightKg = :weightKg, reps = :reps, timestamp = :timestamp WHERE id = :id")
+    suspend fun setDone(id: Long, done: Int, weightKg: Double, reps: Int, timestamp: Long)
+
+    @Query("UPDATE gym_sets SET setType = :setType WHERE id = :id")
+    suspend fun setType(id: Long, setType: String)
+
     @Query("DELETE FROM gym_sets WHERE id = :id")
     suspend fun deleteSet(id: Long)
 

@@ -590,7 +590,7 @@ class GymFragment : Fragment() {
             setPadding(Kit.dp(c, 6), 0, 0, 0)
             setOnClickListener {
                 if (prev != null && s.done == 0) {
-                    viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) { dao.updateSet(s.copy(weightKg = prev.weightKg, reps = prev.reps)) }
+                    viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) { dao.setValues(s.id, prev.weightKg, prev.reps) }
                     structure = ""
                 }
             }
@@ -603,7 +603,7 @@ class GymFragment : Fragment() {
             val w = kg.text.toString().replace(',', '.').toDoubleOrNull() ?: 0.0
             val r = reps.text.toString().toIntOrNull() ?: 0
             if (w != s.weightKg || r != s.reps) {
-                viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) { dao.updateSet(s.copy(weightKg = w, reps = r)) }
+                viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) { dao.setValues(s.id, w, r) }
             }
         }
         kg.setOnFocusChangeListener { _, has -> if (!has) save() }
@@ -633,7 +633,7 @@ class GymFragment : Fragment() {
     private fun toggleDone(s: GymSet, weight: Double, reps: Int) {
         val c = requireContext()
         if (s.done == 1) {
-            viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) { dao.updateSet(s.copy(done = 0, weightKg = weight, reps = reps)) }
+            viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) { dao.setDone(s.id, 0, weight, reps, s.timestamp) }
             return
         }
         if (reps <= 0) { Toast.makeText(c, "Enter the reps for this set", Toast.LENGTH_SHORT).show(); return }
@@ -641,7 +641,7 @@ class GymFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             val best = withContext(Dispatchers.IO) {
                 val b = dao.bestWeightBefore(s.exercise, workout.id)
-                dao.updateSet(s.copy(done = 1, weightKg = weight, reps = reps, timestamp = System.currentTimeMillis()))
+                dao.setDone(s.id, 1, weight, reps, System.currentTimeMillis())
                 b
             }
             if (best > 0 && weight > best && s.setType != "warmup") {
@@ -653,7 +653,7 @@ class GymFragment : Fragment() {
 
     private fun cycleType(s: GymSet) {
         val next = when (s.setType) { "normal" -> "warmup"; "warmup" -> "drop"; "drop" -> "failure"; else -> "normal" }
-        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) { dao.updateSet(s.copy(setType = next)) }
+        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) { dao.setType(s.id, next) }
         Toast.makeText(requireContext(), when (next) {
             "warmup" -> "Warm-up set (W)"; "drop" -> "Drop set (D)"; "failure" -> "Set to failure (F)"; else -> "Working set"
         }, Toast.LENGTH_SHORT).show()

@@ -225,14 +225,15 @@ Give 1-3 wins (only real ones; if there are none, an empty list) and 2-3 fixes."
         return try {
             val prompt = "Date: ${day.date}\nForge score: ${day.score}/100\nPart scores: " +
                 day.parts.joinToString { "${it.name} ${it.score?.toString() ?: "n/a"}" } + "\n\n" + day.facts
-            val reply = Gemini.ask(c, SYSTEM, listOf(Gemini.Part.Text(prompt)), json = true, maxTokens = 800, temperature = 0.5)
+            val reply = Gemini.ask(c, SYSTEM, listOf(Gemini.Part.Text(prompt)), json = true, maxTokens = 2000, temperature = 0.5)
             val o = JSONObject(Gemini.jsonOf(reply))
             Result(
                 day.date, day.score, o.optString("verdict").trim().ifBlank { fallbackLine(day) },
                 strings(o.optJSONArray("wins")).take(3), strings(o.optJSONArray("fixes")).take(3),
                 day.parts, now
             )
-        } catch (_: Exception) {
+        } catch (e: Exception) {
+            android.util.Log.e("ForgeVerdict", "Hercules couldn't judge the day: ${e.message}")
             Result(day.date, day.score, fallbackLine(day), emptyList(), fallbackFixes(day), day.parts, now, offline = true)
         }.also { save(c, it) }
     }

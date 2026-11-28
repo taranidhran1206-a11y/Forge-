@@ -170,14 +170,17 @@ tap id card_gym_link && {
   tap id et_set_reps; adb shell input text "8"
   tap id btn_set_done; sleep 2
   shot 22_gym_active; alive "log a set" gymset
-  tap id btn_finish_workout; sleep 3
+  dump; grep -q 'content-desc="Done"' "$OUT/ui.xml" && note "PASS     the set stays ticked" || note "FAIL     the set didn't stay ticked"
+  tap id btn_finish_workout || tap text "Finish workout"; sleep 3
+  has text "Finish" && { tap text "Finish"; sleep 3; }
   shot 23_gym_finished; alive "finish workout" gymfinish
   dump; grep -q "Workout saved" "$OUT/ui.xml" && note "PASS     the workout is saved" || note "FAIL     no saved-workout summary"
   tap text "Nice" || tap text "NICE"; sleep 2
   dump; grep -q "Barbell Bench Press" "$OUT/ui.xml" && note "PASS     the workout shows on the Gym page" || note "FAIL     finished workout not shown"
   shot 24_gym_after
   adb shell input swipe 500 1800 500 500 300; sleep 1; shot 25_gym_lower
-  tap text "Exercise library" && { sleep 3; shot 26_gym_library; alive "exercise library" gymlib; adb shell input keyevent KEYCODE_BACK; sleep 1; }
+  adb shell input swipe 500 1800 500 500 300; sleep 1
+  { tap text "Exercise library" || tap text "EXERCISE LIBRARY"; } && { sleep 3; shot 26_gym_library; alive "exercise library" gymlib; adb shell input keyevent KEYCODE_BACK; sleep 1; }
   adb shell input keyevent KEYCODE_BACK; sleep 2
 }
 # Leave any sheet still open so the rest of the run isn't stuck behind it
@@ -217,7 +220,7 @@ tap id card_verdict_link && {
   shot 36_verdict; alive "judge the day" verdict
   has id tv_verdict_score && note "PASS     the day has a verdict and score" || note "FAIL     no verdict score"
   adb shell input swipe 500 1700 500 600 300; sleep 1; shot 37_verdict_lower
-  tap text "Close"; sleep 2
+  adb shell input keyevent KEYCODE_BACK; sleep 2
 }
 
 # --- Wake-up challenge
@@ -231,7 +234,7 @@ tap id card_alarm_link && {
   sleep 2; shot 42_alarm_list
   dump; grep -q "push-ups" "$OUT/ui.xml" && note "PASS     the alarm is saved" || note "FAIL     alarm not in the list"
   adb shell dumpsys alarm | grep -c "com.forge.app" | xargs -I{} echo "ALARM    scheduled entries for Forge: {}" | tee -a "$REPORT"
-  tap text "Close"; sleep 2
+  adb shell input keyevent KEYCODE_BACK; sleep 2
 }
 note "TODAY    alarm card='$(text_of tv_alarm_link)'"
 

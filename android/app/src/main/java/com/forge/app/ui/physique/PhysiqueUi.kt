@@ -251,7 +251,7 @@ object PhysiqueUi {
                     If the photos are too dark, blurry or don't show a body, say what to fix instead.
                     Plain text, under 140 words, no markdown, no lists with symbols; short sentences.
                 """.trimIndent()
-                val text = Gemini.ask(c, system, parts, temperature = 0.5, maxTokens = 600).trim()
+                val text = Gemini.ask(c, system, parts, temperature = 0.5, maxTokens = 2000).trim()
                 saveRead(c, Read(SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date()), text))
                 wait.cancel()
                 done()
