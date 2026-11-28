@@ -45,6 +45,8 @@ android {
     buildTypes {
         release {
             if (releaseKey.exists()) signingConfig signingConfigs.release
+            // Phones and tablets only: the rep counter's native library is ~20 MB per ABI
+            ndk { abiFilters 'arm64-v8a', 'armeabi-v7a' }
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
@@ -62,6 +64,13 @@ android {
 
     kotlinOptions {
         jvmTarget = '11'
+    }
+
+    // Compress native libraries inside the APK: a much smaller download
+    packagingOptions {
+        jniLibs {
+            useLegacyPackaging = true
+        }
     }
 }
 
