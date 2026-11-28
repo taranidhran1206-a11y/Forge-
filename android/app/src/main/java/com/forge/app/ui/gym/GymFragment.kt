@@ -276,7 +276,7 @@ class GymFragment : Fragment() {
                 col.addView(Kit.body(c, s.group).apply { setTypeface(typeface, Typeface.BOLD) })
                 val sub = when (s.state) {
                     Muscles.State.IDLE -> "Not this week"
-                    else -> "${s.state.label} · ${Strength.plain(s.hardSets)} sets"
+                    else -> "${s.state.label} · ${Strength.plain(s.hardSets)} set${if (s.hardSets == 1.0) "" else "s"}"
                 }
                 col.addView(Kit.sub(c, sub))
                 cell.addView(col)
@@ -370,7 +370,7 @@ class GymFragment : Fragment() {
                 setOnClickListener { showWorkout(w) }
             }
             card.addView(Kit.twoColumn(c, w.name, "$minutes min", bold = true))
-            card.addView(Kit.sub(c, "${fmt.format(Date(w.startedAt))} · ${w.sets} sets · ${Strength.kg(w.volume)}"))
+            card.addView(Kit.sub(c, "${fmt.format(Date(w.startedAt))} · ${w.sets} set${if (w.sets == 1) "" else "s"} · ${Strength.kg(w.volume)}"))
             historyBox.addView(card)
         }
     }
@@ -738,7 +738,7 @@ class GymFragment : Fragment() {
         val minutes = ((System.currentTimeMillis() - workout.startedAt) / 60000).toInt()
         val volume = done.sumOf { it.weightKg * it.reps }
         val message = buildString {
-            append("$minutes min · ${done.size} sets · ${Strength.kg(volume)} lifted")
+            append("$minutes min · ${done.size} set${if (done.size == 1) "" else "s"} · ${Strength.kg(volume)} lifted")
             if (prs.isNotEmpty()) {
                 append("\n\nNew records\n")
                 prs.forEach { append("• ${it.exercise}: ${it.kind.lowercase()} ${it.value}\n") }

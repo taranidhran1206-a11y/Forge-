@@ -154,7 +154,7 @@ object Verdict {
             todaySets.isNotEmpty() -> {
                 val exercises = todaySets.map { it.exercise }.distinct()
                 val volume = todaySets.sumOf { it.weightKg * it.reps }.roundToInt()
-                parts += Part("training", "Training", 100, "${todaySets.size} sets, ${exercises.size} exercises")
+                parts += Part("training", "Training", 100, "${todaySets.size} set${if (todaySets.size == 1) "" else "s"}, ${exercises.size} exercise${if (exercises.size == 1) "" else "s"}")
                 facts.append("Training: trained today, ${todaySets.size} working sets across ${exercises.joinToString()}; volume ${volume} kg.\n")
             }
             earlier.isNotEmpty() -> {
@@ -216,6 +216,8 @@ You get the day's real numbers and a score Forge already worked out. Do not chan
 Be direct and specific: name the actual labors, minutes, sets and foods. Push the user, never insult them, never moralise.
 If yesterday's fixes are listed, say plainly whether today shows they were followed.
 Fixes must be concrete actions for tomorrow, each under 14 words, starting with a verb.
+If the day isn't over yet, judge what's done so far and say what can still be done today; don't treat meals or labors that can still happen as missed.
+Talk about food only as fuel for training and recovery. Never shame eating, never call eating little "starving", and never suggest eating less.
 Never give medical advice, body-fat guesses or extreme diet targets.
 Reply with JSON only: {"verdict": "one or two sentences, under 40 words", "wins": ["..."], "fixes": ["..."]}
 Give 1-3 wins (only real ones; if there are none, an empty list) and 2-3 fixes."""
@@ -223,7 +225,11 @@ Give 1-3 wins (only real ones; if there are none, an empty list) and 2-3 fixes."
     suspend fun judge(c: Context, day: Day): Result {
         val now = System.currentTimeMillis()
         return try {
-            val prompt = "Date: ${day.date}\nForge score: ${day.score}/100\nPart scores: " +
+            val now = java.util.Calendar.getInstance()
+            val over = day.date != today() || now.get(java.util.Calendar.HOUR_OF_DAY) >= 20
+            val clock = if (day.date == today()) SimpleDateFormat("h:mm a", Locale.US).format(Date()) else "end of day"
+            val prompt = "Date: ${day.date}\nTime now: $clock (${if (over) "the day is basically over" else "the day isn't over yet"})\n" +
+                "Forge score: ${day.score}/100\nPart scores: " +
                 day.parts.joinToString { "${it.name} ${it.score?.toString() ?: "n/a"}" } + "\n\n" + day.facts
             val reply = Gemini.ask(c, SYSTEM, listOf(Gemini.Part.Text(prompt)), json = true, maxTokens = 2000, temperature = 0.5)
             val o = JSONObject(Gemini.jsonOf(reply))
